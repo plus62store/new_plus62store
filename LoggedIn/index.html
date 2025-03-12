@@ -20,8 +20,6 @@ title: Home
 </ion-footer>
 </ion-card>
 
-<ion-button expand="full" onclick="showAlert()">Klik Saya</ion-button>
-
 <script type="module">
  const firebaseConfig = {
  apiKey: "{{ site.API_KEY }}",
@@ -43,7 +41,7 @@ signOutButton.addEventListener('click',()=>{auth.signOut()});auth.onAuthStateCha
   document.getElementById('sign-out-button').addEventListener('click', async () => {
     const alert = await alertController.create({
       header: 'Konfirmasi',
-      message: 'Apakah Anda yakin ingin melanjutkan?',
+      message: 'Apakah Anda yakin ingin keluar?',
       buttons: [
         {
           text: 'Batal',
