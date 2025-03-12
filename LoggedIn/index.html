@@ -53,39 +53,42 @@ function toggleUI() {
     }
 }
 
-import { alertController } from '{{ "/assets/frameworks/@ionic/core/dist/ionic/index.esm.js" | relative_url }}';
+// Memastikan tombol sudah ada di DOM sebelum event listener ditambahkan
+document.addEventListener("DOMContentLoaded", async () => {
+    const { alertController } = await import("https://cdn.jsdelivr.net/npm/@ionic/core/dist/ionic/index.esm.js");
 
-signOutButton.addEventListener('click', async () => {
-    const alert = await alertController.create({
-        header: 'Konfirmasi',
-        message: 'Apakah Anda yakin ingin keluar?',
-        buttons: [
-            {
-                text: 'Batal',
-                role: 'cancel',
-                handler: () => {
-                    console.log('Aksi dibatalkan');
+    signOutButton.addEventListener('click', async () => {
+        const alert = await alertController.create({
+            header: 'Konfirmasi',
+            message: 'Apakah Anda yakin ingin keluar?',
+            buttons: [
+                {
+                    text: 'Batal',
+                    role: 'cancel',
+                    handler: () => {
+                        console.log('Aksi dibatalkan');
+                    },
                 },
-            },
-            {
-                text: 'Ya',
-                handler: () => {
-                    console.log('Aksi dikonfirmasi');
-                    auth.signOut().then(() => {
-                        console.log('User signed out');
-                        location.href = "{{site.baseurl}}/"; // Redirect setelah logout
-                    }).catch(error => {
-                        console.error('Error saat logout:', error);
-                    });
+                {
+                    text: 'Ya',
+                    handler: () => {
+                        console.log('Aksi dikonfirmasi');
+                        auth.signOut().then(() => {
+                            console.log('User signed out');
+                            location.href = "{{site.baseurl}}/"; // Redirect setelah logout
+                        }).catch(error => {
+                            console.error('Error saat logout:', error);
+                        });
+                    },
                 },
-            },
-        ],
+            ],
+        });
+
+        await alert.present();
     });
 
-    await alert.present();
-});
-
-auth.onAuthStateChanged(user => {
-    toggleUI();
+    auth.onAuthStateChanged(user => {
+        toggleUI();
+    });
 });
 </script>
