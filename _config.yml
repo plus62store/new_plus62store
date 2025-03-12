@@ -15,13 +15,16 @@ plugins:
   - jekyll-feed
   - jekyll-paginate
 
+sass:
+  sass_dir: _sass
+  style: compressed # Pilihan: expanded, compressed
+
 # Konfigurasi untuk pagination (jika digunakan)
 paginate: 5
 paginate_path: "/page:num/"
 
 # Exclude files (agar tidak diproses oleh Jekyll)
 exclude:
-  - Gemfile
   - Gemfile.lock
   - node_modules
   - vendor

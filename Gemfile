@@ -6,6 +6,7 @@ gem "jekyll-sitemap"  # Opsional, untuk sitemap
 gem "jekyll-seo-tag"  # Opsional, untuk optimasi SEO
 gem "jekyll-feed"  # Opsional, untuk RSS feed
 gem "jekyll-paginate"  # Opsional, untuk pagination
+gem "jekyll-sass-converter", "~> 3.0"
 
 # Jika ingin menggunakan GitHub Pages
 group :jekyll_plugins do
