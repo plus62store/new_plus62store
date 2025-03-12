@@ -1,14 +1,5 @@
 <script type="module">
-  // Import the functions you need from the SDKs you need
-  import { initializeApp } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-app.js";
-  import { getAnalytics } from "https://www.gstatic.com/firebasejs/11.4.0/firebase-analytics.js";
-  // TODO: Add SDKs for Firebase products that you want to use
-  // https://firebase.google.com/docs/web/setup#available-libraries
-
-  // Your web app's Firebase configuration
-  // For Firebase JS SDK v7.20.0 and later, measurementId is optional
   const firebaseConfig = {
-    const firebaseConfig = {
     apiKey: "{{ site.API_KEY }}",
     authDomain: "{{ site.AUTH_DOMAIN }}",
     databaseURL: "{{ site.DATABASE_URL }}",
@@ -17,6 +8,7 @@
     messagingSenderId: "{{ site.SENDER_ID }}",
     appId: "{{ site.APP_ID }}",
     measurementId: "{{ site.MEASUREMENT_ID }}"
-    };firebase.initializeApp(firebaseConfig);const auth=firebase.auth();const userSignedInDiv=document.getElementById('user-signed-in');const signInButton=document.getElementById('sign-in-button');function toggleUI(){if(auth.currentUser){location.href="{{site.baseurl}}/LoggedIn"}else{}}
+    };
+firebase.initializeApp(firebaseConfig);const auth=firebase.auth();const userSignedInDiv=document.getElementById('user-signed-in');const signInButton=document.getElementById('sign-in-button');function toggleUI(){if(auth.currentUser){location.href="{{site.baseurl}}/LoggedIn"}else{}}
 signInButton.addEventListener('click',()=>{const provider=new firebase.auth.GoogleAuthProvider();auth.signInWithPopup(provider)});auth.onAuthStateChanged(user=>{toggleUI()})
 </script>
