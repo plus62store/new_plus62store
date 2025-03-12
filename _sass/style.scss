@@ -1,0 +1,19 @@
+// _sass/style.scss
+
+// Warna utama Ionic
+$primary-color: #3880ff;
+$secondary-color: #3dc2ff;
+$background-color: #f4f5f8;
+
+body {
+  background-color: $background-color;
+  font-family: Arial, sans-serif;
+}
+
+ion-button {
+  --background: $primary-color;
+  --color: white;
+  &:hover {
+    --background: $secondary-color;
+  }
+}
