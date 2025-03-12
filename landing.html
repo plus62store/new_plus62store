@@ -1,0 +1,39 @@
+---
+layout: default
+title: Welcome
+permalink: /
+---
+
+<ion-content class="ion-padding">
+  <ion-slides pager="true">
+    <ion-slide>
+      <div class="slide-content">
+        <img src="{{ '/assets/img/slide1.png' | relative_url }}" alt="Slide 1">
+        <h2>Selamat Datang!</h2>
+        <p>Ini adalah aplikasi berbasis Jekyll dan Ionic.</p>
+      </div>
+    </ion-slide>
+
+    <ion-slide>
+      <div class="slide-content">
+        <img src="{{ '/assets/img/slide2.png' | relative_url }}" alt="Slide 2">
+        <h2>Mudah Digunakan</h2>
+        <p>Gunakan berbagai komponen Ionic tanpa framework tambahan.</p>
+      </div>
+    </ion-slide>
+
+    <ion-slide>
+      <div class="slide-content">
+        <img src="{{ '/assets/img/slide3.png' | relative_url }}" alt="Slide 3">
+        <h2>Siap Mulai?</h2>
+        <ion-button expand="full" onclick="finishIntro()">Mulai</ion-button>
+      </div>
+    </ion-slide>
+  </ion-slides>
+</ion-content>
+
+<script>
+  function finishIntro() {
+    window.location.href = "{{ '/home' | relative_url }}"; // Arahkan ke halaman utama
+  }
+</script>
