@@ -15,8 +15,6 @@ body {
 }
 
 ion-button {
-  --background: $primary-color;
-  --color: white;
   padding: 12px 24px;
 
   @include mixins.mobile {
