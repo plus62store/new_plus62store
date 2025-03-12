@@ -15,7 +15,7 @@ title: Home
   </ion-card-content>
 <ion-footer>
   <ion-toolbar>
-<ion-button expand="full" id="sign-out-button" color="danger"><ion-icon name="log-out-outline"></ion-icon> Log Out</ion-button>
+<ion-button expand="full" id="sign-out" color="danger"><ion-icon name="log-out-outline"></ion-icon> Log Out</ion-button>
   </ion-toolbar>
 </ion-footer>
 </ion-card>
@@ -38,7 +38,7 @@ signOutButton.addEventListener('click',()=>{auth.signOut()});auth.onAuthStateCha
 <script type="module">
   import { alertController } from '{{ "/assets/frameworks/@ionic/core/dist/ionic/index.esm.js" | relative_url }}';
 
-  document.getElementById('sign-out-button').addEventListener('click', async () => {
+  document.getElementById('sign-out').addEventListener('click', async () => {
     const alert = await alertController.create({
       header: 'Konfirmasi',
       message: 'Apakah Anda yakin ingin keluar?',
