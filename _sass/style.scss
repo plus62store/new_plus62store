@@ -1,16 +1,29 @@
-$primary-color: #3880ff;
-$secondary-color: #3dc2ff;
-$background-color: #f4f5f8;
+@use "mixins";
+@use "variables" as *;
 
 body {
   background-color: $background-color;
-  font-family: Arial, sans-serif;
+  font-size: 16px;
+
+  @include mixins.mobile {
+    font-size: 14px;
+  }
+
+  @include mixins.tablet {
+    font-size: 15px;
+  }
 }
 
 ion-button {
   --background: $primary-color;
   --color: white;
-  &:hover {
-    --background: $secondary-color;
+  padding: 12px 24px;
+
+  @include mixins.mobile {
+    padding: 10px 20px;
+  }
+
+  @include mixins.tablet {
+    padding: 11px 22px;
   }
 }
