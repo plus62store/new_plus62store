@@ -23,6 +23,9 @@ sass:
 paginate: 5
 paginate_path: "/page:num/"
 
+compress_html:
+  clippings: all
+
 # Exclude files (agar tidak diproses oleh Jekyll)
 exclude:
   - Gemfile.lock
