@@ -19,8 +19,6 @@
     measurementId: "{{ site.MEASUREMENT_ID }}"
     };firebase.initializeApp(firebaseConfig);const auth=firebase.auth();const userSignedInDiv=document.getElementById('user-signed-in');const signInButton=document.getElementById('sign-in-button');function toggleUI(){if(auth.currentUser){location.href="{{site.baseurl}}/product"}else{}}
         signInButton.addEventListener('click',()=>{const provider=new firebase.auth.GoogleAuthProvider();auth.signInWithPopup(provider)});auth.onAuthStateChanged(user=>{toggleUI()})
-  };
-
   // Initialize Firebase
   const app = initializeApp(firebaseConfig);
   const analytics = getAnalytics(app);
