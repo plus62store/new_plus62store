@@ -1,39 +1,62 @@
 ---
-layout: default
+layout: none
 title: Welcome
 permalink: /
 ---
+<!DOCTYPE html>
+<html lang="en">
 
-<ion-content class="ion-padding">
-  <swiper-container pagination="true" navigation="true">
-    <swiper-slide>
-      <div class="slide-content">
-        <img src="{{ '/assets/img/slide1.png' | relative_url }}" alt="Slide 1">
-        <h2>Selamat Datang!</h2>
-        <p>Ini adalah aplikasi berbasis Jekyll dan Ionic.</p>
-      </div>
-    </swiper-slide>
+{% include head.html %}
 
-    <swiper-slide>
-      <div class="slide-content">
-        <img src="{{ '/assets/img/slide2.png' | relative_url }}" alt="Slide 2">
-        <h2>Mudah Digunakan</h2>
-        <p>Gunakan berbagai komponen Ionic tanpa framework tambahan.</p>
-      </div>
-    </swiper-slide>
+  <style>
+    html,
+    body {
+      position: relative;
+      height: 100%;
+    }
 
-    <swiper-slide>
-      <div class="slide-content">
-        <img src="{{ '/assets/img/slide3.png' | relative_url }}" alt="Slide 3">
-        <h2>Siap Mulai?</h2>
-        <ion-button expand="full" onclick="finishIntro()">Mulai</ion-button>
-      </div>
-    </swiper-slide>
+    body {
+      background: #eee;
+      font-family: Helvetica Neue, Helvetica, Arial, sans-serif;
+      font-size: 14px;
+      color: #000;
+      margin: 0;
+      padding: 0;
+    }
+
+    swiper-container {
+      width: 100%;
+      height: 100%;
+    }
+
+    swiper-slide {
+      text-align: center;
+      font-size: 18px;
+      background: #fff;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    swiper-slide img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+  </style>
+
+<body>
+
+  <swiper-container class="mySwiper">
+    <swiper-slide>Slide 1</swiper-slide>
+    <swiper-slide>Slide 2</swiper-slide>
+    <swiper-slide>Slide 3</swiper-slide>
   </swiper-container>
-</ion-content>
 
-<script>
-  function finishIntro() {
-    window.location.href = "/home"; // Arahkan ke halaman utama
-  }
-</script>
+
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-element-bundle.min.js"></script>
+
+</body>
+
+</html>
