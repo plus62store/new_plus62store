@@ -1,9 +1,5 @@
-$mobile: 480px;
-$tablet: 768px;
-$laptop: 1024px;
-$desktop: 1280px;
+@use "variables" as *;
 
-// Mixin untuk media query
 @mixin mobile {
   @media (max-width: #{$mobile}) {
     @content;
