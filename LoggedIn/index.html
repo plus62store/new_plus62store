@@ -54,6 +54,12 @@ signOutButton.addEventListener('click',()=>{auth.signOut()});auth.onAuthStateCha
           text: 'Ya',
           handler: () => {
             console.log('Aksi dikonfirmasi');
+            firebase.auth().signOut().then(() => {
+              console.log('User signed out');
+              location.href = "{{site.baseurl}}/";
+            }).catch(error => {
+              console.error('Error saat logout:', error);
+            });
           },
         },
       ],
