@@ -1,2 +1,8 @@
+_site
+.DS_Store
+.jekyll
+.bundle
+.env
+.sass-cache
 node_modules
 package-lock.json
