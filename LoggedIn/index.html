@@ -37,14 +37,30 @@ if(firebase.auth().currentUser.photoURL){document.querySelector('#userImg').src=
 signOutButton.addEventListener('click',()=>{auth.signOut()});auth.onAuthStateChanged(user=>{toggleUI()})
 </script>
 
-<script>
-  async function showAlert() {
-    const alert = document.createElement('ion-alert');
-    alert.header = 'Halo!';
-    alert.message = 'Ini adalah alert dari Ionic di Jekyll!';
-    alert.buttons = ['OK'];
+<script type="module">
+  import { alertController } from '{{ "/assets/frameworks/@ionic/core/dist/ionic/index.esm.js" | relative_url }}';
 
-    document.body.appendChild(alert);
+  document.getElementById('sign-out-button').addEventListener('click', async () => {
+    const alert = await alertController.create({
+      header: 'Konfirmasi',
+      message: 'Apakah Anda yakin ingin melanjutkan?',
+      buttons: [
+        {
+          text: 'Batal',
+          role: 'cancel',
+          handler: () => {
+            console.log('Aksi dibatalkan');
+          },
+        },
+        {
+          text: 'Ya',
+          handler: () => {
+            console.log('Aksi dikonfirmasi');
+          },
+        },
+      ],
+    });
+
     await alert.present();
-  }
+  });
 </script>
