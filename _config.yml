@@ -1,7 +1,7 @@
 title: "Jekyll Ionic"
 description: "Integrasi Ionic di Jekyll"
 baseurl: "" # Jika di-root domain, biarkan kosong. Jika di subfolder, isi dengan "/nama-folder"
-url: "http://localhost:4000" # Ubah saat deploy
+url: "https://plus62store.vercel.app"
 
 # Konfigurasi Jekyll
 permalink: pretty
