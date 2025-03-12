@@ -1,7 +1,7 @@
 ---
 ---
 
-@import "style";
+@use "style" as *;
 
 ion-content {
   max-width: 1040px;
