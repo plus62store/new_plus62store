@@ -1,0 +1,17 @@
+---
+layout: default
+title: Home
+---
+<ion-button expand="full" onclick="showAlert()">Klik Saya</ion-button>
+
+<script>
+  async function showAlert() {
+    const alert = document.createElement('ion-alert');
+    alert.header = 'Halo!';
+    alert.message = 'Ini adalah alert dari Ionic di Jekyll!';
+    alert.buttons = ['OK'];
+
+    document.body.appendChild(alert);
+    await alert.present();
+  }
+</script>
