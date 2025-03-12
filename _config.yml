@@ -29,6 +29,7 @@ compress_html:
 # Exclude files (agar tidak diproses oleh Jekyll)
 exclude:
   - Gemfile.lock
+  - package-lock.json
   - node_modules
   - vendor
   - README.md
