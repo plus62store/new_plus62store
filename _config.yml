@@ -1,7 +1,7 @@
 title: "Jekyll Ionic"
 description: "Integrasi Ionic di Jekyll"
 baseurl: "" # "/nama-folder"
-url: "https://plus62store.vercel.app"
+url: "https://plus62store.pages.dev"
 
 # Konfigurasi Jekyll
 permalink: /product/:title/
