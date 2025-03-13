@@ -6,6 +6,13 @@
 @include mobile {
    grid-template-columns: 1fr 1fr;
   }
+.product-img {
+   max-width: 200px
+   width: 100%;
+   height: 280px;
+   object-fit: cover;
+   background-position: cover;
+  }
 }
 
 .profil_img {
