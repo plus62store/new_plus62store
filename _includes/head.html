@@ -1,8 +1,18 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Jekyll Ionic</title>
+    <title>{{site.title}}</title>
+<meta property="description" content="{{site.description}}" />
+<meta property="og:image" content="{{site.logo}}">
+<meta property="og:site_name" content="{{site.dev}}">
+<meta property="og:title" content="{{site.title}}">
 <meta property="twitter:image" content="{{ '/assets/img/placeholder.png' | relative_url}}">
+<meta property="twitter:card" content="summary_large_image">
+<meta property="twitter:title" content="{{page.title}}">
+<meta property="twitter:description" content="{{page.desc}}">
+<meta property="og:description" content="{{site.description}}" />
+<meta property="og:url" content="{{site.baseurl}}">
+
     <script type="module" src="{{ '/assets/frameworks/@ionic/core/dist/ionic/ionic.esm.js' | relative_url }}"></script>
     <script nomodule src="{{ '/assets/frameworks/@ionic/core/dist/ionic/ionic.js' | relative_url }}"></script>
     <link rel="stylesheet" href="{{ '/assets/frameworks/@ionic/core/css/ionic.bundle.css' relative_url }}" />
