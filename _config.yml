@@ -35,6 +35,12 @@ sass:
 paginate: 5
 paginate_path: "/page:num/"
 
+defaults:
+- scope:
+    type: posts
+  values:
+    layout: product
+
 # Archives
 jekyll-archives:
   enabled:
