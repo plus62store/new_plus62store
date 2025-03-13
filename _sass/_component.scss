@@ -1,7 +1,11 @@
 @use "mixins" as *;
 
 .grid-product {
-
+   display: grid;
+   grid-template-columns: minmax(auto, 1fr) 4fr;
+@include mobile {
+   grid-template-columns: minmax(auto, 1fr) 2fr;
+  }
 }
 
 .profil_img {
