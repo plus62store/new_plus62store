@@ -7,47 +7,13 @@ ion-content.ion-padding { padding: 0px !important; }
 ion-card-title, ion-card-subtitle { text-align: center; }
 </style>
 <div class="grid-product">
+{% for post in site.posts %}
   <ion-card>
-    <img class="img-product" src="/assets/img/placeholder.png"/>
+    <img class="img-product" src="{{post.img}}"/>
     <ion-card-header>
-      <ion-card-title>{{site.title}}</ion-card-title>
-      <ion-card-subtitle>Sub Title</ion-card-subtitle>
+      <ion-card-title>{{post.harga}}</ion-card-title>
+      <ion-card-subtitle>{{post.title}}</ion-card-subtitle>
     </ion-card-header>
-      <ion-card-content>
-        {{content}}
-      </ion-card-content>
   </ion-card>
-
-  <ion-card>
-    <img src="/assets/img/placeholder.png"/>
-    <ion-card-header>
-      <ion-card-title>{{site.title}}</ion-card-title>
-      <ion-card-subtitle>Sub Title</ion-card-subtitle>
-    </ion-card-header>
-      <ion-card-content>
-        {{content}}
-      </ion-card-content>
-  </ion-card>
-
-  <ion-card>
-    <img src="/assets/img/placeholder.png"/>
-    <ion-card-header>
-      <ion-card-title>{{site.title}}</ion-card-title>
-      <ion-card-subtitle>Sub Title</ion-card-subtitle>
-    </ion-card-header>
-      <ion-card-content>
-        {{content}}
-      </ion-card-content>
-  </ion-card>
-
-  <ion-card>
-    <img src="/assets/img/placeholder.png"/>
-    <ion-card-header>
-      <ion-card-title>{{site.title}}</ion-card-title>
-      <ion-card-subtitle>Sub Title</ion-card-subtitle>
-    </ion-card-header>
-      <ion-card-content>
-        {{content}}
-      </ion-card-content>
-  </ion-card>
+{% endfor %}
 </div>
