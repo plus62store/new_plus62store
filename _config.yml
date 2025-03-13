@@ -35,6 +35,16 @@ sass:
 paginate: 5
 paginate_path: "/page:num/"
 
+# Archives
+jekyll-archives:
+  enabled:
+    - categories
+    - tags
+  layout: archive
+  permalinks:
+    category: '/category/:name/'
+    tags: '/tag/:name/'
+
 compress_html:
   clippings: all
 
