@@ -9,6 +9,46 @@
     appId: "{{ site.APP_ID }}",
     measurementId: "{{ site.MEASUREMENT_ID }}"
     };
-firebase.initializeApp(firebaseConfig);const auth=firebase.auth();const userSignedInDiv=document.getElementById('user-signed-in');const signInButton=document.getElementById('sign-in-button');function toggleUI(){if(auth.currentUser){location.href="{{site.baseurl}}/LoggedIn"}else{}}
-signInButton.addEventListener('click',()=>{const provider=new firebase.auth.GoogleAuthProvider();auth.signInWithPopup(provider)});auth.onAuthStateChanged(user=>{toggleUI()})
+firebase.initializeApp(firebaseConfig);
+const auth = firebase.auth();
+function signInWithGoogle() {
+  const provider = new firebase.auth.GoogleAuthProvider();
+  auth.signInWithPopup(provider)
+    .then((result) => {
+      const user = result.user;
+      showUserInfo(user);
+    })
+    .catch((error) => {
+      console.error("Login gagal:", error);
+    });
+}
+
+// Fungsi Menampilkan Data User
+function showUserInfo(user) {
+  document.getElementById("auth-container").style.display = "none";
+  document.getElementById("logout-btn").style.display = "block";
+  document.getElementById("protected-content").style.display = "block";
+  document.getElementById("user-name").innerText = user.displayName;
+  document.getElementById("user-image").src = user.photoURL;
+}
+
+// Mengecek Status Login saat Halaman Dimuat
+auth.onAuthStateChanged((user) => {
+  if (user) {
+    showUserInfo(user);
+  } else {
+    document.getElementById("auth-container").style.display = "block";
+    document.getElementById("logout-btn").style.display = "none";
+    document.getElementById("protected-content").style.display = "none";
+  }
+});
+
+// Fungsi Logout
+function signOut() {
+  auth.signOut().then(() => {
+    document.getElementById("auth-container").style.display = "block";
+    document.getElementById("logout-btn").style.display = "none";
+    document.getElementById("protected-content").style.display = "none";
+  });
+}
 </script>
