@@ -8,7 +8,7 @@ ion-card-title, ion-card-subtitle { text-align: center; }
 </style>
 <div class="grid-product">
 {% for post in site.posts %}
-<ion-link href="{{site.baseurl}}{{post.url}}">
+<ion-router-link href="{{site.baseurl}}{{post.url}}">
   <ion-card>
     <img class="img-product" src="{{post.image}}"/>
     <ion-card-header>
@@ -16,6 +16,6 @@ ion-card-title, ion-card-subtitle { text-align: center; }
       <ion-card-subtitle>{{post.title}}</ion-card-subtitle>
     </ion-card-header>
   </ion-card>
-</ion-link>
+</ion-router-link>
 {% endfor %}
 </div>
