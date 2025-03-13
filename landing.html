@@ -78,6 +78,13 @@ permalink: /
   transform: translateX(-100%);
   }
   } 
+
+
+ion-chip {
+   position: absolute;
+   top: 50%;
+   left: 50%;
+   transform: translate(-50% -50%);
  </style>
 
 <body>
@@ -90,6 +97,12 @@ permalink: /
             <p>Untuk melanjutkan silahkan Sign in dengan akun google anda.</p>
                         <p><ion-button class="btn_login" id="sign-in-button" color="primary" style="margin-top:10px;"><ion-icon slot="start" name="logo-google"></ion-icon> Sign In</ion-button></p>
     </swiper-slide>
+
+<ion-chip class="slideOutLeft" disabled="true">
+<ion-icon color="dark" name="arrow-back-outline"></ion-icon>
+<ion-label> Geser</ion-label>
+</ion-chip>
+
   </swiper-container>
 
 {% include firebase-config.html %}
