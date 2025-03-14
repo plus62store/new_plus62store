@@ -7,6 +7,7 @@ url: "https://plus62store.pages.dev"
 permalink: /LoggedIn/product/:title
 timezone: Asia/Jakarta # Sesuaikan dengan zona waktu
 markdown: kramdown
+text_dev: nDang
 
 # Plugins
 plugins:
