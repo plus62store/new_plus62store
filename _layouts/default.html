@@ -8,11 +8,9 @@ layout: compress
 
 <body id="auth-container">
   <ion-app>
-{% include ion-header.html %}
-    <ion-content id="protected-content" class="ion-no-padding">
+    </ion-tabs>
       {{ content }}
-    </ion-content>
-{% include ion-footer.html %}
+    </ion-tabs>
   </ion-app>
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 <script type="module" src="{{ '/assets/js/auth.js' | relative_url }}"></script>
