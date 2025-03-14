@@ -11,8 +11,8 @@
 firebase.auth().onAuthStateChanged(user => {
   const protectedPages = [
     "{{site.baseurl}}/LoggedIn/",
-    "{{site.baseurl}}/akun",
-    "{{site.baseurl}}/product/"
+    "{{site.baseurl}}/LoggedIn/akun",
+    "{{site.baseurl}}/LoggedIn/product/"
   ];
 
   if (!user && protectedPages.includes(window.location.pathname)) {
