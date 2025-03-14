@@ -11,7 +11,7 @@ layout: default
             {% for style in page.styles %}
           		<div id="product-{{ forloop.index }}" class="style bounceIn" {% unless forloop.first %} style="display:none;" {% endunless %}>
         				<ion-router-link data-fancybox="gallery" href="{{ style.image_path }}">
-            <img class="img-thumb lazyimg" src="{{site.baseurl}}/assets/images/placeholder.png" data-src="{{ style.image_path }}" itemprop="image"></ion-router-link>
+            <img class="img-thumb lazyimg" src="{{site.baseurl}}/assets/img/placeholder.png" data-src="{{ style.image_path }}" itemprop="image"></ion-router-link>
           		</div>
           	{% endfor %}
           </div>
