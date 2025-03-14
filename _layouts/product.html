@@ -20,11 +20,14 @@ layout: default
 <div class="detail-product">
   <ion-item class="ion-no-padding" style="margin-bottom: 6px;">
   <div itemprop="name" class="item_name"><ion-label>{{ page.title }}</ion-label>
-<a class="fav_btn" onclick="favOptions()" >
+<ion-buttons slot="end">
+<ion-button shape="round" class="fav_btn" onclick="favOptions()" >
     <span id="like-{{ page.noID }}" class="like-btn">
-    <ion-icon name="heart" slot="end"></ion-icon>
+    <ion-icon name="heart"></ion-icon>
     </span>
-</a></div>
+</ion-button>
+</ion-buttons>
+</div>
   </ion-item>
   <span class="item-rate" itemprop="aggregateRating"
     itemscope itemtype="https://schema.org/AggregateRating">
