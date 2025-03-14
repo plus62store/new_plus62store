@@ -13,7 +13,7 @@ firebase.initializeApp(firebaseConfig);
 const auth=firebase.auth();
 const userSignedInDiv=document.getElementById('user-signed-in');
 const signInButton=document.getElementById('sign-in-button');
-function toggleUI(){if(auth.currentUser){location.href="{{site.baseurl}}/LoggedIn"}else{}}
+function toggleUI(){if(auth.currentUser){location.href="{{site.baseurl}}/LoggedIn"}else{location.href="{{site.baseurl}}/"}}
 signInButton.addEventListener('click',()=>{const provider=new firebase.auth.GoogleAuthProvider();
 auth.signInWithPopup(provider)});
 auth.onAuthStateChanged(user=>{toggleUI()});
