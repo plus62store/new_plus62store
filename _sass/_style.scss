@@ -25,3 +25,9 @@ ion-button {
     padding: 11px 22px;
   }
 }
+.mobile-hide {
+ display:block;
+   @include mobile {
+   display:none !important;
+   }
+}
