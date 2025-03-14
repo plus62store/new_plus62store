@@ -1,14 +1,11 @@
 <ion-footer>
    <ion-toolbar>
-      <ion-buttons slot="end" size="small" fill="solid" shape="round">
-         <ion-button href="/LoggedIn/akun">
-          Akun
-         </ion-button>
-      </ion-buttons>
-      <ion-buttons slot="start" size="small" fill="solid" shape="round">
-         <ion-button href="/LoggedIn/">
-          Home
-         </ion-button>
-      </ion-buttons>
+<ion-buttons slot="start">
+<ion-button color="success" id="">Contact</ion-button>
+</ion-buttons>
+
+<ion-buttons slot="end">
+<ion-button color="{% if page.stok != 'Tersedia' %}danger{% else %}primary{% endif %}" class="app-description-content description-content" {% if page.stok != 'Tersedia' %}disabled{% else %}{% endif %}>{% if page.stok != 'Tersedia' %}Stok Habis{% else %}Beli Sekarang{% endif %}</ion-button>
+</ion-buttons>
    </ion-toolbar>
 </ion-footer>
