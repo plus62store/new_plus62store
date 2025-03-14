@@ -55,4 +55,10 @@ function signOut() {
     document.getElementById("protected-content").style.display = "none";
   });
 }
+
+auth.onAuthStateChanged((user) => {
+  if (!user) {
+    window.location.href = "/login.html"; // Redirect ke halaman login
+  }
+});
 </script>
