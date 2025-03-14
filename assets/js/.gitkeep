@@ -1,1 +1,14 @@
-.
+<!--<body>
+  <div id="auth-container">
+    <button onclick="signInWithGoogle()">Login dengan Google</button>
+  </div>
+
+  <button id="logout-btn" style="display:none;" onclick="signOut()">Logout</button>
+
+  <div id="protected-content" style="display:none;">
+    <h1>Selamat datang, <span id="user-name"></span>!</h1>
+    <img id="user-image" src="" alt="User Image" style="border-radius:50%;">
+  </div>
+
+  <script src="firebase-auth.js"></script>
+</body>-->
