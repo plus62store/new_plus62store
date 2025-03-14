@@ -1660,9 +1660,9 @@ $(document).ready(function () {
     if (myLicense == tpllc) {
     return false
     } else {
-    $('body').append('<style>body{background:#000000b3!important;overflow:hidden}#peringatan span{font-size:50px}#peringatan{z-index:99999999999999;position:fixed;top:0;right:0;left:0;padding:16% 0;height:100%;text-align:center;background:#000000b3;color:#fff}@media only screen and (max-width: 680px){#peringatan{padding:60% 0;}h4{font-size:x-large!important;}}</style><div id="peringatan"><h4 style="margin-bottom: 35px;font-size:-webkit-xxx-large;">🔒️ Template is Locked Up</h4><p style="margin-top: 20px;font-size: 18px;letter-spacing: 2px;line-height: 30px;">Mohon untuk tidak menghapus / merubah link footer.</p></div>');
+    $('body').append('<style>body{background:#000000b3!important;overflow:hidden}#peringatan span{font-size:50px}#peringatan{z-index:99999999999999;position:fixed;top:0;right:0;left:0;padding:16% 0;height:100%;text-align:center;background:#000000b3;color:#fff}@media only screen and (max-width: 680px){#peringatan{padding:60% 0;}h4{font-size:x-large!important;}}</style><div id="peringatan"><h4 style="margin-bottom: 35px;font-size:-webkit-xxx-large;padding:25px;">🔒️ Template is Locked Up</h4><p style="margin-top: 20px;font-size: 18px;letter-spacing: 2px;line-height: 30px;">Mohon untuk tidak menghapus / merubah link footer.</p></div>');
     setInterval(function () {
-    second <= 1 ? window.location.href = "https://github.com/putridinar/IonicApp" : $('#aktivasi').text(--second);
+    second <= 1 ? window.location.href = "https://github.com/plus62store/62store/issues" : $('#aktivasi').text(--second);
   }, 1e3)
  }
 });
