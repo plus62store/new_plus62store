@@ -8,10 +8,11 @@ layout: compress
 
 <body>
   <ion-app>
+{% include ion-header.html %}
     </ion-content>
       {{ content }}
-{% include tab-bottom.html %}
     </ion-content>
+{% include ion-footer.html %}
   </ion-app>
 {% include firebase-auth.html %}
 <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
