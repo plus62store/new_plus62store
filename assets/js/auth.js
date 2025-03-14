@@ -10,7 +10,7 @@
     };firebase.initializeApp(firebaseConfig);
 firebase.auth().onAuthStateChanged(user => {
   const protectedPages = [
-    "{{site.baseurl}}/LoggedIn",
+    "{{site.baseurl}}/LoggedIn/",
     "{{site.baseurl}}/akun",
     "{{site.baseurl}}/product/"
   ];
