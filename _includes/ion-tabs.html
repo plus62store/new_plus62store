@@ -1,80 +1,14 @@
-<ion-tabs>
-  <ion-tab tab="home">
-    <div id="home-page">
-      <ion-header>
-        <ion-toolbar>
-          <ion-title>Home</ion-title>
-        </ion-toolbar>
-      </ion-header>
-      <ion-content>
-        <div class="example-content">Home content</div>
-      </ion-content>
-    </div>
-  </ion-tab>
-  <ion-tab tab="product">
-    <div id="product-page">
-      <ion-header>
-        <ion-toolbar>
-          <ion-title>Product</ion-title>
-        </ion-toolbar>
-      </ion-header>
-      <ion-content>
-        <div class="example-content">Product content</div>
-      </ion-content>
-    </div>
-  </ion-tab>
-  <ion-tab tab="cart">
-    <div id="cart-page">
-      <ion-header>
-        <ion-toolbar>
-          <ion-title>Keranjang</ion-title>
-        </ion-toolbar>
-      </ion-header>
-      <ion-content>
-        <div class="example-content">Keranjang content</div>
-      </ion-content>
-    </div>
-  </ion-tab>
-  <ion-tab tab="account">
-    <div id="account-page">
-      <ion-header>
-        <ion-toolbar>
-          <ion-title>Account</ion-title>
-        </ion-toolbar>
-      </ion-header>
-      <ion-content>
-        <div class="example-content">Account content</div>
-      </ion-content>
-    </div>
-  </ion-tab>
-
-  <ion-tab-bar slot="bottom">
-    <ion-tab-button tab="home">
-      <ion-icon name="play-circle"></ion-icon>
-      Home
-    </ion-tab-button>
-    <ion-tab-button tab="product">
-      <ion-icon name="radio"></ion-icon>
-      Produk
-    </ion-tab-button>
-    <ion-tab-button tab="cart">
-      <ion-icon name="library"></ion-icon>
-      Keranjang
-    </ion-tab-button>
-    <ion-tab-button tab="account">
-      <ion-icon name="search"></ion-icon>
-      Akun
-    </ion-tab-button>
-  </ion-tab-bar>
-</ion-tabs>
-
-<style>
+<style type="text/css">
   /* This style is for demonstration purposes only. */
   /* It's not required for the tabs to function. */
-  .example-content {
+  .content {
     display: flex;
     align-items: center;
     justify-content: center;
     height: 100%;
   }
 </style>
+{% include tab-home.html %}
+{% include tab-product.html %}
+{% include tab-cart.html %}
+{% include tab-account.html %}
