@@ -10,18 +10,10 @@
   <div class="keranjang-box simplecart-cart">
     <div class="simpleCart_items"></div>
     <div class="harga-total">
-    {% if page.url == "/cart/" %}
+
    <ion-label><span>Total Pembelian </span><span class="simpleCart_quantity"></span> items : <span class="simpleCart_total"></span> </ion-label><br />
 <span style="font-size:10px;">( *Belum Termasuk Ongkir )</span>
-    {% endif %}
-    {% if page.layout == "webshop" %}
-<ion-item-sliding>
-    <ion-buttons slot="end">
-          <ion-button onclick="checkOut()" fill="outline" color="primary" style="margin-top: 20px;">CheckOut</ion-button>
-    <ion-buttons>
-</ion-item-sliding>
-{% endif %}
-    {% if page.layout == "shop" %}
+
 <ion-item-sliding>
     <ion-buttons slot="end">
           <ion-button onclick="checkOut()" fill="outline" color="primary" style="margin-top: 20px;">CheckOut</ion-button>
