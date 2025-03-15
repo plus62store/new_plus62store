@@ -14,8 +14,8 @@
     <ion-card-subtitle id="user-email">Card Subtitle</ion-card-subtitle>
   </ion-card-header>
 
-  <ion-card-content>
-<ion-label style="text-align:center;" class="center"><ion-text>{{site.title}} by <span>{{site.text_dev}}</span> © 2025 | v.1.0.1</ion-text></ion-label>
+  <ion-card-content class='center'>
+<ion-label><ion-text>{{site.title}} by <span>{{site.text_dev}}</span> © 2025 | v.1.0.1</ion-text></ion-label>
   </ion-card-content>
 <ion-footer>
   <ion-toolbar>
@@ -28,7 +28,8 @@
     </div>
   </ion-tab>
 <style>
-ion-label slot[bottom] {
+.center { align-text: center; }
+ion-label {
    display: flex;
    align-item: cente;
    justify-content: center;
