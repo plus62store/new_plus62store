@@ -4,7 +4,7 @@
         <ion-toolbar>
           <ion-title>Product</ion-title>
 <ion-buttons slot="end">
-<ion-button shape="round" id="trigger-cart">
+<ion-button shape="round" onclick="myCart()">
       <ion-badge color="danger" class="simpleCart_quantity" style="position:absolute;top:-6px;right:-6px;border-radius:50px;font-size: 11px;padding: 2px 4px;"></ion-badge>
 <ion-icon name="cart"></ion-icon>
 </ion-button>
@@ -33,3 +33,8 @@ ion-card-title, ion-card-subtitle { text-align: center; }
       </ion-content>
     </div>
   </ion-tab>
+<script>
+function myCart() {
+  document.getElementById("id-cart");
+}
+</script>
