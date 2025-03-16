@@ -17,3 +17,19 @@ if (window.PublicKeyCredential) {
 } else {
     console.log("WebAuthn tidak didukung di browser ini.");
 }
+
+
+async function loginUser() {
+    const publicKey = {
+        challenge: new Uint8Array(32),
+        timeout: 60000,
+        userVerification: "required"
+    };
+
+    try {
+        const assertion = await navigator.credentials.get({ publicKey });
+        console.log("Login berhasil:", assertion);
+    } catch (error) {
+        console.error("Login gagal:", error);
+    }
+}
