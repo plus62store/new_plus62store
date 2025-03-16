@@ -1,0 +1,172 @@
+
+
+    <h2>Login dengan Sidik Jari, Google, atau Email</h2>
+
+    <!-- Login dengan WebAuthn -->
+    <input type="text" id="username" placeholder="Masukkan username">
+    <button onclick="registerUser()">Daftar dengan Sidik Jari</button>
+    <button onclick="loginUser()">Login dengan Sidik Jari</button>
+    
+    <hr>
+
+    <!-- Login dengan Google -->
+    <button onclick="loginWithGoogle()">Login dengan Google</button>
+
+    <hr>
+
+    <!-- Login dengan Email/Password -->
+    <input type="email" id="email" placeholder="Email">
+    <input type="password" id="password" placeholder="Password">
+    <button onclick="registerWithEmail()">Daftar</button>
+    <button onclick="loginWithEmail()">Login</button>
+
+    <hr>
+
+    <!-- Logout -->
+    <button onclick="logout()">Logout</button>
+
+    <script>
+        // Konfigurasi Firebase
+        const firebaseConfig = {
+            apiKey: "YOUR_API_KEY",
+            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
+            projectId: "YOUR_PROJECT_ID",
+            storageBucket: "YOUR_PROJECT_ID.appspot.com",
+            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
+            appId: "YOUR_APP_ID"
+        };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+
+        // Registrasi dengan WebAuthn
+        async function registerUser() {
+            const username = document.getElementById("username").value;
+            if (!username) {
+                alert("Masukkan username!");
+                return;
+            }
+
+            const publicKey = {
+                challenge: new Uint8Array(32),
+                rp: { name: "WebAuthn Firebase" },
+                user: {
+                    id: new Uint8Array(16),
+                    name: username,
+                    displayName: username
+                },
+                pubKeyCredParams: [{ type: "public-key", alg: -7 }],
+                authenticatorSelection: { authenticatorAttachment: "platform" },
+                timeout: 60000,
+                attestation: "direct"
+            };
+
+            try {
+                const credential = await navigator.credentials.create({ publicKey });
+
+                // Simpan credential ke Firestore
+                await db.collection("users").doc(username).set({
+                    username: username,
+                    credentialId: credential.id
+                });
+
+                alert("Registrasi berhasil!");
+            } catch (error) {
+                console.error("Registrasi gagal:", error);
+            }
+        }
+
+        // Login dengan WebAuthn
+        async function loginUser() {
+            const username = document.getElementById("username").value;
+            if (!username) {
+                alert("Masukkan username!");
+                return;
+            }
+
+            const userDoc = await db.collection("users").doc(username).get();
+            if (!userDoc.exists) {
+                alert("User tidak ditemukan!");
+                return;
+            }
+
+            const publicKey = {
+                challenge: new Uint8Array(32),
+                timeout: 60000,
+                userVerification: "required"
+            };
+
+            try {
+                const assertion = await navigator.credentials.get({ publicKey });
+
+                if (assertion.id === userDoc.data().credentialId) {
+                    await auth.signInAnonymously();
+                    alert("Login berhasil!");
+                } else {
+                    alert("Kredensial tidak cocok!");
+                }
+            } catch (error) {
+                console.error("Login gagal:", error);
+            }
+        }
+
+        // Login dengan Google
+        function loginWithGoogle() {
+            const provider = new firebase.auth.GoogleAuthProvider();
+            auth.signInWithPopup(provider)
+                .then((result) => {
+                    alert("Login berhasil: " + result.user.email);
+                })
+                .catch((error) => {
+                    console.error("Login gagal:", error);
+                });
+        }
+
+        // Daftar dengan Email/Password
+        function registerWithEmail() {
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            auth.createUserWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    alert("Registrasi berhasil: " + userCredential.user.email);
+                })
+                .catch((error) => {
+                    console.error("Registrasi gagal:", error);
+                });
+        }
+
+        // Login dengan Email/Password
+        function loginWithEmail() {
+            const email = document.getElementById("email").value;
+            const password = document.getElementById("password").value;
+
+            auth.signInWithEmailAndPassword(email, password)
+                .then((userCredential) => {
+                    alert("Login berhasil: " + userCredential.user.email);
+                })
+                .catch((error) => {
+                    console.error("Login gagal:", error);
+                });
+        }
+
+        // Logout
+        function logout() {
+            auth.signOut().then(() => {
+                alert("Logout berhasil");
+            }).catch((error) => {
+                console.error("Logout gagal:", error);
+            });
+        }
+
+        // Pantau status login
+        auth.onAuthStateChanged((user) => {
+            if (user) {
+                console.log("User login:", user);
+            } else {
+                console.log("User logout");
+            }
+        });
+
+    </script>
