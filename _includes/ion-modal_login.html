@@ -1,9 +1,30 @@
-
-
-    <h2>Login dengan Sidik Jari, Google, atau Email</h2>
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Login Akun</ion-title>
+  </ion-toolbar>
+</ion-header>
+<ion-content class="ion-padding">
+  <ion-button id="open-modal" expand="block">Open</ion-button>
+  <p id="message">This modal example uses triggers to automatically open a modal when the button is clicked.</p>
+  <ion-modal trigger="open-modal">
+    <ion-header>
+      <ion-toolbar>
+        <ion-buttons slot="start">
+          <ion-button onclick="cancel()">Cancel</ion-button>
+        </ion-buttons>
+        <ion-title>Welcome</ion-title>
+        <ion-buttons slot="end">
+          <ion-button onclick="confirm()" strong="true">Confirm</ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+    <ion-content class="ion-padding">
 
     <!-- Login dengan WebAuthn -->
-    <input type="text" id="username" placeholder="Masukkan username">
+      <ion-item>
+        <ion-input label="Enter your name" id="username" label-placement="stacked" type="text" placeholder="Buat Username"></ion-input>
+      </ion-item>
+    
     <button onclick="registerUser()">Daftar dengan Sidik Jari</button>
     <button onclick="loginUser()">Login dengan Sidik Jari</button>
     
@@ -15,31 +36,32 @@
     <hr>
 
     <!-- Login dengan Email/Password -->
-    <input type="email" id="email" placeholder="Email">
-    <input type="password" id="password" placeholder="Password">
-    <button onclick="registerWithEmail()">Daftar</button>
-    <button onclick="loginWithEmail()">Login</button>
+      <ion-item>
+        <ion-input label="Masukan E-mail Anda" id="email" label-placement="stacked" type="text" placeholder="Email"></ion-input>
+      </ion-item>
+      <ion-item>
+        <ion-input label="Masukan Password Anda" id="password" label-placement="stacked" type="text" placeholder="Password"></ion-input>
+      </ion-item>
+    <ion-button onclick="registerWithEmail()">Daftar</ion-button>
+    <ion-button onclick="loginWithEmail()">Login</ion-button>
 
     <hr>
 
     <!-- Logout -->
-    <button onclick="logout()">Logout</button>
+    <ion-button onclick="logout()">Logout</ion-button>
 
-    <script>
-        // Konfigurasi Firebase
-        const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT_ID.appspot.com",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID"
-        };
+    </ion-content>
+  </ion-modal>
+</ion-content>
 
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
+<script>
+  var modal = document.querySelector('ion-modal');
 
+  function cancel() {
+    modal.dismiss(null, 'cancel');
+  }
+
+  
         // Registrasi dengan WebAuthn
         async function registerUser() {
             const username = document.getElementById("username").value;
