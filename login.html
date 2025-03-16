@@ -37,12 +37,14 @@
     <script>
         // Konfigurasi Firebase
         const firebaseConfig = {
-            apiKey: "YOUR_API_KEY",
-            authDomain: "YOUR_PROJECT_ID.firebaseapp.com",
-            projectId: "YOUR_PROJECT_ID",
-            storageBucket: "YOUR_PROJECT_ID.appspot.com",
-            messagingSenderId: "YOUR_MESSAGING_SENDER_ID",
-            appId: "YOUR_APP_ID"
+    apiKey: "{{ site.API_KEY }}",
+    authDomain: "{{ site.AUTH_DOMAIN }}",
+    databaseURL: "{{ site.DATABASE_URL }}",
+    projectId: "{{ site.PROJECT_ID }}",
+    storageBucket: "{{ site.STORAGE_BUCKET }}",
+    messagingSenderId: "{{ site.SENDER_ID }}",
+    appId: "{{ site.APP_ID }}",
+    measurementId: "{{ site.MEASUREMENT_ID }}"
         };
 
         // Inisialisasi Firebase
