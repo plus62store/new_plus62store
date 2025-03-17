@@ -1,5 +1,6 @@
+{% for data in site.data.new_product %}
 <ion-card>
-<img src="" alt="" />
+<img src="{{data.image}}" alt="{{data.title}}" />
 <card-header>
  <card-title>
 </card-title>
@@ -9,15 +10,4 @@
 <card-content>
 </card-content>
 </ion-card>
-
-<ion-card>
-<img src="" alt="" />
-<card-header>
- <card-title>
-</card-title>
-<card-subtitle>
-</card-subtitle>
-</card-header>
-<card-content>
-</card-content>
-</ion-card>
+{% endfor %}
