@@ -100,7 +100,13 @@ swiper-slide.login_slider {
    background: rgb(236,52,52);
    background: linear-gradient(80deg, rgba(236,52,52,1) 13%, rgba(214,192,31,0.9058641857571073) 44%, rgba(243,210,7,1) 86%);
 }
-
+swiper-slide.firstSlide {
+background: rgb(103,24,175);
+background: -moz-radial-gradient(circle, rgba(103,24,175,1) 0%, rgba(0,82,179,1) 100%);
+background: -webkit-radial-gradient(circle, rgba(103,24,175,1) 0%, rgba(0,82,179,1) 100%);
+background: radial-gradient(circle, rgba(103,24,175,1) 0%, rgba(0,82,179,1) 100%);
+filter: progid:DXImageTransform.Microsoft.gradient(startColorstr="#6718af",endColorstr="#0052b3",GradientType=1);
+}
 ion-card.login_box {
    max-width:320px;
    width:100%;
@@ -129,7 +135,7 @@ ion-chip {
 <body id="auth-container">
 
   <swiper-container class="mySwiper">
-    <swiper-slide>
+    <swiper-slide class="firstSlide">
 <p style="width:100vw;">
 <ion-chip class="slideOutLeft" disabled="true">
 <ion-icon color="dark" name="arrow-back-outline"></ion-icon>
