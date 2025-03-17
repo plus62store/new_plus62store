@@ -1,3 +1,6 @@
+<style>
+img.data_image { width: 320px; height: 320px; object-fit: cover; background-position: center; }
+</style>
 {% for data in site.data.new_product %}
 <ion-card>
 <img class="data_image" src="{{data.image}}" alt="{{data.title}}" />
