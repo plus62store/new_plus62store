@@ -5,11 +5,11 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-const index = require('./index-73f75efb.js');
-const helpers = require('./helpers-afaa9001.js');
+const index = require('./index-2e236a04.js');
+const helpers = require('./helpers-3a248559.js');
 const dir = require('./dir-94c21456.js');
 const theme = require('./theme-d1c573d2.js');
-const ionicGlobal = require('./ionic-global-d9a8bb5b.js');
+const ionicGlobal = require('./ionic-global-acb665ad.js');
 
 const segmentIosCss = ":host{--ripple-color:currentColor;-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased;display:grid;grid-auto-columns:1fr;position:relative;-ms-flex-align:stretch;align-items:stretch;-ms-flex-pack:center;justify-content:center;width:100%;background:var(--background);font-family:var(--ion-font-family, inherit);text-align:center;contain:paint;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}:host(.segment-scrollable){-ms-flex-pack:start;justify-content:start;width:auto;overflow-x:auto;grid-auto-columns:minmax(-webkit-min-content, 1fr);grid-auto-columns:minmax(min-content, 1fr)}:host(.segment-scrollable::-webkit-scrollbar){display:none}:host{--background:rgba(var(--ion-text-color-rgb, 0, 0, 0), 0.065);border-radius:8px;overflow:hidden;z-index:0}:host(.ion-color){background:rgba(var(--ion-color-base-rgb), 0.065)}:host(.in-toolbar){-webkit-margin-start:auto;margin-inline-start:auto;-webkit-margin-end:auto;margin-inline-end:auto;margin-top:0;margin-bottom:0;width:auto}:host(.in-toolbar:not(.ion-color)){background:var(--ion-toolbar-segment-background, var(--background))}:host(.in-toolbar-color:not(.ion-color)){background:rgba(var(--ion-color-contrast-rgb), 0.11)}";
 const IonSegmentIosStyle0 = segmentIosCss;
@@ -540,14 +540,14 @@ const Segment = class {
     }
     render() {
         const mode = ionicGlobal.getIonMode(this);
-        return (index.h(index.Host, { key: 'b1eb4a6e4f953f6c4882395585799503735bbc6b', role: "tablist", onClick: this.onClick, class: theme.createColorClasses(this.color, {
+        return (index.h(index.Host, { key: 'a64e39352050b516f7dc82ce95a4bcff8431d1d0', role: "tablist", onClick: this.onClick, class: theme.createColorClasses(this.color, {
                 [mode]: true,
                 'in-toolbar': theme.hostContext('ion-toolbar', this.el),
                 'in-toolbar-color': theme.hostContext('ion-toolbar[color]', this.el),
                 'segment-activated': this.activated,
                 'segment-disabled': this.disabled,
                 'segment-scrollable': this.scrollable,
-            }) }, index.h("slot", { key: 'e7df6b017d154f30eb8021bc965f2e6c8e6480bf', onSlotchange: this.onSlottedItemsChange })));
+            }) }, index.h("slot", { key: 'bb3f3ec30e59e0461fa620d8961ab730cc802a4e', onSlotchange: this.onSlottedItemsChange })));
     }
     get el() { return index.getElement(this); }
     static get watchers() { return {
@@ -603,6 +603,22 @@ const SegmentButton = class {
             helpers.addEventListener(segmentEl, 'ionSelect', this.updateState);
             helpers.addEventListener(segmentEl, 'ionStyle', this.updateStyle);
         }
+        // Prevent buttons from being disabled when associated with segment content
+        if (this.contentId && this.disabled) {
+            console.warn(`Segment Button: Segment buttons cannot be disabled when associated with an <ion-segment-content>.`);
+            this.disabled = false;
+        }
+    }
+    disconnectedCallback() {
+        const segmentEl = this.segmentEl;
+        if (segmentEl) {
+            helpers.removeEventListener(segmentEl, 'ionSelect', this.updateState);
+            helpers.removeEventListener(segmentEl, 'ionStyle', this.updateStyle);
+            this.segmentEl = null;
+        }
+    }
+    componentWillLoad() {
+        this.inheritedAttributes = Object.assign({}, helpers.inheritAttributes(this.el, ['aria-label']));
         // Return if there is no contentId defined
         if (!this.contentId)
             return;
@@ -618,22 +634,6 @@ const SegmentButton = class {
             console.error(`Segment Button: Element with id="${this.contentId}" is not an <ion-segment-content> element.`);
             return;
         }
-        // Prevent buttons from being disabled when associated with segment content
-        if (this.disabled) {
-            console.warn(`Segment Button: Segment buttons cannot be disabled when associated with an <ion-segment-content>.`);
-            this.disabled = false;
-        }
-    }
-    disconnectedCallback() {
-        const segmentEl = this.segmentEl;
-        if (segmentEl) {
-            helpers.removeEventListener(segmentEl, 'ionSelect', this.updateState);
-            helpers.removeEventListener(segmentEl, 'ionStyle', this.updateStyle);
-            this.segmentEl = null;
-        }
-    }
-    componentWillLoad() {
-        this.inheritedAttributes = Object.assign({}, helpers.inheritAttributes(this.el, ['aria-label']));
     }
     get hasLabel() {
         return !!this.el.querySelector('ion-label');
@@ -656,7 +656,7 @@ const SegmentButton = class {
         const { checked, type, disabled, hasIcon, hasLabel, layout, segmentEl } = this;
         const mode = ionicGlobal.getIonMode(this);
         const hasSegmentColor = () => (segmentEl === null || segmentEl === void 0 ? void 0 : segmentEl.color) !== undefined;
-        return (index.h(index.Host, { key: 'd50a5d5e2f6206e8523598f258d8217d2903f69b', class: {
+        return (index.h(index.Host, { key: 'f2f679a08b131cd35d63f649b9d1f1907df30a89', class: {
                 [mode]: true,
                 'in-toolbar': theme.hostContext('ion-toolbar', this.el),
                 'in-toolbar-color': theme.hostContext('ion-toolbar[color]', this.el),
@@ -672,7 +672,7 @@ const SegmentButton = class {
                 'ion-activatable': true,
                 'ion-activatable-instant': true,
                 'ion-focusable': true,
-            } }, index.h("button", Object.assign({ key: 'b4f6f145286ba8ab79669e11035b906daa85ae7e', "aria-selected": checked ? 'true' : 'false', role: "tab", ref: (el) => (this.nativeEl = el), type: type, class: "button-native", part: "native", disabled: disabled }, this.inheritedAttributes), index.h("span", { key: '67965996c9ffe70553875e00d3da0ae5b2b1d814', class: "button-inner" }, index.h("slot", { key: '5087988fe45a8fdf388ec44c395d0b745b207806' })), mode === 'md' && index.h("ion-ripple-effect", { key: 'b24858de0750bbc769b3183fac0077dfe817ba27' })), index.h("div", { key: '97b4359432acd1c9da0816360cd1df9472e183f7', part: "indicator", class: "segment-button-indicator segment-button-indicator-animated" }, index.h("div", { key: '0561738ea15b0986f4ed3d8276d5e6f2d13f7e51', part: "indicator-background", class: "segment-button-indicator-background" }))));
+            } }, index.h("button", Object.assign({ key: '8e887b5031da705a3695c0870be08696d66188de', "aria-selected": checked ? 'true' : 'false', role: "tab", ref: (el) => (this.nativeEl = el), type: type, class: "button-native", part: "native", disabled: disabled }, this.inheritedAttributes), index.h("span", { key: '73b795c39cb09438e50922abf6b3a010e31fa2b6', class: "button-inner" }, index.h("slot", { key: '9769ddc917d7e459bd80dcd81c10c379e73d1b3e' })), mode === 'md' && index.h("ion-ripple-effect", { key: '8e4c06d6bae1034af8cc5db86fcca0ae72d042b1' })), index.h("div", { key: 'ae73ee0e429e54a43269f99b6d3d7e1c6e8f60cc', part: "indicator", class: "segment-button-indicator segment-button-indicator-animated" }, index.h("div", { key: 'd38eabe8161403799cfbad73dd6bf912d965442c', part: "indicator-background", class: "segment-button-indicator-background" }))));
     }
     get el() { return index.getElement(this); }
     static get watchers() { return {

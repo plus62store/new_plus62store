@@ -6,23 +6,23 @@
 Object.defineProperty(exports, '__esModule', { value: true });
 
 const animation = require('./animation-b4fdf128.js');
-const index = require('./index-f05acd21.js');
-const ios_transition = require('./ios.transition-cf40433b.js');
-const md_transition = require('./md.transition-ededf99f.js');
+const index = require('./index-e630fd95.js');
+const ios_transition = require('./ios.transition-ae7afca9.js');
+const md_transition = require('./md.transition-26003e25.js');
 const cubicBezier = require('./cubic-bezier-f2dccc53.js');
 const index$1 = require('./index-ee07ed59.js');
-const ionicGlobal = require('./ionic-global-d9a8bb5b.js');
-const helpers = require('./helpers-afaa9001.js');
+const ionicGlobal = require('./ionic-global-acb665ad.js');
+const helpers = require('./helpers-3a248559.js');
 const config = require('./config-4f60b98a.js');
 const theme = require('./theme-d1c573d2.js');
-const index$2 = require('./index-8e789962.js');
-const overlays = require('./overlays-aa669eb8.js');
+const index$2 = require('./index-4b70187a.js');
+const overlays = require('./overlays-a0c6b23f.js');
 require('./index-c8d52405.js');
-require('./index-73f75efb.js');
-require('./index-5915f9b3.js');
+require('./index-2e236a04.js');
+require('./index-48b2a28e.js');
 require('./gesture-controller-9436f482.js');
-require('./hardware-back-button-9e8a2c4f.js');
-require('./framework-delegate-55f5683a.js');
+require('./hardware-back-button-5a99001f.js');
+require('./framework-delegate-50a86d56.js');
 
 const IonicSlides = (opts) => {
     const { swiper, extendParams } = opts;

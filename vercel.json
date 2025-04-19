@@ -1,5 +1,0 @@
-{
-  "rewrites": [
-    { "source": "/LoggedIn/:path", "destination": "/LoggedIn/:path.html" }
-  ]
-}

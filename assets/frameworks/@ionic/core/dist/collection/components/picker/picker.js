@@ -313,12 +313,58 @@ export class Picker {
          * or trailing zeros when looking at the item text.
          */
         this.searchColumn = (colEl, value, zeroBehavior = 'start') => {
+            if (!value) {
+                return false;
+            }
             const behavior = zeroBehavior === 'start' ? /^0+/ : /0$/;
+            value = value.replace(behavior, '');
             const option = Array.from(colEl.querySelectorAll('ion-picker-column-option')).find((el) => {
                 return el.disabled !== true && el.textContent.replace(behavior, '') === value;
             });
             if (option) {
                 colEl.setValue(option.value);
+            }
+            return !!option;
+        };
+        /**
+         * Attempts to intelligently search the first and second
+         * column as if they're number columns for the provided numbers
+         * where the first two numbers are the first column
+         * and the last 2 are the last column. Tries to allow for the first
+         * number to be ignored for situations where typos occurred.
+         */
+        this.multiColumnSearch = (firstColumn, secondColumn, input) => {
+            if (input.length === 0) {
+                return;
+            }
+            const inputArray = input.split('');
+            const hourValue = inputArray.slice(0, 2).join('');
+            // Try to find a match for the first two digits in the first column
+            const foundHour = this.searchColumn(firstColumn, hourValue);
+            // If we have more than 2 digits and found a match for hours,
+            // use the remaining digits for the second column (minutes)
+            if (inputArray.length > 2 && foundHour) {
+                const minuteValue = inputArray.slice(2, 4).join('');
+                this.searchColumn(secondColumn, minuteValue);
+            }
+            // If we couldn't find a match for the two-digit hour, try single digit approaches
+            else if (!foundHour && inputArray.length >= 1) {
+                // First try the first digit as a single-digit hour
+                let singleDigitHour = inputArray[0];
+                let singleDigitFound = this.searchColumn(firstColumn, singleDigitHour);
+                // If that didn't work, try the second digit as a single-digit hour
+                // (handles case where user made a typo in the first digit, or they typed over themselves)
+                if (!singleDigitFound) {
+                    inputArray.shift();
+                    singleDigitHour = inputArray[0];
+                    singleDigitFound = this.searchColumn(firstColumn, singleDigitHour);
+                }
+                // If we found a single-digit hour and have remaining digits,
+                // use up to 2 of the remaining digits for the second column
+                if (singleDigitFound && inputArray.length > 1) {
+                    const remainingDigits = inputArray.slice(1, 3).join('');
+                    this.searchColumn(secondColumn, remainingDigits);
+                }
             }
         };
         this.selectMultiColumn = () => {
@@ -330,82 +376,13 @@ export class Picker {
             const firstColumn = numericPickers[0];
             const lastColumn = numericPickers[1];
             let value = inputEl.value;
-            let minuteValue;
-            switch (value.length) {
-                case 1:
-                    this.searchColumn(firstColumn, value);
-                    break;
-                case 2:
-                    /**
-                     * If the first character is `0` or `1` it is
-                     * possible that users are trying to type `09`
-                     * or `11` into the hour field, so we should look
-                     * at that first.
-                     */
-                    const firstCharacter = inputEl.value.substring(0, 1);
-                    value = firstCharacter === '0' || firstCharacter === '1' ? inputEl.value : firstCharacter;
-                    this.searchColumn(firstColumn, value);
-                    /**
-                     * If only checked the first value,
-                     * we can check the second value
-                     * for a match in the minutes column
-                     */
-                    if (value.length === 1) {
-                        minuteValue = inputEl.value.substring(inputEl.value.length - 1);
-                        this.searchColumn(lastColumn, minuteValue, 'end');
-                    }
-                    break;
-                case 3:
-                    /**
-                     * If the first character is `0` or `1` it is
-                     * possible that users are trying to type `09`
-                     * or `11` into the hour field, so we should look
-                     * at that first.
-                     */
-                    const firstCharacterAgain = inputEl.value.substring(0, 1);
-                    value =
-                        firstCharacterAgain === '0' || firstCharacterAgain === '1'
-                            ? inputEl.value.substring(0, 2)
-                            : firstCharacterAgain;
-                    this.searchColumn(firstColumn, value);
-                    /**
-                     * If only checked the first value,
-                     * we can check the second value
-                     * for a match in the minutes column
-                     */
-                    minuteValue = value.length === 1 ? inputEl.value.substring(1) : inputEl.value.substring(2);
-                    this.searchColumn(lastColumn, minuteValue, 'end');
-                    break;
-                case 4:
-                    /**
-                     * If the first character is `0` or `1` it is
-                     * possible that users are trying to type `09`
-                     * or `11` into the hour field, so we should look
-                     * at that first.
-                     */
-                    const firstCharacterAgainAgain = inputEl.value.substring(0, 1);
-                    value =
-                        firstCharacterAgainAgain === '0' || firstCharacterAgainAgain === '1'
-                            ? inputEl.value.substring(0, 2)
-                            : firstCharacterAgainAgain;
-                    this.searchColumn(firstColumn, value);
-                    /**
-                     * If only checked the first value,
-                     * we can check the second value
-                     * for a match in the minutes column
-                     */
-                    const minuteValueAgain = value.length === 1
-                        ? inputEl.value.substring(1, inputEl.value.length)
-                        : inputEl.value.substring(2, inputEl.value.length);
-                    this.searchColumn(lastColumn, minuteValueAgain, 'end');
-                    break;
-                default:
-                    const startIndex = inputEl.value.length - 4;
-                    const newString = inputEl.value.substring(startIndex);
-                    inputEl.value = newString;
-                    this.selectMultiColumn();
-                    break;
+            if (value.length > 4) {
+                const startIndex = inputEl.value.length - 4;
+                const newString = inputEl.value.substring(startIndex);
+                inputEl.value = newString;
+                value = newString;
             }
+            this.multiColumnSearch(firstColumn, lastColumn, value);
         };
         /**
          * Searches the value of the active column
@@ -474,7 +451,7 @@ export class Picker {
         this.emitInputModeChange();
     }
     render() {
-        return (h(Host, { key: 'f92214a09dc85b65873676f40fde2b802960e704', onPointerDown: (ev) => this.onPointerDown(ev), onClick: () => this.onClick() }, h("input", { key: '6da37f75aca4ea1c9cb3bc733ebda2116279f313', "aria-hidden": "true", tabindex: -1, inputmode: "numeric", type: "number", onKeyDown: (ev) => {
+        return (h(Host, { key: '28f81e4ed44a633178561757c5199c2c98f94b74', onPointerDown: (ev) => this.onPointerDown(ev), onClick: () => this.onClick() }, h("input", { key: 'abb3d1ad25ef63856af7804111175a4d50008bc0', "aria-hidden": "true", tabindex: -1, inputmode: "numeric", type: "number", onKeyDown: (ev) => {
                 var _a;
                 /**
                  * The "Enter" key represents
@@ -489,7 +466,7 @@ export class Picker {
                 if (ev.key === 'Enter') {
                     (_a = this.inputEl) === null || _a === void 0 ? void 0 : _a.blur();
                 }
-            }, ref: (el) => (this.inputEl = el), onInput: () => this.onInputChange(), onBlur: () => this.exitInputMode() }), h("div", { key: '298e99d83dd3f5bf2798150bab0bb4024af472fa', class: "picker-before" }), h("div", { key: 'ea578f04eb562a4dc6d6cc92de133dcb9fb7f42a', class: "picker-after" }), h("div", { key: '84567824956dfe967992a629904836ba8b75b3ec', class: "picker-highlight", ref: (el) => (this.highlightEl = el) }), h("slot", { key: 'df81f8fb90e1f649b608328034528f5c31c70c3b' })));
+            }, ref: (el) => (this.inputEl = el), onInput: () => this.onInputChange(), onBlur: () => this.exitInputMode() }), h("div", { key: '334a5abdc02e6b127c57177f626d7e4ff5526183', class: "picker-before" }), h("div", { key: 'ffd6271931129e88fc7c820e919d684899e420c5', class: "picker-after" }), h("div", { key: '78d1d95fd09e04f154ea59f24a1cece72c47ed7b', class: "picker-highlight", ref: (el) => (this.highlightEl = el) }), h("slot", { key: '0bd5b9f875d3c71f6cbbde2054baeb1b0a2e8cd5' })));
     }
     static get is() { return "ion-picker"; }
     static get encapsulation() { return "shadow"; }

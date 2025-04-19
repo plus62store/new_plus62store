@@ -5,15 +5,17 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-const index = require('./index-73f75efb.js');
-const index$2 = require('./index-5b6a7459.js');
-const helpers = require('./helpers-afaa9001.js');
-const index$1 = require('./index-5915f9b3.js');
+const index = require('./index-2e236a04.js');
+const index$2 = require('./index-509ca0d3.js');
+const helpers = require('./helpers-3a248559.js');
+const index$1 = require('./index-48b2a28e.js');
 const dir = require('./dir-94c21456.js');
 const theme = require('./theme-d1c573d2.js');
-const ionicGlobal = require('./ionic-global-d9a8bb5b.js');
+const ionicGlobal = require('./ionic-global-acb665ad.js');
 
 function getDecimalPlaces(n) {
+    if (!helpers.isSafeNumber(n))
+        return 0;
     if (n % 1 === 0)
         return 0;
     return n.toString().split('.')[1].length;
@@ -51,6 +53,8 @@ function getDecimalPlaces(n) {
  * be used as a reference for the desired specificity.
  */
 function roundToMaxDecimalPlaces(n, ...references) {
+    if (!helpers.isSafeNumber(n))
+        return 0;
     const maxPlaces = Math.max(...references.map((r) => getDecimalPlaces(r)));
     return Number(n.toFixed(maxPlaces));
 }
@@ -77,6 +81,19 @@ const Range = class {
         this.inheritedAttributes = {};
         this.contentEl = null;
         this.initialContentScrollY = true;
+        /**
+         * Compares two RangeValue inputs to determine if they are different.
+         *
+         * @param newVal - The new value.
+         * @param oldVal - The old value.
+         * @returns `true` if the values are different, `false` otherwise.
+         */
+        this.compareValues = (newVal, oldVal) => {
+            if (typeof newVal === 'object' && typeof oldVal === 'object') {
+                return newVal.lower !== oldVal.lower || newVal.upper !== oldVal.upper;
+            }
+            return newVal !== oldVal;
+        };
         this.clampBounds = (value) => {
             return helpers.clamp(this.min, value, this.max);
         };
@@ -171,14 +188,25 @@ const Range = class {
          */
         this.ionInput = debounce === undefined ? originalIonInput !== null && originalIonInput !== void 0 ? originalIonInput : ionInput : helpers.debounceEvent(ionInput, debounce);
     }
-    minChanged() {
+    minChanged(newValue) {
+        if (!helpers.isSafeNumber(newValue)) {
+            this.min = 0;
+        }
         if (!this.noUpdate) {
             this.updateRatio();
         }
     }
-    maxChanged() {
+    maxChanged(newValue) {
+        if (!helpers.isSafeNumber(newValue)) {
+            this.max = 100;
+        }
         if (!this.noUpdate) {
             this.updateRatio();
+        }
+    }
+    stepChanged(newValue) {
+        if (!helpers.isSafeNumber(newValue)) {
+            this.step = 1;
         }
     }
     activeBarStartChanged() {
@@ -199,7 +227,11 @@ const Range = class {
             this.gesture.enable(!this.disabled);
         }
     }
-    valueChanged() {
+    valueChanged(newValue, oldValue) {
+        const valuesChanged = this.compareValues(newValue, oldValue);
+        if (valuesChanged) {
+            this.ionInput.emit({ value: this.value });
+        }
         if (!this.noUpdate) {
             this.updateRatio();
         }
@@ -213,6 +245,11 @@ const Range = class {
             this.rangeId = this.el.getAttribute('id');
         }
         this.inheritedAttributes = helpers.inheritAriaAttributes(this.el);
+        // If min, max, or step are not safe, set them to 0, 100, and 1, respectively.
+        // Each watch does this, but not before the initial load.
+        this.min = helpers.isSafeNumber(this.min) ? this.min : 0;
+        this.max = helpers.isSafeNumber(this.max) ? this.max : 100;
+        this.step = helpers.isSafeNumber(this.step) ? this.step : 1;
     }
     componentDidLoad() {
         this.originalIonInput = this.ionInput;
@@ -439,7 +476,6 @@ const Range = class {
                 lower: Math.min(valA, valB),
                 upper: Math.max(valA, valB),
             };
-        this.ionInput.emit({ value: this.value });
         this.noUpdate = false;
     }
     setFocus(knob) {
@@ -607,7 +643,7 @@ const Range = class {
         const needsEndAdjustment = inItem && !hasEndContent;
         const mode = ionicGlobal.getIonMode(this);
         helpers.renderHiddenInput(true, el, this.name, JSON.stringify(this.getValue()), disabled);
-        return (index.h(index.Host, { key: '05c699caaead7cc74deaae2a958c4632191473a8', onFocusin: this.onFocus, onFocusout: this.onBlur, id: rangeId, class: theme.createColorClasses(this.color, {
+        return (index.h(index.Host, { key: 'e97cb7eab877eb1624429b4a79107130c6809cf5', onFocusin: this.onFocus, onFocusout: this.onBlur, id: rangeId, class: theme.createColorClasses(this.color, {
                 [mode]: true,
                 'in-item': inItem,
                 'range-disabled': disabled,
@@ -616,16 +652,17 @@ const Range = class {
                 [`range-label-placement-${labelPlacement}`]: true,
                 'range-item-start-adjustment': needsStartAdjustment,
                 'range-item-end-adjustment': needsEndAdjustment,
-            }) }, index.h("label", { key: '959837bcc48c4bda33ae1f62b66ef444329a2961', class: "range-wrapper", id: "range-label" }, index.h("div", { key: 'a434c6b5c26f57f52b3af98d881e7e6a179c89fc', class: {
+            }) }, index.h("label", { key: 'a43e9859f74f83460439efefccb5fbb9f387c9ee', class: "range-wrapper", id: "range-label" }, index.h("div", { key: '75352a30f30dbd0228c6138eb4324a5c021dbb48', class: {
                 'label-text-wrapper': true,
                 'label-text-wrapper-hidden': !hasLabel,
-            }, part: "label" }, label !== undefined ? index.h("div", { class: "label-text" }, label) : index.h("slot", { name: "label" })), index.h("div", { key: '87df1037b6b3337bd1fab05d33a26bf658c57914', class: "native-wrapper" }, index.h("slot", { key: '2cb88f101da49b70aeae29b0bf5445fac241bb2f', name: "start" }), this.renderRangeSlider(), index.h("slot", { key: '17b835cfb2bd9b8e1957afd425543ff02b913d83', name: "end" })))));
+            }, part: "label" }, label !== undefined ? index.h("div", { class: "label-text" }, label) : index.h("slot", { name: "label" })), index.h("div", { key: '6a3e147c3e5d938bb2b50522a290f6fdfcf40f05', class: "native-wrapper" }, index.h("slot", { key: '6627236eac9f711fa9c27879a017dd994e65811e', name: "start" }), this.renderRangeSlider(), index.h("slot", { key: '6af3bbadacd036bc7cd30732227f76d7c64117fb', name: "end" })))));
     }
     get el() { return index.getElement(this); }
     static get watchers() { return {
         "debounce": ["debounceChanged"],
         "min": ["minChanged"],
         "max": ["maxChanged"],
+        "step": ["stepChanged"],
         "activeBarStart": ["activeBarStartChanged"],
         "disabled": ["disabledChanged"],
         "value": ["valueChanged"]

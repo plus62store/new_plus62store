@@ -2,23 +2,23 @@
  * (C) Ionic http://ionicframework.com - MIT License
  */
 export { c as createAnimation } from './animation-eab5a4ca.js';
-export { a as LIFECYCLE_DID_ENTER, c as LIFECYCLE_DID_LEAVE, L as LIFECYCLE_WILL_ENTER, b as LIFECYCLE_WILL_LEAVE, d as LIFECYCLE_WILL_UNLOAD, g as getIonPageElement } from './index-3ad7f18b.js';
-export { iosTransitionAnimation } from './ios.transition-4ee1a3af.js';
-export { mdTransitionAnimation } from './md.transition-5106a0d2.js';
+export { a as LIFECYCLE_DID_ENTER, c as LIFECYCLE_DID_LEAVE, L as LIFECYCLE_WILL_ENTER, b as LIFECYCLE_WILL_LEAVE, d as LIFECYCLE_WILL_UNLOAD, g as getIonPageElement } from './index-ecb55b8d.js';
+export { iosTransitionAnimation } from './ios.transition-7fe5dbea.js';
+export { mdTransitionAnimation } from './md.transition-8dc58b46.js';
 export { g as getTimeGivenProgression } from './cubic-bezier-fe2083dc.js';
 export { createGesture } from './index-39782642.js';
-export { g as getPlatforms, i as initialize, a as isPlatform } from './ionic-global-c81d82ab.js';
-export { c as componentOnReady } from './helpers-da915de8.js';
+export { g as getPlatforms, i as initialize, a as isPlatform } from './ionic-global-ca86cf32.js';
+export { c as componentOnReady } from './helpers-78efeec3.js';
 export { I as IonicSafeString, g as getMode, s as setupConfig } from './config-49c88215.js';
 export { o as openURL } from './theme-01f3f29c.js';
-export { m as menuController } from './index-24b48b06.js';
-export { b as actionSheetController, a as alertController, l as loadingController, m as modalController, p as pickerController, c as popoverController, t as toastController } from './overlays-e7b9d6d9.js';
+export { m as menuController } from './index-f9f5d018.js';
+export { b as actionSheetController, a as alertController, l as loadingController, m as modalController, p as pickerController, c as popoverController, t as toastController } from './overlays-1bc809ec.js';
 import './index-a5d50daf.js';
-import './index-28849c61.js';
-import './index-9b0d46f4.js';
+import './index-527b9e34.js';
+import './index-738d7504.js';
 import './gesture-controller-314a54f6.js';
-import './hardware-back-button-06ef3c3e.js';
-import './framework-delegate-63d1a679.js';
+import './hardware-back-button-864101a3.js';
+import './framework-delegate-2eea1763.js';
 
 const IonicSlides = (opts) => {
     const { swiper, extendParams } = opts;

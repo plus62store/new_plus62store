@@ -1,15 +1,17 @@
 /*!
  * (C) Ionic http://ionicframework.com - MIT License
  */
-import { r as registerInstance, d as createEvent, h, f as Host, i as getElement } from './index-28849c61.js';
-import { f as findClosestIonContent, d as disableContentScrollY, r as resetContentScrollY } from './index-5cc724f3.js';
-import { j as clamp, e as debounceEvent, i as inheritAriaAttributes, d as renderHiddenInput } from './helpers-da915de8.js';
-import { p as printIonWarning } from './index-9b0d46f4.js';
+import { r as registerInstance, c as createEvent, h, e as Host, f as getElement } from './index-527b9e34.js';
+import { f as findClosestIonContent, d as disableContentScrollY, r as resetContentScrollY } from './index-e919e353.js';
+import { l as isSafeNumber, j as clamp, e as debounceEvent, i as inheritAriaAttributes, d as renderHiddenInput } from './helpers-78efeec3.js';
+import { p as printIonWarning } from './index-738d7504.js';
 import { i as isRTL } from './dir-babeabeb.js';
 import { h as hostContext, c as createColorClasses } from './theme-01f3f29c.js';
-import { b as getIonMode } from './ionic-global-c81d82ab.js';
+import { b as getIonMode } from './ionic-global-ca86cf32.js';
 
 function getDecimalPlaces(n) {
+    if (!isSafeNumber(n))
+        return 0;
     if (n % 1 === 0)
         return 0;
     return n.toString().split('.')[1].length;
@@ -47,6 +49,8 @@ function getDecimalPlaces(n) {
  * be used as a reference for the desired specificity.
  */
 function roundToMaxDecimalPlaces(n, ...references) {
+    if (!isSafeNumber(n))
+        return 0;
     const maxPlaces = Math.max(...references.map((r) => getDecimalPlaces(r)));
     return Number(n.toFixed(maxPlaces));
 }
@@ -73,6 +77,19 @@ const Range = class {
         this.inheritedAttributes = {};
         this.contentEl = null;
         this.initialContentScrollY = true;
+        /**
+         * Compares two RangeValue inputs to determine if they are different.
+         *
+         * @param newVal - The new value.
+         * @param oldVal - The old value.
+         * @returns `true` if the values are different, `false` otherwise.
+         */
+        this.compareValues = (newVal, oldVal) => {
+            if (typeof newVal === 'object' && typeof oldVal === 'object') {
+                return newVal.lower !== oldVal.lower || newVal.upper !== oldVal.upper;
+            }
+            return newVal !== oldVal;
+        };
         this.clampBounds = (value) => {
             return clamp(this.min, value, this.max);
         };
@@ -167,14 +184,25 @@ const Range = class {
          */
         this.ionInput = debounce === undefined ? originalIonInput !== null && originalIonInput !== void 0 ? originalIonInput : ionInput : debounceEvent(ionInput, debounce);
     }
-    minChanged() {
+    minChanged(newValue) {
+        if (!isSafeNumber(newValue)) {
+            this.min = 0;
+        }
         if (!this.noUpdate) {
             this.updateRatio();
         }
     }
-    maxChanged() {
+    maxChanged(newValue) {
+        if (!isSafeNumber(newValue)) {
+            this.max = 100;
+        }
         if (!this.noUpdate) {
             this.updateRatio();
+        }
+    }
+    stepChanged(newValue) {
+        if (!isSafeNumber(newValue)) {
+            this.step = 1;
         }
     }
     activeBarStartChanged() {
@@ -195,7 +223,11 @@ const Range = class {
             this.gesture.enable(!this.disabled);
         }
     }
-    valueChanged() {
+    valueChanged(newValue, oldValue) {
+        const valuesChanged = this.compareValues(newValue, oldValue);
+        if (valuesChanged) {
+            this.ionInput.emit({ value: this.value });
+        }
         if (!this.noUpdate) {
             this.updateRatio();
         }
@@ -209,6 +241,11 @@ const Range = class {
             this.rangeId = this.el.getAttribute('id');
         }
         this.inheritedAttributes = inheritAriaAttributes(this.el);
+        // If min, max, or step are not safe, set them to 0, 100, and 1, respectively.
+        // Each watch does this, but not before the initial load.
+        this.min = isSafeNumber(this.min) ? this.min : 0;
+        this.max = isSafeNumber(this.max) ? this.max : 100;
+        this.step = isSafeNumber(this.step) ? this.step : 1;
     }
     componentDidLoad() {
         this.originalIonInput = this.ionInput;
@@ -435,7 +472,6 @@ const Range = class {
                 lower: Math.min(valA, valB),
                 upper: Math.max(valA, valB),
             };
-        this.ionInput.emit({ value: this.value });
         this.noUpdate = false;
     }
     setFocus(knob) {
@@ -603,7 +639,7 @@ const Range = class {
         const needsEndAdjustment = inItem && !hasEndContent;
         const mode = getIonMode(this);
         renderHiddenInput(true, el, this.name, JSON.stringify(this.getValue()), disabled);
-        return (h(Host, { key: '05c699caaead7cc74deaae2a958c4632191473a8', onFocusin: this.onFocus, onFocusout: this.onBlur, id: rangeId, class: createColorClasses(this.color, {
+        return (h(Host, { key: 'e97cb7eab877eb1624429b4a79107130c6809cf5', onFocusin: this.onFocus, onFocusout: this.onBlur, id: rangeId, class: createColorClasses(this.color, {
                 [mode]: true,
                 'in-item': inItem,
                 'range-disabled': disabled,
@@ -612,16 +648,17 @@ const Range = class {
                 [`range-label-placement-${labelPlacement}`]: true,
                 'range-item-start-adjustment': needsStartAdjustment,
                 'range-item-end-adjustment': needsEndAdjustment,
-            }) }, h("label", { key: '959837bcc48c4bda33ae1f62b66ef444329a2961', class: "range-wrapper", id: "range-label" }, h("div", { key: 'a434c6b5c26f57f52b3af98d881e7e6a179c89fc', class: {
+            }) }, h("label", { key: 'a43e9859f74f83460439efefccb5fbb9f387c9ee', class: "range-wrapper", id: "range-label" }, h("div", { key: '75352a30f30dbd0228c6138eb4324a5c021dbb48', class: {
                 'label-text-wrapper': true,
                 'label-text-wrapper-hidden': !hasLabel,
-            }, part: "label" }, label !== undefined ? h("div", { class: "label-text" }, label) : h("slot", { name: "label" })), h("div", { key: '87df1037b6b3337bd1fab05d33a26bf658c57914', class: "native-wrapper" }, h("slot", { key: '2cb88f101da49b70aeae29b0bf5445fac241bb2f', name: "start" }), this.renderRangeSlider(), h("slot", { key: '17b835cfb2bd9b8e1957afd425543ff02b913d83', name: "end" })))));
+            }, part: "label" }, label !== undefined ? h("div", { class: "label-text" }, label) : h("slot", { name: "label" })), h("div", { key: '6a3e147c3e5d938bb2b50522a290f6fdfcf40f05', class: "native-wrapper" }, h("slot", { key: '6627236eac9f711fa9c27879a017dd994e65811e', name: "start" }), this.renderRangeSlider(), h("slot", { key: '6af3bbadacd036bc7cd30732227f76d7c64117fb', name: "end" })))));
     }
     get el() { return getElement(this); }
     static get watchers() { return {
         "debounce": ["debounceChanged"],
         "min": ["minChanged"],
         "max": ["maxChanged"],
+        "step": ["stepChanged"],
         "activeBarStart": ["activeBarStartChanged"],
         "disabled": ["disabledChanged"],
         "value": ["valueChanged"]

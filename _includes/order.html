@@ -1,0 +1,58 @@
+
+      <div id="orders-container">
+        <ion-spinner name="dots"></ion-spinner>
+      </div>
+
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      firebase.auth().onAuthStateChanged(async (user) => {
+        const container = document.getElementById("orders-container");
+
+        if (!user) {
+          container.innerHTML = `
+            <ion-card color="warning">
+              <ion-card-header>
+                <ion-card-title>Belum Login</ion-card-title>
+              </ion-card-header>
+              <ion-card-content>
+                Silakan login untuk melihat pesanan Anda.
+              </ion-card-content>
+            </ion-card>`;
+          return;
+        }
+
+        const db = firebase.firestore();
+        const ordersRef = db.collection("users").doc(user.uid).collection("orders").orderBy("createdAt", "desc");
+        const snapshot = await ordersRef.get();
+
+        if (snapshot.empty) {
+          container.innerHTML = `
+            <ion-card>
+              <ion-card-content>
+                Belum ada pesanan yang tercatat.
+              </ion-card-content>
+            </ion-card>`;
+          return;
+        }
+
+        let html = "";
+        snapshot.forEach(doc => {
+          const data = doc.data();
+          html += `
+            <ion-card button onclick="window.location.href='/konfirmasi?orderId=${doc.id}'">
+              <ion-card-header>
+                <ion-card-title>Order #${doc.id}</ion-card-title>
+                <ion-card-subtitle>Status: ${data.status}</ion-card-subtitle>
+              </ion-card-header>
+              <ion-card-content>
+                <p>Total: Rp${data.total.toLocaleString()}</p>
+				<p>Reward: ${data.reward?.coins || 0} coins</p>
+				<p>Tanggal: ${data.createdAt?.toDate().toLocaleString("id-ID") || "-"}</p>
+              </ion-card-content>
+            </ion-card>`;
+        });
+
+        container.innerHTML = html;
+      });
+    });
+  </script>

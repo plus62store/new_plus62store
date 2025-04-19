@@ -1,0 +1,6 @@
+// Mobile breakpoints
+@mixin mobile {
+  @media (min-width: 320px) and (max-width: 767.98px) {
+    @content;
+  }
+}

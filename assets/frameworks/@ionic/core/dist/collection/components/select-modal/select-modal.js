@@ -77,7 +77,7 @@ export class SelectModal {
             } }, option.text))));
     }
     render() {
-        return (h(Host, { key: '4df42c447b4026d09d9231f09dc4bdae9a8cfe4a', class: getIonMode(this) }, h("ion-header", { key: '211c4e869b858867f3d60637e570aeb01de41de7' }, h("ion-toolbar", { key: 'dc4b151331aecbaaaafb460802ee9b689493601d' }, this.header !== undefined && h("ion-title", { key: 'ba1347a59ae0a5c6770c239b5ec02a536a445bd1' }, this.header), h("ion-buttons", { key: '43c98fd25d7e7f54b94b24e53535c6d5ba599892', slot: "end" }, h("ion-button", { key: '51b2b3f3eed42637b2cfc213c95d0bcf10e4b89d', onClick: () => this.closeModal() }, "Close")))), h("ion-content", { key: 'fe721b09f80555856211f7e40dbfc31a533acae1' }, h("ion-list", { key: 'd0b932d137136958d896408fb2fa571023775b92' }, this.multiple === true ? this.renderCheckboxOptions() : this.renderRadioOptions()))));
+        return (h(Host, { key: '885198a9f21884e3bfb9bf0af53e0ee3ae37b231', class: getIonMode(this) }, h("ion-header", { key: 'd8b63726869747ac711e4fda78a50ce46f72970c' }, h("ion-toolbar", { key: '9ab2a4c1480dd74eeae38d7b580a2e87fb71270e' }, this.header !== undefined && h("ion-title", { key: '87a7034385ef57f55cefdd0371dbb66a64827290' }, this.header), h("ion-buttons", { key: '0a35424ea13ca002abc9a43b6138730254f187d0', slot: "end" }, h("ion-button", { key: '238bf40b47128d9aa995d14d9ff9ebcae4f79492', onClick: () => this.closeModal() }, "Close")))), h("ion-content", { key: '4a256f3381f8cabbc7194337b8ae4aa1c3ab1066' }, h("ion-list", { key: 'acd38fc52024632176467ed6a84106a454021544' }, this.multiple === true ? this.renderCheckboxOptions() : this.renderRadioOptions()))));
     }
     static get is() { return "ion-select-modal"; }
     static get encapsulation() { return "scoped"; }

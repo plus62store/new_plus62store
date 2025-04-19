@@ -1,0 +1,22 @@
+
+<ion-chip slot="end" id="coin-display" color="secondary" style="margin-right:22px;display:none;">
+<ion-icon name="logo-ionic"></ion-icon>
+<ion-label>Koin: <span id="saldo-koin">0</span></ion-label>
+</ion-chip>
+<script type="module">
+firebase.auth().onAuthStateChanged(user => {
+  if (user && user.emailVerified) {
+    // Ambil saldo koin dari Firestore
+    firebase.firestore().collection("users").doc(user.uid)
+      .onSnapshot(doc => {
+        const data = doc.data();
+        if (data && typeof data.coins !== "undefined") {
+          document.getElementById("saldo-koin").innerText = data.coins;
+        }
+      });
+  } else {
+    // Jika belum login, tampilkan nol atau sembunyikan
+    document.getElementById("saldo-koin").innerText = "0";
+  }
+});
+</script>

@@ -530,14 +530,14 @@ export class Segment {
     }
     render() {
         const mode = getIonMode(this);
-        return (h(Host, { key: 'b1eb4a6e4f953f6c4882395585799503735bbc6b', role: "tablist", onClick: this.onClick, class: createColorClasses(this.color, {
+        return (h(Host, { key: 'a64e39352050b516f7dc82ce95a4bcff8431d1d0', role: "tablist", onClick: this.onClick, class: createColorClasses(this.color, {
                 [mode]: true,
                 'in-toolbar': hostContext('ion-toolbar', this.el),
                 'in-toolbar-color': hostContext('ion-toolbar[color]', this.el),
                 'segment-activated': this.activated,
                 'segment-disabled': this.disabled,
                 'segment-scrollable': this.scrollable,
-            }) }, h("slot", { key: 'e7df6b017d154f30eb8021bc965f2e6c8e6480bf', onSlotchange: this.onSlottedItemsChange })));
+            }) }, h("slot", { key: 'bb3f3ec30e59e0461fa620d8961ab730cc802a4e', onSlotchange: this.onSlottedItemsChange })));
     }
     static get is() { return "ion-segment"; }
     static get encapsulation() { return "shadow"; }

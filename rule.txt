@@ -1,0 +1,55 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    match /users/{userId} {
+      
+      allow read: if request.auth != null && request.auth.uid == userId;
+
+      allow update: if request.auth != null &&
+                    request.auth.uid == userId &&
+                    isSafeUpdate(request.resource.data, resource.data);
+
+      allow create: if request.auth != null && request.auth.uid == userId;
+
+      allow delete: if false;
+    }
+
+function isSafeUpdate(newData, oldData) {
+  // Hanya izinkan field-field berikut yang bisa diubah
+  return newData.keys().hasOnly([
+    'coins', 
+    'email', 
+    'updatedAt',
+    'name',
+    'phone',
+    'address',
+    'photoURL'
+  ]) &&
+  (!newData.keys().hasAny(['email']) || newData.email == oldData.email) &&
+  (newData.name != null && newData.name != "");
+}
+
+    function isValidWhatsapp(phone) {
+      return phone is string &&
+             phone.size() >= 10 &&
+             phone.matches('^08[0-9]+$');
+    }
+
+    function isValidURL(photoURL) {
+      return photoURL is string && photoURL.matches('^https?://');
+    }
+
+    function isValidNama(name) {
+      return name is string && name.size() > 0;
+    }
+
+    // Validasi perubahan coins: perubahan tidak ekstrem (misalnya max ±10.000)
+    function isValidCoinsChange(newCoins, oldCoins) {
+      return newCoins is number &&
+             oldCoins is number &&
+             newCoins >= 0 &&
+             (newCoins - oldCoins).abs() <= 10000;
+    }
+  }
+}

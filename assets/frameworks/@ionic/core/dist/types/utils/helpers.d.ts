@@ -104,3 +104,7 @@ export declare const shallowEqualStringMap: (map1: {
 } | undefined, map2: {
     [k: string]: any;
 } | undefined) => boolean;
+/**
+ * Checks input for usable number. Not NaN and not Infinite.
+ */
+export declare const isSafeNumber: (input: unknown) => input is number;

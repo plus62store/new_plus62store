@@ -46,6 +46,22 @@ export class SegmentButton {
             addEventListener(segmentEl, 'ionSelect', this.updateState);
             addEventListener(segmentEl, 'ionStyle', this.updateStyle);
         }
+        // Prevent buttons from being disabled when associated with segment content
+        if (this.contentId && this.disabled) {
+            console.warn(`Segment Button: Segment buttons cannot be disabled when associated with an <ion-segment-content>.`);
+            this.disabled = false;
+        }
+    }
+    disconnectedCallback() {
+        const segmentEl = this.segmentEl;
+        if (segmentEl) {
+            removeEventListener(segmentEl, 'ionSelect', this.updateState);
+            removeEventListener(segmentEl, 'ionStyle', this.updateStyle);
+            this.segmentEl = null;
+        }
+    }
+    componentWillLoad() {
+        this.inheritedAttributes = Object.assign({}, inheritAttributes(this.el, ['aria-label']));
         // Return if there is no contentId defined
         if (!this.contentId)
             return;
@@ -61,22 +77,6 @@ export class SegmentButton {
             console.error(`Segment Button: Element with id="${this.contentId}" is not an <ion-segment-content> element.`);
             return;
         }
-        // Prevent buttons from being disabled when associated with segment content
-        if (this.disabled) {
-            console.warn(`Segment Button: Segment buttons cannot be disabled when associated with an <ion-segment-content>.`);
-            this.disabled = false;
-        }
-    }
-    disconnectedCallback() {
-        const segmentEl = this.segmentEl;
-        if (segmentEl) {
-            removeEventListener(segmentEl, 'ionSelect', this.updateState);
-            removeEventListener(segmentEl, 'ionStyle', this.updateStyle);
-            this.segmentEl = null;
-        }
-    }
-    componentWillLoad() {
-        this.inheritedAttributes = Object.assign({}, inheritAttributes(this.el, ['aria-label']));
     }
     get hasLabel() {
         return !!this.el.querySelector('ion-label');
@@ -99,7 +99,7 @@ export class SegmentButton {
         const { checked, type, disabled, hasIcon, hasLabel, layout, segmentEl } = this;
         const mode = getIonMode(this);
         const hasSegmentColor = () => (segmentEl === null || segmentEl === void 0 ? void 0 : segmentEl.color) !== undefined;
-        return (h(Host, { key: 'd50a5d5e2f6206e8523598f258d8217d2903f69b', class: {
+        return (h(Host, { key: 'f2f679a08b131cd35d63f649b9d1f1907df30a89', class: {
                 [mode]: true,
                 'in-toolbar': hostContext('ion-toolbar', this.el),
                 'in-toolbar-color': hostContext('ion-toolbar[color]', this.el),
@@ -115,7 +115,7 @@ export class SegmentButton {
                 'ion-activatable': true,
                 'ion-activatable-instant': true,
                 'ion-focusable': true,
-            } }, h("button", Object.assign({ key: 'b4f6f145286ba8ab79669e11035b906daa85ae7e', "aria-selected": checked ? 'true' : 'false', role: "tab", ref: (el) => (this.nativeEl = el), type: type, class: "button-native", part: "native", disabled: disabled }, this.inheritedAttributes), h("span", { key: '67965996c9ffe70553875e00d3da0ae5b2b1d814', class: "button-inner" }, h("slot", { key: '5087988fe45a8fdf388ec44c395d0b745b207806' })), mode === 'md' && h("ion-ripple-effect", { key: 'b24858de0750bbc769b3183fac0077dfe817ba27' })), h("div", { key: '97b4359432acd1c9da0816360cd1df9472e183f7', part: "indicator", class: "segment-button-indicator segment-button-indicator-animated" }, h("div", { key: '0561738ea15b0986f4ed3d8276d5e6f2d13f7e51', part: "indicator-background", class: "segment-button-indicator-background" }))));
+            } }, h("button", Object.assign({ key: '8e887b5031da705a3695c0870be08696d66188de', "aria-selected": checked ? 'true' : 'false', role: "tab", ref: (el) => (this.nativeEl = el), type: type, class: "button-native", part: "native", disabled: disabled }, this.inheritedAttributes), h("span", { key: '73b795c39cb09438e50922abf6b3a010e31fa2b6', class: "button-inner" }, h("slot", { key: '9769ddc917d7e459bd80dcd81c10c379e73d1b3e' })), mode === 'md' && h("ion-ripple-effect", { key: '8e4c06d6bae1034af8cc5db86fcca0ae72d042b1' })), h("div", { key: 'ae73ee0e429e54a43269f99b6d3d7e1c6e8f60cc', part: "indicator", class: "segment-button-indicator segment-button-indicator-animated" }, h("div", { key: 'd38eabe8161403799cfbad73dd6bf912d965442c', part: "indicator-background", class: "segment-button-indicator-background" }))));
     }
     static get is() { return "ion-segment-button"; }
     static get encapsulation() { return "shadow"; }

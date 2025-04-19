@@ -1,11 +1,11 @@
 /*!
  * (C) Ionic http://ionicframework.com - MIT License
  */
-import { r as registerInstance, d as createEvent, w as writeTask, h, f as Host, i as getElement, j as forceUpdate } from './index-28849c61.js';
-import { r as raf, a as addEventListener, b as removeEventListener, h as inheritAttributes } from './helpers-da915de8.js';
+import { r as registerInstance, c as createEvent, w as writeTask, h, e as Host, f as getElement, i as forceUpdate } from './index-527b9e34.js';
+import { r as raf, a as addEventListener, b as removeEventListener, h as inheritAttributes } from './helpers-78efeec3.js';
 import { i as isRTL } from './dir-babeabeb.js';
 import { c as createColorClasses, h as hostContext } from './theme-01f3f29c.js';
-import { b as getIonMode } from './ionic-global-c81d82ab.js';
+import { b as getIonMode } from './ionic-global-ca86cf32.js';
 
 const segmentIosCss = ":host{--ripple-color:currentColor;-moz-osx-font-smoothing:grayscale;-webkit-font-smoothing:antialiased;display:grid;grid-auto-columns:1fr;position:relative;-ms-flex-align:stretch;align-items:stretch;-ms-flex-pack:center;justify-content:center;width:100%;background:var(--background);font-family:var(--ion-font-family, inherit);text-align:center;contain:paint;-webkit-user-select:none;-moz-user-select:none;-ms-user-select:none;user-select:none}:host(.segment-scrollable){-ms-flex-pack:start;justify-content:start;width:auto;overflow-x:auto;grid-auto-columns:minmax(-webkit-min-content, 1fr);grid-auto-columns:minmax(min-content, 1fr)}:host(.segment-scrollable::-webkit-scrollbar){display:none}:host{--background:rgba(var(--ion-text-color-rgb, 0, 0, 0), 0.065);border-radius:8px;overflow:hidden;z-index:0}:host(.ion-color){background:rgba(var(--ion-color-base-rgb), 0.065)}:host(.in-toolbar){-webkit-margin-start:auto;margin-inline-start:auto;-webkit-margin-end:auto;margin-inline-end:auto;margin-top:0;margin-bottom:0;width:auto}:host(.in-toolbar:not(.ion-color)){background:var(--ion-toolbar-segment-background, var(--background))}:host(.in-toolbar-color:not(.ion-color)){background:rgba(var(--ion-color-contrast-rgb), 0.11)}";
 const IonSegmentIosStyle0 = segmentIosCss;
@@ -536,14 +536,14 @@ const Segment = class {
     }
     render() {
         const mode = getIonMode(this);
-        return (h(Host, { key: 'b1eb4a6e4f953f6c4882395585799503735bbc6b', role: "tablist", onClick: this.onClick, class: createColorClasses(this.color, {
+        return (h(Host, { key: 'a64e39352050b516f7dc82ce95a4bcff8431d1d0', role: "tablist", onClick: this.onClick, class: createColorClasses(this.color, {
                 [mode]: true,
                 'in-toolbar': hostContext('ion-toolbar', this.el),
                 'in-toolbar-color': hostContext('ion-toolbar[color]', this.el),
                 'segment-activated': this.activated,
                 'segment-disabled': this.disabled,
                 'segment-scrollable': this.scrollable,
-            }) }, h("slot", { key: 'e7df6b017d154f30eb8021bc965f2e6c8e6480bf', onSlotchange: this.onSlottedItemsChange })));
+            }) }, h("slot", { key: 'bb3f3ec30e59e0461fa620d8961ab730cc802a4e', onSlotchange: this.onSlottedItemsChange })));
     }
     get el() { return getElement(this); }
     static get watchers() { return {
@@ -599,6 +599,22 @@ const SegmentButton = class {
             addEventListener(segmentEl, 'ionSelect', this.updateState);
             addEventListener(segmentEl, 'ionStyle', this.updateStyle);
         }
+        // Prevent buttons from being disabled when associated with segment content
+        if (this.contentId && this.disabled) {
+            console.warn(`Segment Button: Segment buttons cannot be disabled when associated with an <ion-segment-content>.`);
+            this.disabled = false;
+        }
+    }
+    disconnectedCallback() {
+        const segmentEl = this.segmentEl;
+        if (segmentEl) {
+            removeEventListener(segmentEl, 'ionSelect', this.updateState);
+            removeEventListener(segmentEl, 'ionStyle', this.updateStyle);
+            this.segmentEl = null;
+        }
+    }
+    componentWillLoad() {
+        this.inheritedAttributes = Object.assign({}, inheritAttributes(this.el, ['aria-label']));
         // Return if there is no contentId defined
         if (!this.contentId)
             return;
@@ -614,22 +630,6 @@ const SegmentButton = class {
             console.error(`Segment Button: Element with id="${this.contentId}" is not an <ion-segment-content> element.`);
             return;
         }
-        // Prevent buttons from being disabled when associated with segment content
-        if (this.disabled) {
-            console.warn(`Segment Button: Segment buttons cannot be disabled when associated with an <ion-segment-content>.`);
-            this.disabled = false;
-        }
-    }
-    disconnectedCallback() {
-        const segmentEl = this.segmentEl;
-        if (segmentEl) {
-            removeEventListener(segmentEl, 'ionSelect', this.updateState);
-            removeEventListener(segmentEl, 'ionStyle', this.updateStyle);
-            this.segmentEl = null;
-        }
-    }
-    componentWillLoad() {
-        this.inheritedAttributes = Object.assign({}, inheritAttributes(this.el, ['aria-label']));
     }
     get hasLabel() {
         return !!this.el.querySelector('ion-label');
@@ -652,7 +652,7 @@ const SegmentButton = class {
         const { checked, type, disabled, hasIcon, hasLabel, layout, segmentEl } = this;
         const mode = getIonMode(this);
         const hasSegmentColor = () => (segmentEl === null || segmentEl === void 0 ? void 0 : segmentEl.color) !== undefined;
-        return (h(Host, { key: 'd50a5d5e2f6206e8523598f258d8217d2903f69b', class: {
+        return (h(Host, { key: 'f2f679a08b131cd35d63f649b9d1f1907df30a89', class: {
                 [mode]: true,
                 'in-toolbar': hostContext('ion-toolbar', this.el),
                 'in-toolbar-color': hostContext('ion-toolbar[color]', this.el),
@@ -668,7 +668,7 @@ const SegmentButton = class {
                 'ion-activatable': true,
                 'ion-activatable-instant': true,
                 'ion-focusable': true,
-            } }, h("button", Object.assign({ key: 'b4f6f145286ba8ab79669e11035b906daa85ae7e', "aria-selected": checked ? 'true' : 'false', role: "tab", ref: (el) => (this.nativeEl = el), type: type, class: "button-native", part: "native", disabled: disabled }, this.inheritedAttributes), h("span", { key: '67965996c9ffe70553875e00d3da0ae5b2b1d814', class: "button-inner" }, h("slot", { key: '5087988fe45a8fdf388ec44c395d0b745b207806' })), mode === 'md' && h("ion-ripple-effect", { key: 'b24858de0750bbc769b3183fac0077dfe817ba27' })), h("div", { key: '97b4359432acd1c9da0816360cd1df9472e183f7', part: "indicator", class: "segment-button-indicator segment-button-indicator-animated" }, h("div", { key: '0561738ea15b0986f4ed3d8276d5e6f2d13f7e51', part: "indicator-background", class: "segment-button-indicator-background" }))));
+            } }, h("button", Object.assign({ key: '8e887b5031da705a3695c0870be08696d66188de', "aria-selected": checked ? 'true' : 'false', role: "tab", ref: (el) => (this.nativeEl = el), type: type, class: "button-native", part: "native", disabled: disabled }, this.inheritedAttributes), h("span", { key: '73b795c39cb09438e50922abf6b3a010e31fa2b6', class: "button-inner" }, h("slot", { key: '9769ddc917d7e459bd80dcd81c10c379e73d1b3e' })), mode === 'md' && h("ion-ripple-effect", { key: '8e4c06d6bae1034af8cc5db86fcca0ae72d042b1' })), h("div", { key: 'ae73ee0e429e54a43269f99b6d3d7e1c6e8f60cc', part: "indicator", class: "segment-button-indicator segment-button-indicator-animated" }, h("div", { key: 'd38eabe8161403799cfbad73dd6bf912d965442c', part: "indicator-background", class: "segment-button-indicator-background" }))));
     }
     get el() { return getElement(this); }
     static get watchers() { return {

@@ -1,0 +1,78 @@
+  <ion-modal id="registrasiModal">
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>Registrasi</ion-title>
+      <ion-buttons slot="end">
+        <ion-button onclick="tutupModal()">
+<ion-icon slot="icon-only" name="close-circle-outline" color="danger"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+
+  <ion-content class="ion-padding">
+    <ion-card style="margin-top:60px;">
+      <ion-card-header>
+        <ion-card-title>Daftar ?!</ion-card-title>
+        <ion-card-subtitle>Silahkan isi semua kolom & gunakan e-mail aktif</ion-card-subtitle>
+      </ion-card-header>
+
+				  <ion-card-content>
+					<ion-item>
+					  <ion-label position="stacked">Nama Depan</ion-label>
+					  <ion-input id="namaDepan" type="text" required></ion-input>
+					</ion-item>
+					
+					<ion-item>
+					  <ion-label position="stacked">Nama Belakang</ion-label>
+					  <ion-input id="namaBelakang" type="text" required></ion-input>
+					</ion-item>
+					
+					<ion-item>
+					  <ion-label position="stacked">Email</ion-label>
+					  <ion-input id="eMail" type="email" required></ion-input>
+					</ion-item>
+
+					<ion-item>
+					  <ion-label position="stacked">Password</ion-label>
+					  <ion-input id="kataSandi" type="password" required></ion-input>
+					</ion-item>
+
+					<ion-item>
+					  <ion-label position="stacked">Whatsapp</ion-label>
+					  <ion-input id="noWa" type="tel" required></ion-input>
+					</ion-item>
+
+					<ion-item>
+					  <ion-label position="stacked">Kota</ion-label>
+					  <ion-textarea id="kota" required></ion-textarea>
+					</ion-item>
+				  </ion-card-content>
+				<ion-footer>
+					<ion-toolbar>
+						<ion-buttons slot="end">
+								<ion-button type="button" fill="outline" color="primary" onclick="register()">Daftar</ion-button>
+						</ion-buttons>
+					</ion-toolbar>
+				</ion-footer>
+    </ion-card>
+  </ion-content>
+</ion-modal>
+
+<script>
+  async function openRegModal() {
+    const modal = document.querySelector('#registrasiModal');
+    if (modal) {
+      await modal.present();
+    } else {
+      console.error("Modal tidak ditemukan!");
+    }
+  }
+
+  function tutupModal() {
+    const modal = document.querySelector('#registrasiModal');
+    if (modal) {
+      modal.dismiss();
+    }
+  }
+</script>

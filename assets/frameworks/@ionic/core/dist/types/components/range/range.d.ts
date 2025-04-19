@@ -62,12 +62,12 @@ export declare class Range implements ComponentInterface {
      * Minimum integer value of the range.
      */
     min: number;
-    protected minChanged(): void;
+    protected minChanged(newValue: number): void;
     /**
      * Maximum integer value of the range.
      */
     max: number;
-    protected maxChanged(): void;
+    protected maxChanged(newValue: number): void;
     /**
      * If `true`, a pin with integer value is shown when the knob
      * is pressed.
@@ -90,6 +90,7 @@ export declare class Range implements ComponentInterface {
      * Specifies the value granularity.
      */
     step: number;
+    protected stepChanged(newValue: number): void;
     /**
      * If `true`, tick marks are displayed based on the step value.
      * Only applies when `snaps` is `true`.
@@ -110,7 +111,15 @@ export declare class Range implements ComponentInterface {
      * the value of the range.
      */
     value: RangeValue;
-    protected valueChanged(): void;
+    protected valueChanged(newValue: RangeValue, oldValue: RangeValue): void;
+    /**
+     * Compares two RangeValue inputs to determine if they are different.
+     *
+     * @param newVal - The new value.
+     * @param oldVal - The old value.
+     * @returns `true` if the values are different, `false` otherwise.
+     */
+    private compareValues;
     private clampBounds;
     private ensureValueInBounds;
     /**

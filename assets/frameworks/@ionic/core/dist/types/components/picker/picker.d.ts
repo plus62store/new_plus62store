@@ -87,6 +87,14 @@ export declare class Picker implements ComponentInterface {
      * or trailing zeros when looking at the item text.
      */
     private searchColumn;
+    /**
+     * Attempts to intelligently search the first and second
+     * column as if they're number columns for the provided numbers
+     * where the first two numbers are the first column
+     * and the last 2 are the last column. Tries to allow for the first
+     * number to be ignored for situations where typos occurred.
+     */
+    private multiColumnSearch;
     private selectMultiColumn;
     /**
      * Searches the value of the active column

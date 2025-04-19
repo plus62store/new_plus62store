@@ -5,22 +5,22 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-const index$1 = require('./index-73f75efb.js');
+const index$1 = require('./index-2e236a04.js');
 const focusVisible = require('./focus-visible-7a0ce04f.js');
-const helpers = require('./helpers-afaa9001.js');
-const index = require('./index-5915f9b3.js');
+const helpers = require('./helpers-3a248559.js');
+const index = require('./index-48b2a28e.js');
 const dir = require('./dir-94c21456.js');
 const theme = require('./theme-d1c573d2.js');
 const index$2 = require('./index-073c7cdc.js');
-const ionicGlobal = require('./ionic-global-d9a8bb5b.js');
-const data = require('./data-21dc0f81.js');
+const ionicGlobal = require('./ionic-global-acb665ad.js');
+const data = require('./data-27cc2c9c.js');
 const lockController = require('./lock-controller-6585a42a.js');
-const overlays = require('./overlays-aa669eb8.js');
+const overlays = require('./overlays-a0c6b23f.js');
 const animation = require('./animation-b4fdf128.js');
 const haptic = require('./haptic-f6b37aa3.js');
 require('./index-c8d52405.js');
-require('./hardware-back-button-9e8a2c4f.js');
-require('./framework-delegate-55f5683a.js');
+require('./hardware-back-button-5a99001f.js');
+require('./framework-delegate-50a86d56.js');
 require('./gesture-controller-9436f482.js');
 require('./capacitor-c04564bf.js');
 
@@ -1431,7 +1431,7 @@ const Datetime = class {
         const activePart = this.getActivePartsWithFallback();
         return (index$1.h("ion-picker-column", { "aria-label": "Select an hour", color: this.color, disabled: disabled, value: activePart.hour, numericInput: true, onIonChange: (ev) => {
                 this.setWorkingParts(Object.assign(Object.assign({}, workingParts), { hour: ev.detail.value }));
-                this.setActiveParts(Object.assign(Object.assign({}, activePart), { hour: ev.detail.value }));
+                this.setActiveParts(Object.assign(Object.assign({}, this.getActivePartsWithFallback()), { hour: ev.detail.value }));
                 ev.stopPropagation();
             } }, hoursData.map((hour) => (index$1.h("ion-picker-column-option", { part: hour.value === activePart.hour ? `${WHEEL_ITEM_PART} ${WHEEL_ITEM_ACTIVE_PART}` : WHEEL_ITEM_PART, key: hour.value, disabled: hour.disabled, value: hour.value }, hour.text)))));
     }
@@ -1442,7 +1442,7 @@ const Datetime = class {
         const activePart = this.getActivePartsWithFallback();
         return (index$1.h("ion-picker-column", { "aria-label": "Select a minute", color: this.color, disabled: disabled, value: activePart.minute, numericInput: true, onIonChange: (ev) => {
                 this.setWorkingParts(Object.assign(Object.assign({}, workingParts), { minute: ev.detail.value }));
-                this.setActiveParts(Object.assign(Object.assign({}, activePart), { minute: ev.detail.value }));
+                this.setActiveParts(Object.assign(Object.assign({}, this.getActivePartsWithFallback()), { minute: ev.detail.value }));
                 ev.stopPropagation();
             } }, minutesData.map((minute) => (index$1.h("ion-picker-column-option", { part: minute.value === activePart.minute ? `${WHEEL_ITEM_PART} ${WHEEL_ITEM_ACTIVE_PART}` : WHEEL_ITEM_PART, key: minute.value, disabled: minute.disabled, value: minute.value }, minute.text)))));
     }
@@ -1456,7 +1456,7 @@ const Datetime = class {
         return (index$1.h("ion-picker-column", { "aria-label": "Select a day period", style: isDayPeriodRTL ? { order: '-1' } : {}, color: this.color, disabled: disabled, value: activePart.ampm, onIonChange: (ev) => {
                 const hour = data.calculateHourFromAMPM(workingParts, ev.detail.value);
                 this.setWorkingParts(Object.assign(Object.assign({}, workingParts), { ampm: ev.detail.value, hour }));
-                this.setActiveParts(Object.assign(Object.assign({}, activePart), { ampm: ev.detail.value, hour }));
+                this.setActiveParts(Object.assign(Object.assign({}, this.getActivePartsWithFallback()), { ampm: ev.detail.value, hour }));
                 ev.stopPropagation();
             } }, dayPeriodData.map((dayPeriod) => (index$1.h("ion-picker-column-option", { part: dayPeriod.value === activePart.ampm ? `${WHEEL_ITEM_PART} ${WHEEL_ITEM_ACTIVE_PART}` : WHEEL_ITEM_PART, key: dayPeriod.value, disabled: dayPeriod.disabled, value: dayPeriod.value }, dayPeriod.text)))));
     }
@@ -1763,7 +1763,7 @@ const Datetime = class {
         const hasDatePresentation = presentation === 'date' || presentation === 'date-time' || presentation === 'time-date';
         const hasWheelVariant = hasDatePresentation && preferWheel;
         helpers.renderHiddenInput(true, el, name, data.formatValue(value), disabled);
-        return (index$1.h(index$1.Host, { key: '7afbb1a7e6c78389b4588999779e5c90e010e85d', "aria-disabled": disabled ? 'true' : null, onFocus: this.onFocus, onBlur: this.onBlur, class: Object.assign({}, theme.createColorClasses(color, {
+        return (index$1.h(index$1.Host, { key: '08d429533a09c600b936ad1e022658051c765595', "aria-disabled": disabled ? 'true' : null, onFocus: this.onFocus, onBlur: this.onBlur, class: Object.assign({}, theme.createColorClasses(color, {
                 [mode]: true,
                 ['datetime-readonly']: readonly,
                 ['datetime-disabled']: disabled,
@@ -1773,7 +1773,7 @@ const Datetime = class {
                 [`datetime-size-${size}`]: true,
                 [`datetime-prefer-wheel`]: hasWheelVariant,
                 [`datetime-grid`]: isGridStyle,
-            })) }, index$1.h("div", { key: '297c458d4d17154cb297e2ef5926505bcb2d1fce', class: "intersection-tracker", ref: (el) => (this.intersectionTrackerRef = el) }), this.renderDatetime(mode)));
+            })) }, index$1.h("div", { key: 'f4ff0fcd1e059767a7ef14fcc76ebfd55d23a97b', class: "intersection-tracker", ref: (el) => (this.intersectionTrackerRef = el) }), this.renderDatetime(mode)));
     }
     get el() { return index$1.getElement(this); }
     static get watchers() { return {
@@ -2030,11 +2030,11 @@ const Picker = class {
     render() {
         const { htmlAttributes } = this;
         const mode = ionicGlobal.getIonMode(this);
-        return (index$1.h(index$1.Host, Object.assign({ key: '0712fa8732141848e50ad2e08e2ba66ef2a48991', "aria-modal": "true", tabindex: "-1" }, htmlAttributes, { style: {
+        return (index$1.h(index$1.Host, Object.assign({ key: 'dc03f252e3b59a94bc7132c953d2d3b36b62237e', "aria-modal": "true", tabindex: "-1" }, htmlAttributes, { style: {
                 zIndex: `${20000 + this.overlayIndex}`,
             }, class: Object.assign({ [mode]: true,
                 // Used internally for styling
-                [`picker-${mode}`]: true, 'overlay-hidden': true }, theme.getClassMap(this.cssClass)), onIonBackdropTap: this.onBackdropTap, onIonPickerWillDismiss: this.dispatchCancelHandler }), index$1.h("ion-backdrop", { key: 'c997632ef0488698739664012de5a6494de438b6', visible: this.showBackdrop, tappable: this.backdropDismiss }), index$1.h("div", { key: '20045054a76cca997b410835fa6b305af22dcb12', tabindex: "0", "aria-hidden": "true" }), index$1.h("div", { key: 'a73a6ac20b685ed9694d4fa95ea236ce5d63fdbf', class: "picker-wrapper ion-overlay-wrapper", role: "dialog" }, index$1.h("div", { key: '1221cdcc2ff013deeba12170129c8fe78308330c', class: "picker-toolbar" }, this.buttons.map((b) => (index$1.h("div", { class: buttonWrapperClass(b) }, index$1.h("button", { type: "button", onClick: () => this.buttonClick(b), class: buttonClass(b) }, b.text))))), index$1.h("div", { key: '45038a58430a4251100797b902e7034243137564', class: "picker-columns" }, index$1.h("div", { key: 'c579bb69cddd4090912855ffd7f59536280f34b9', class: "picker-above-highlight" }), this.presented && this.columns.map((c) => index$1.h("ion-picker-legacy-column", { col: c })), index$1.h("div", { key: '978c6632d82a97d053b729c9de65dd3af4c4cee2', class: "picker-below-highlight" }))), index$1.h("div", { key: 'e7e9dc437a3cf6d559e2cb0df71af69047a2ae31', tabindex: "0", "aria-hidden": "true" })));
+                [`picker-${mode}`]: true, 'overlay-hidden': true }, theme.getClassMap(this.cssClass)), onIonBackdropTap: this.onBackdropTap, onIonPickerWillDismiss: this.dispatchCancelHandler }), index$1.h("ion-backdrop", { key: 'bdabe9c82c41f96da5dafb1a0aa0854fa7e7ec93', visible: this.showBackdrop, tappable: this.backdropDismiss }), index$1.h("div", { key: '1380e0c8989153b425674753764f12f253f4a738', tabindex: "0", "aria-hidden": "true" }), index$1.h("div", { key: 'edec769bbc0993d003852d0bf1123e6e2332ebbe', class: "picker-wrapper ion-overlay-wrapper", role: "dialog" }, index$1.h("div", { key: 'b82c67ff47aa9412a6ff8f3b2e6230b855e92c51', class: "picker-toolbar" }, this.buttons.map((b) => (index$1.h("div", { class: buttonWrapperClass(b) }, index$1.h("button", { type: "button", onClick: () => this.buttonClick(b), class: buttonClass(b) }, b.text))))), index$1.h("div", { key: '76485b643387f36b6b3d5f85e4d072fa18e68552', class: "picker-columns" }, index$1.h("div", { key: '99268217263feb5285db1b1acd48fd0e4d5f0e7b', class: "picker-above-highlight" }), this.presented && this.columns.map((c) => index$1.h("ion-picker-legacy-column", { col: c })), index$1.h("div", { key: '2dd7e488bc4e9695094f0758567e626e0bb5979d', class: "picker-below-highlight" }))), index$1.h("div", { key: '8b2f3ae798a4ddcdd4e2716ebba1de797e446ac4', tabindex: "0", "aria-hidden": "true" })));
     }
     get el() { return index$1.getElement(this); }
     static get watchers() { return {
@@ -2391,9 +2391,9 @@ const PickerColumnCmp = class {
     render() {
         const col = this.col;
         const mode = ionicGlobal.getIonMode(this);
-        return (index$1.h(index$1.Host, { key: 'c015eb8bc01b3287cbd1d71af0aa311b6be89d36', class: Object.assign({ [mode]: true, 'picker-col': true, 'picker-opts-left': this.col.align === 'left', 'picker-opts-right': this.col.align === 'right' }, theme.getClassMap(col.cssClass)), style: {
+        return (index$1.h(index$1.Host, { key: '88a3c9397c9ac92dd814074c8ae6ecf8e3420a2c', class: Object.assign({ [mode]: true, 'picker-col': true, 'picker-opts-left': this.col.align === 'left', 'picker-opts-right': this.col.align === 'right' }, theme.getClassMap(col.cssClass)), style: {
                 'max-width': this.col.columnWidth,
-            } }, col.prefix && (index$1.h("div", { key: 'f9de3fe2f5c7ad3256d6e5f44b6d03a2b1f96ffb', class: "picker-prefix", style: { width: col.prefixWidth } }, col.prefix)), index$1.h("div", { key: '10f9c12aa174f96c7cf9adc30efbb26695c0aa64', class: "picker-opts", style: { maxWidth: col.optionsWidth }, ref: (el) => (this.optsEl = el) }, col.options.map((o, index) => (index$1.h("button", { "aria-label": o.ariaLabel, class: { 'picker-opt': true, 'picker-opt-disabled': !!o.disabled }, "opt-index": index }, o.text)))), col.suffix && (index$1.h("div", { key: '1d9c0892ce56e0da9044c79eb953827166f5190b', class: "picker-suffix", style: { width: col.suffixWidth } }, col.suffix))));
+            } }, col.prefix && (index$1.h("div", { key: '4491a705d15337e6f45f3cf6fd21af5242474729', class: "picker-prefix", style: { width: col.prefixWidth } }, col.prefix)), index$1.h("div", { key: 'b0dd4b7a7a4c1edc4b73e7fb134ac85264072365', class: "picker-opts", style: { maxWidth: col.optionsWidth }, ref: (el) => (this.optsEl = el) }, col.options.map((o, index) => (index$1.h("button", { "aria-label": o.ariaLabel, class: { 'picker-opt': true, 'picker-opt-disabled': !!o.disabled }, "opt-index": index }, o.text)))), col.suffix && (index$1.h("div", { key: 'c16419ce6481d60fc3ba6b8d102a4edf0ede02aa', class: "picker-suffix", style: { width: col.suffixWidth } }, col.suffix))));
     }
     get el() { return index$1.getElement(this); }
     static get watchers() { return {

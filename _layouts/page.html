@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="{{ site.lang | default: page.lang | default: 'id | ID' }}">
+
+  {% include head.html %}
+
+  <body>
+{% include firebase-sdk.html %}
+  {% include ion-header.html %}
+	<ion-app>
+			  {{ content }}
+
+  <ion-chip slot="fixed" [disabled]="true" style="width:fit-content;bottom:60px;left:5px;position:absolute;">
+    <ion-icon name="logo-instagram"></ion-icon>
+  <ion-label><span id="text_dev">{{ site.dev}}</span></ion-label>
+  </ion-chip>
+	</ion-app>
+	
+<ion-alert
+  id="globalAlert"
+  header="Info"
+  message=""
+  buttons="OK"
+></ion-alert>
+
+{% include scriptjs.html %}
+{% include service-worker.html %}
+  </body>
+</html>

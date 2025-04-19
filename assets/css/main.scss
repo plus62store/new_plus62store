@@ -1,6 +1,6 @@
 ---
 ---
 
-@use "style" as *;
-@use "slider";
-@use "component";
+@use 'vendor/normalize';
+@use 'base/root';
+@use 'styled';

@@ -1,0 +1,98 @@
+<ion-label style="margin-bottom:10px;">TopUp Koin</ion-label>
+<div id="coin-options">
+  <button onclick="pilihKoin(10000, event)">10 Koin - Rp 10.000</button>
+  <button onclick="pilihKoin(25000, event)">25 Koin - Rp 25.000</button>
+  <button onclick="pilihKoin(50000, event)">50 Koin - Rp 50.000</button>
+</div>
+
+<p id="koin-terpilih" style="margin-top:10px;">Kamu belum pilih jumlah koin.</p>
+<ion-button onclick="bayar()">Bayar Sekarang</ion-button>
+
+<script>
+let selectedAmount = null;
+
+function pilihKoin(amount, event) {
+  selectedAmount = amount;
+  document.getElementById("koin-terpilih").innerText =
+    `Kamu memilih: ${amount / 1000} Koin (Rp ${amount.toLocaleString("id-ID")})`;
+
+  document.querySelectorAll("#coin-options button").forEach(btn => {
+    btn.classList.remove("selected");
+  });
+  event.target.classList.add("selected");
+}
+
+async function bayar() {
+  const user = firebase.auth().currentUser;
+  if (!user) {
+    showAlert("Kamu harus login dulu.");
+    return;
+  }
+
+  if (!selectedAmount) {
+    showAlert("Pilih jumlah koin dulu!");
+    return;
+  }
+
+  const body = {
+    total: selectedAmount,
+    items: [
+      {
+        id: "coin-" + selectedAmount,
+        name: (selectedAmount / 1000) + " Koin",
+        quantity: 1,
+        price: selectedAmount
+      }
+    ],
+    customer: {
+      first_name: user.displayName || "User",
+      last_name: "",
+      email: user.email,
+      address: {
+        address: "Alamat Default",
+        city: "Jakarta",
+        postal_code: "12345",
+        country_code: "IDN"
+      }
+    }
+  };
+
+  let token;
+  try {
+    const res = await fetch("/midtrans", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(body)
+    });
+
+    const data = await res.json();
+    token = data.token;
+  } catch (err) {
+    showAlert("Gagal memulai pembayaran. Coba lagi.");
+    console.error("Error mengambil token Midtrans:", err);
+    return;
+  }
+
+  window.snap.pay(token, {
+    onSuccess: function(result) {
+      tambahKoin(user.uid, selectedAmount / 1000);
+      window.location.href = '/sukses.html';
+    },
+    onPending: function(result) {
+      window.location.href = '/menunggu.html';
+    },
+    onError: function(result) {
+      window.location.href = '/gagal.html';
+    }
+  });
+}
+
+function tambahKoin(uid, jumlah) {
+  const userRef = firebase.firestore().collection("users").doc(uid);
+  firebase.firestore().runTransaction(async transaction => {
+    const doc = await transaction.get(userRef);
+    const current = doc.exists && doc.data().coins ? doc.data().coins : 0;
+    transaction.set(userRef, { coins: current + jumlah }, { merge: true });
+  });
+}
+</script>

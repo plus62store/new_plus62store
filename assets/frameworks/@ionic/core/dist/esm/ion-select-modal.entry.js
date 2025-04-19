@@ -1,16 +1,16 @@
 /*!
  * (C) Ionic http://ionicframework.com - MIT License
  */
-import { r as registerInstance, h, j as forceUpdate, f as Host, i as getElement } from './index-28849c61.js';
-import { b as getIonMode } from './ionic-global-c81d82ab.js';
-import { s as safeCall } from './overlays-e7b9d6d9.js';
+import { r as registerInstance, h, i as forceUpdate, e as Host, f as getElement } from './index-527b9e34.js';
+import { b as getIonMode } from './ionic-global-ca86cf32.js';
+import { s as safeCall } from './overlays-1bc809ec.js';
 import { g as getClassMap } from './theme-01f3f29c.js';
 import './index-a5d50daf.js';
-import './helpers-da915de8.js';
-import './hardware-back-button-06ef3c3e.js';
-import './framework-delegate-63d1a679.js';
+import './helpers-78efeec3.js';
+import './hardware-back-button-864101a3.js';
+import './framework-delegate-2eea1763.js';
 import './gesture-controller-314a54f6.js';
-import './index-9b0d46f4.js';
+import './index-738d7504.js';
 
 const ionicSelectModalMdCss = ".sc-ion-select-modal-ionic-h{height:100%}ion-list.sc-ion-select-modal-ionic ion-radio.sc-ion-select-modal-ionic::part(container){display:none}ion-list.sc-ion-select-modal-ionic ion-radio.sc-ion-select-modal-ionic::part(label){margin-left:0;margin-right:0;margin-top:0;margin-bottom:0}ion-item.sc-ion-select-modal-ionic{--inner-border-width:0}.item-radio-checked.sc-ion-select-modal-ionic{--background:rgba(var(--ion-color-primary-rgb, 0, 84, 233), 0.08);--background-focused:var(--ion-color-primary, #0054e9);--background-focused-opacity:0.2;--background-hover:var(--ion-color-primary, #0054e9);--background-hover-opacity:0.12}.item-checkbox-checked.sc-ion-select-modal-ionic{--background-activated:var(--ion-item-color, var(--ion-text-color, #000));--background-focused:var(--ion-item-color, var(--ion-text-color, #000));--background-hover:var(--ion-item-color, var(--ion-text-color, #000));--color:var(--ion-color-primary, #0054e9)}";
 const IonSelectModalIonicStyle0 = ionicSelectModalMdCss;
@@ -94,7 +94,7 @@ const SelectModal = class {
             } }, option.text))));
     }
     render() {
-        return (h(Host, { key: '4df42c447b4026d09d9231f09dc4bdae9a8cfe4a', class: getIonMode(this) }, h("ion-header", { key: '211c4e869b858867f3d60637e570aeb01de41de7' }, h("ion-toolbar", { key: 'dc4b151331aecbaaaafb460802ee9b689493601d' }, this.header !== undefined && h("ion-title", { key: 'ba1347a59ae0a5c6770c239b5ec02a536a445bd1' }, this.header), h("ion-buttons", { key: '43c98fd25d7e7f54b94b24e53535c6d5ba599892', slot: "end" }, h("ion-button", { key: '51b2b3f3eed42637b2cfc213c95d0bcf10e4b89d', onClick: () => this.closeModal() }, "Close")))), h("ion-content", { key: 'fe721b09f80555856211f7e40dbfc31a533acae1' }, h("ion-list", { key: 'd0b932d137136958d896408fb2fa571023775b92' }, this.multiple === true ? this.renderCheckboxOptions() : this.renderRadioOptions()))));
+        return (h(Host, { key: '885198a9f21884e3bfb9bf0af53e0ee3ae37b231', class: getIonMode(this) }, h("ion-header", { key: 'd8b63726869747ac711e4fda78a50ce46f72970c' }, h("ion-toolbar", { key: '9ab2a4c1480dd74eeae38d7b580a2e87fb71270e' }, this.header !== undefined && h("ion-title", { key: '87a7034385ef57f55cefdd0371dbb66a64827290' }, this.header), h("ion-buttons", { key: '0a35424ea13ca002abc9a43b6138730254f187d0', slot: "end" }, h("ion-button", { key: '238bf40b47128d9aa995d14d9ff9ebcae4f79492', onClick: () => this.closeModal() }, "Close")))), h("ion-content", { key: '4a256f3381f8cabbc7194337b8ae4aa1c3ab1066' }, h("ion-list", { key: 'acd38fc52024632176467ed6a84106a454021544' }, this.multiple === true ? this.renderCheckboxOptions() : this.renderRadioOptions()))));
     }
     get el() { return getElement(this); }
 };

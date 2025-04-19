@@ -1429,7 +1429,7 @@ const Datetime = /*@__PURE__*/ proxyCustomElement(class Datetime extends HTMLEle
         const activePart = this.getActivePartsWithFallback();
         return (h("ion-picker-column", { "aria-label": "Select an hour", color: this.color, disabled: disabled, value: activePart.hour, numericInput: true, onIonChange: (ev) => {
                 this.setWorkingParts(Object.assign(Object.assign({}, workingParts), { hour: ev.detail.value }));
-                this.setActiveParts(Object.assign(Object.assign({}, activePart), { hour: ev.detail.value }));
+                this.setActiveParts(Object.assign(Object.assign({}, this.getActivePartsWithFallback()), { hour: ev.detail.value }));
                 ev.stopPropagation();
             } }, hoursData.map((hour) => (h("ion-picker-column-option", { part: hour.value === activePart.hour ? `${WHEEL_ITEM_PART} ${WHEEL_ITEM_ACTIVE_PART}` : WHEEL_ITEM_PART, key: hour.value, disabled: hour.disabled, value: hour.value }, hour.text)))));
     }
@@ -1440,7 +1440,7 @@ const Datetime = /*@__PURE__*/ proxyCustomElement(class Datetime extends HTMLEle
         const activePart = this.getActivePartsWithFallback();
         return (h("ion-picker-column", { "aria-label": "Select a minute", color: this.color, disabled: disabled, value: activePart.minute, numericInput: true, onIonChange: (ev) => {
                 this.setWorkingParts(Object.assign(Object.assign({}, workingParts), { minute: ev.detail.value }));
-                this.setActiveParts(Object.assign(Object.assign({}, activePart), { minute: ev.detail.value }));
+                this.setActiveParts(Object.assign(Object.assign({}, this.getActivePartsWithFallback()), { minute: ev.detail.value }));
                 ev.stopPropagation();
             } }, minutesData.map((minute) => (h("ion-picker-column-option", { part: minute.value === activePart.minute ? `${WHEEL_ITEM_PART} ${WHEEL_ITEM_ACTIVE_PART}` : WHEEL_ITEM_PART, key: minute.value, disabled: minute.disabled, value: minute.value }, minute.text)))));
     }
@@ -1454,7 +1454,7 @@ const Datetime = /*@__PURE__*/ proxyCustomElement(class Datetime extends HTMLEle
         return (h("ion-picker-column", { "aria-label": "Select a day period", style: isDayPeriodRTL ? { order: '-1' } : {}, color: this.color, disabled: disabled, value: activePart.ampm, onIonChange: (ev) => {
                 const hour = calculateHourFromAMPM(workingParts, ev.detail.value);
                 this.setWorkingParts(Object.assign(Object.assign({}, workingParts), { ampm: ev.detail.value, hour }));
-                this.setActiveParts(Object.assign(Object.assign({}, activePart), { ampm: ev.detail.value, hour }));
+                this.setActiveParts(Object.assign(Object.assign({}, this.getActivePartsWithFallback()), { ampm: ev.detail.value, hour }));
                 ev.stopPropagation();
             } }, dayPeriodData.map((dayPeriod) => (h("ion-picker-column-option", { part: dayPeriod.value === activePart.ampm ? `${WHEEL_ITEM_PART} ${WHEEL_ITEM_ACTIVE_PART}` : WHEEL_ITEM_PART, key: dayPeriod.value, disabled: dayPeriod.disabled, value: dayPeriod.value }, dayPeriod.text)))));
     }
@@ -1761,7 +1761,7 @@ const Datetime = /*@__PURE__*/ proxyCustomElement(class Datetime extends HTMLEle
         const hasDatePresentation = presentation === 'date' || presentation === 'date-time' || presentation === 'time-date';
         const hasWheelVariant = hasDatePresentation && preferWheel;
         renderHiddenInput(true, el, name, formatValue(value), disabled);
-        return (h(Host, { key: '7afbb1a7e6c78389b4588999779e5c90e010e85d', "aria-disabled": disabled ? 'true' : null, onFocus: this.onFocus, onBlur: this.onBlur, class: Object.assign({}, createColorClasses(color, {
+        return (h(Host, { key: '08d429533a09c600b936ad1e022658051c765595', "aria-disabled": disabled ? 'true' : null, onFocus: this.onFocus, onBlur: this.onBlur, class: Object.assign({}, createColorClasses(color, {
                 [mode]: true,
                 ['datetime-readonly']: readonly,
                 ['datetime-disabled']: disabled,
@@ -1771,7 +1771,7 @@ const Datetime = /*@__PURE__*/ proxyCustomElement(class Datetime extends HTMLEle
                 [`datetime-size-${size}`]: true,
                 [`datetime-prefer-wheel`]: hasWheelVariant,
                 [`datetime-grid`]: isGridStyle,
-            })) }, h("div", { key: '297c458d4d17154cb297e2ef5926505bcb2d1fce', class: "intersection-tracker", ref: (el) => (this.intersectionTrackerRef = el) }), this.renderDatetime(mode)));
+            })) }, h("div", { key: 'f4ff0fcd1e059767a7ef14fcc76ebfd55d23a97b', class: "intersection-tracker", ref: (el) => (this.intersectionTrackerRef = el) }), this.renderDatetime(mode)));
     }
     get el() { return this; }
     static get watchers() { return {

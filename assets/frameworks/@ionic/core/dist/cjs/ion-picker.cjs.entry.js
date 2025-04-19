@@ -5,8 +5,8 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-const index = require('./index-73f75efb.js');
-const helpers = require('./helpers-afaa9001.js');
+const index = require('./index-2e236a04.js');
+const helpers = require('./helpers-3a248559.js');
 
 const pickerIosCss = ":host{display:-ms-flexbox;display:flex;position:relative;-ms-flex-align:center;align-items:center;-ms-flex-pack:center;justify-content:center;width:100%;height:200px;direction:ltr;z-index:0}:host .picker-before,:host .picker-after{position:absolute;width:100%;-webkit-transform:translateZ(0);transform:translateZ(0);z-index:1;pointer-events:none}:host .picker-before{top:0;height:83px}:host .picker-before{inset-inline-start:0}:host .picker-after{top:116px;height:84px}:host .picker-after{inset-inline-start:0}:host .picker-highlight{border-radius:var(--highlight-border-radius, 8px);left:0;right:0;top:50%;bottom:0;-webkit-margin-start:auto;margin-inline-start:auto;-webkit-margin-end:auto;margin-inline-end:auto;margin-top:0;margin-bottom:0;position:absolute;width:calc(100% - 16px);height:34px;-webkit-transform:translateY(-50%);transform:translateY(-50%);background:var(--highlight-background);z-index:-1}:host input{position:absolute;top:0;left:0;right:0;bottom:0;width:100%;height:100%;margin:0;padding:0;border:0;outline:0;clip:rect(0 0 0 0);opacity:0;overflow:hidden;-webkit-appearance:none;-moz-appearance:none}:host ::slotted(ion-picker-column:first-of-type){text-align:start}:host ::slotted(ion-picker-column:last-of-type){text-align:end}:host ::slotted(ion-picker-column:only-child){text-align:center}:host .picker-before{background:-webkit-gradient(linear, left top, left bottom, color-stop(20%, rgba(var(--fade-background-rgb, var(--background-rgb, var(--ion-background-color-rgb, 255, 255, 255))), 1)), to(rgba(var(--fade-background-rgb, var(--background-rgb, var(--ion-background-color-rgb, 255, 255, 255))), 0.8)));background:linear-gradient(to bottom, rgba(var(--fade-background-rgb, var(--background-rgb, var(--ion-background-color-rgb, 255, 255, 255))), 1) 20%, rgba(var(--fade-background-rgb, var(--background-rgb, var(--ion-background-color-rgb, 255, 255, 255))), 0.8) 100%)}:host .picker-after{background:-webkit-gradient(linear, left bottom, left top, color-stop(20%, rgba(var(--fade-background-rgb, var(--background-rgb, var(--ion-background-color-rgb, 255, 255, 255))), 1)), to(rgba(var(--fade-background-rgb, var(--background-rgb, var(--ion-background-color-rgb, 255, 255, 255))), 0.8)));background:linear-gradient(to top, rgba(var(--fade-background-rgb, var(--background-rgb, var(--ion-background-color-rgb, 255, 255, 255))), 1) 20%, rgba(var(--fade-background-rgb, var(--background-rgb, var(--ion-background-color-rgb, 255, 255, 255))), 0.8) 100%)}:host .picker-highlight{background:var(--highlight-background, var(--ion-color-step-150, var(--ion-background-color-step-150, #eeeeef)))}";
 const IonPickerIosStyle0 = pickerIosCss;
@@ -323,12 +323,58 @@ const Picker = class {
          * or trailing zeros when looking at the item text.
          */
         this.searchColumn = (colEl, value, zeroBehavior = 'start') => {
+            if (!value) {
+                return false;
+            }
             const behavior = zeroBehavior === 'start' ? /^0+/ : /0$/;
+            value = value.replace(behavior, '');
             const option = Array.from(colEl.querySelectorAll('ion-picker-column-option')).find((el) => {
                 return el.disabled !== true && el.textContent.replace(behavior, '') === value;
             });
             if (option) {
                 colEl.setValue(option.value);
+            }
+            return !!option;
+        };
+        /**
+         * Attempts to intelligently search the first and second
+         * column as if they're number columns for the provided numbers
+         * where the first two numbers are the first column
+         * and the last 2 are the last column. Tries to allow for the first
+         * number to be ignored for situations where typos occurred.
+         */
+        this.multiColumnSearch = (firstColumn, secondColumn, input) => {
+            if (input.length === 0) {
+                return;
+            }
+            const inputArray = input.split('');
+            const hourValue = inputArray.slice(0, 2).join('');
+            // Try to find a match for the first two digits in the first column
+            const foundHour = this.searchColumn(firstColumn, hourValue);
+            // If we have more than 2 digits and found a match for hours,
+            // use the remaining digits for the second column (minutes)
+            if (inputArray.length > 2 && foundHour) {
+                const minuteValue = inputArray.slice(2, 4).join('');
+                this.searchColumn(secondColumn, minuteValue);
+            }
+            // If we couldn't find a match for the two-digit hour, try single digit approaches
+            else if (!foundHour && inputArray.length >= 1) {
+                // First try the first digit as a single-digit hour
+                let singleDigitHour = inputArray[0];
+                let singleDigitFound = this.searchColumn(firstColumn, singleDigitHour);
+                // If that didn't work, try the second digit as a single-digit hour
+                // (handles case where user made a typo in the first digit, or they typed over themselves)
+                if (!singleDigitFound) {
+                    inputArray.shift();
+                    singleDigitHour = inputArray[0];
+                    singleDigitFound = this.searchColumn(firstColumn, singleDigitHour);
+                }
+                // If we found a single-digit hour and have remaining digits,
+                // use up to 2 of the remaining digits for the second column
+                if (singleDigitFound && inputArray.length > 1) {
+                    const remainingDigits = inputArray.slice(1, 3).join('');
+                    this.searchColumn(secondColumn, remainingDigits);
+                }
             }
         };
         this.selectMultiColumn = () => {
@@ -340,82 +386,13 @@ const Picker = class {
             const firstColumn = numericPickers[0];
             const lastColumn = numericPickers[1];
             let value = inputEl.value;
-            let minuteValue;
-            switch (value.length) {
-                case 1:
-                    this.searchColumn(firstColumn, value);
-                    break;
-                case 2:
-                    /**
-                     * If the first character is `0` or `1` it is
-                     * possible that users are trying to type `09`
-                     * or `11` into the hour field, so we should look
-                     * at that first.
-                     */
-                    const firstCharacter = inputEl.value.substring(0, 1);
-                    value = firstCharacter === '0' || firstCharacter === '1' ? inputEl.value : firstCharacter;
-                    this.searchColumn(firstColumn, value);
-                    /**
-                     * If only checked the first value,
-                     * we can check the second value
-                     * for a match in the minutes column
-                     */
-                    if (value.length === 1) {
-                        minuteValue = inputEl.value.substring(inputEl.value.length - 1);
-                        this.searchColumn(lastColumn, minuteValue, 'end');
-                    }
-                    break;
-                case 3:
-                    /**
-                     * If the first character is `0` or `1` it is
-                     * possible that users are trying to type `09`
-                     * or `11` into the hour field, so we should look
-                     * at that first.
-                     */
-                    const firstCharacterAgain = inputEl.value.substring(0, 1);
-                    value =
-                        firstCharacterAgain === '0' || firstCharacterAgain === '1'
-                            ? inputEl.value.substring(0, 2)
-                            : firstCharacterAgain;
-                    this.searchColumn(firstColumn, value);
-                    /**
-                     * If only checked the first value,
-                     * we can check the second value
-                     * for a match in the minutes column
-                     */
-                    minuteValue = value.length === 1 ? inputEl.value.substring(1) : inputEl.value.substring(2);
-                    this.searchColumn(lastColumn, minuteValue, 'end');
-                    break;
-                case 4:
-                    /**
-                     * If the first character is `0` or `1` it is
-                     * possible that users are trying to type `09`
-                     * or `11` into the hour field, so we should look
-                     * at that first.
-                     */
-                    const firstCharacterAgainAgain = inputEl.value.substring(0, 1);
-                    value =
-                        firstCharacterAgainAgain === '0' || firstCharacterAgainAgain === '1'
-                            ? inputEl.value.substring(0, 2)
-                            : firstCharacterAgainAgain;
-                    this.searchColumn(firstColumn, value);
-                    /**
-                     * If only checked the first value,
-                     * we can check the second value
-                     * for a match in the minutes column
-                     */
-                    const minuteValueAgain = value.length === 1
-                        ? inputEl.value.substring(1, inputEl.value.length)
-                        : inputEl.value.substring(2, inputEl.value.length);
-                    this.searchColumn(lastColumn, minuteValueAgain, 'end');
-                    break;
-                default:
-                    const startIndex = inputEl.value.length - 4;
-                    const newString = inputEl.value.substring(startIndex);
-                    inputEl.value = newString;
-                    this.selectMultiColumn();
-                    break;
+            if (value.length > 4) {
+                const startIndex = inputEl.value.length - 4;
+                const newString = inputEl.value.substring(startIndex);
+                inputEl.value = newString;
+                value = newString;
             }
+            this.multiColumnSearch(firstColumn, lastColumn, value);
         };
         /**
          * Searches the value of the active column
@@ -484,7 +461,7 @@ const Picker = class {
         this.emitInputModeChange();
     }
     render() {
-        return (index.h(index.Host, { key: 'f92214a09dc85b65873676f40fde2b802960e704', onPointerDown: (ev) => this.onPointerDown(ev), onClick: () => this.onClick() }, index.h("input", { key: '6da37f75aca4ea1c9cb3bc733ebda2116279f313', "aria-hidden": "true", tabindex: -1, inputmode: "numeric", type: "number", onKeyDown: (ev) => {
+        return (index.h(index.Host, { key: '28f81e4ed44a633178561757c5199c2c98f94b74', onPointerDown: (ev) => this.onPointerDown(ev), onClick: () => this.onClick() }, index.h("input", { key: 'abb3d1ad25ef63856af7804111175a4d50008bc0', "aria-hidden": "true", tabindex: -1, inputmode: "numeric", type: "number", onKeyDown: (ev) => {
                 var _a;
                 /**
                  * The "Enter" key represents
@@ -499,7 +476,7 @@ const Picker = class {
                 if (ev.key === 'Enter') {
                     (_a = this.inputEl) === null || _a === void 0 ? void 0 : _a.blur();
                 }
-            }, ref: (el) => (this.inputEl = el), onInput: () => this.onInputChange(), onBlur: () => this.exitInputMode() }), index.h("div", { key: '298e99d83dd3f5bf2798150bab0bb4024af472fa', class: "picker-before" }), index.h("div", { key: 'ea578f04eb562a4dc6d6cc92de133dcb9fb7f42a', class: "picker-after" }), index.h("div", { key: '84567824956dfe967992a629904836ba8b75b3ec', class: "picker-highlight", ref: (el) => (this.highlightEl = el) }), index.h("slot", { key: 'df81f8fb90e1f649b608328034528f5c31c70c3b' })));
+            }, ref: (el) => (this.inputEl = el), onInput: () => this.onInputChange(), onBlur: () => this.exitInputMode() }), index.h("div", { key: '334a5abdc02e6b127c57177f626d7e4ff5526183', class: "picker-before" }), index.h("div", { key: 'ffd6271931129e88fc7c820e919d684899e420c5', class: "picker-after" }), index.h("div", { key: '78d1d95fd09e04f154ea59f24a1cece72c47ed7b', class: "picker-highlight", ref: (el) => (this.highlightEl = el) }), index.h("slot", { key: '0bd5b9f875d3c71f6cbbde2054baeb1b0a2e8cd5' })));
     }
     get el() { return index.getElement(this); }
 };

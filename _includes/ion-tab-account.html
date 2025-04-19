@@ -1,0 +1,88 @@
+---
+title: Account
+---
+  <ion-tab tab="account">
+    <div id="account-page">
+      <ion-header>
+        <ion-toolbar>
+          <ion-title id="header">{{ site.title }}</ion-title>
+		  {% include chips.html %}
+        </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding container">
+		<div class="container">
+<div id="profile" style="display:none; padding:1rem;margin-top:30px;">
+<ion-card id="profileCard">
+    <ion-card-header>
+      <ion-avatar>
+        <img id="inputFoto" src="" />
+      </ion-avatar>
+      <ion-card-title ><span id="profile_first_name"></span> - <span id="profile_last_name"></span></ion-card-title>
+      <ion-card-subtitle id="profile_email"> - </ion-card-subtitle>
+	  <p>
+      <sub id="profile-uid"> - </sub>
+	  </p>
+    </ion-card-header>
+
+    <ion-card-content>
+      <p><strong>WhatsApp:</strong> <span id="no_wa">...</span></p>
+      <p><strong>Alamat:</strong> <span id="alamat_lengkap">...</span></p>
+      <p><strong>Kota:</strong> <span id="ko_ta">...</span></p>
+      <p><strong>Provinsi:</strong> <span id="prov_inc">...</span></p>
+      <p><strong>Kode Pos:</strong> <span id="pos_kod">...</span></p>
+      <p><strong>Level:</strong> <span id="profile-level"> 1</span></p>
+		{% include order.html %}
+	  <ion-button id="btn-redeem" color="success" expand="block"><p>🔁 Tukarkan <span id="coinsUser"></span> Coins</p></ion-button>
+		  {% include dev.html %}
+    </ion-card-content>
+  <ion-footer>
+	<ion-toolbar>
+		<ion-buttons slot="start">
+		<ion-button onclick="openEditModal()" expand="block" color="secondary">Edit Profil</ion-button>
+		</ion-buttons>
+		<ion-buttons slot="end">
+		<ion-button type="button" expand="block" fill="outline" color="danger" onclick="logout()">Keluar</ion-button>
+		</ion-buttons>
+	</ion-toolbar>
+</ion-footer>
+</ion-card>
+</div>
+	<ion-card id="auth-form">
+		<img src="{{ site.baseurl }}/assets/images/login.jpg" alt="login" >
+      <ion-card-header>
+        <ion-card-title>Masuk</ion-card-title>
+        <ion-card-subtitle>Gunakan email & password</ion-card-subtitle>
+      </ion-card-header>
+
+      <ion-card-content>
+        <ion-item>
+          <ion-label position="stacked">Email</ion-label>
+          <ion-input id="email" type="email" required></ion-input>
+        </ion-item>
+
+        <ion-item>
+          <ion-label position="stacked">Password</ion-label>
+          <ion-input id="password" type="password" required></ion-input>
+        </ion-item>
+        <div id="user-info" style="margin-top: 1em;"></div>
+      </ion-card-content>
+		<ion-footer>
+			<ion-toolbar>
+			<ion-buttons slot="start">
+				<ion-button expand="block" fill="outline" onclick="openRegModal()">Daftar</ion-button>
+			</ion-buttons>
+			<ion-buttons slot="end">
+				<ion-button type="button" fill="solid" color="success" onclick="login()">Masuk</ion-button>
+			</ion-buttons>
+			</ion-toolbar>
+		</ion-footer>
+	</ion-card>
+		</div>
+      </ion-content>
+    </div>
+  </ion-tab>
+  
+		  {% include edit-profile.html %}
+		  {% include registrasi-modal.html %}
+		  
+<script type="module" src="{{ '/assets/js/script.js' | relative_url }}"></script>

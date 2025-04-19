@@ -5,16 +5,16 @@
 
 Object.defineProperty(exports, '__esModule', { value: true });
 
-const index = require('./index-73f75efb.js');
-const ionicGlobal = require('./ionic-global-d9a8bb5b.js');
-const overlays = require('./overlays-aa669eb8.js');
+const index = require('./index-2e236a04.js');
+const ionicGlobal = require('./ionic-global-acb665ad.js');
+const overlays = require('./overlays-a0c6b23f.js');
 const theme = require('./theme-d1c573d2.js');
 require('./index-c8d52405.js');
-require('./helpers-afaa9001.js');
-require('./hardware-back-button-9e8a2c4f.js');
-require('./framework-delegate-55f5683a.js');
+require('./helpers-3a248559.js');
+require('./hardware-back-button-5a99001f.js');
+require('./framework-delegate-50a86d56.js');
 require('./gesture-controller-9436f482.js');
-require('./index-5915f9b3.js');
+require('./index-48b2a28e.js');
 
 const ionicSelectModalMdCss = ".sc-ion-select-modal-ionic-h{height:100%}ion-list.sc-ion-select-modal-ionic ion-radio.sc-ion-select-modal-ionic::part(container){display:none}ion-list.sc-ion-select-modal-ionic ion-radio.sc-ion-select-modal-ionic::part(label){margin-left:0;margin-right:0;margin-top:0;margin-bottom:0}ion-item.sc-ion-select-modal-ionic{--inner-border-width:0}.item-radio-checked.sc-ion-select-modal-ionic{--background:rgba(var(--ion-color-primary-rgb, 0, 84, 233), 0.08);--background-focused:var(--ion-color-primary, #0054e9);--background-focused-opacity:0.2;--background-hover:var(--ion-color-primary, #0054e9);--background-hover-opacity:0.12}.item-checkbox-checked.sc-ion-select-modal-ionic{--background-activated:var(--ion-item-color, var(--ion-text-color, #000));--background-focused:var(--ion-item-color, var(--ion-text-color, #000));--background-hover:var(--ion-item-color, var(--ion-text-color, #000));--color:var(--ion-color-primary, #0054e9)}";
 const IonSelectModalIonicStyle0 = ionicSelectModalMdCss;
@@ -98,7 +98,7 @@ const SelectModal = class {
             } }, option.text))));
     }
     render() {
-        return (index.h(index.Host, { key: '4df42c447b4026d09d9231f09dc4bdae9a8cfe4a', class: ionicGlobal.getIonMode(this) }, index.h("ion-header", { key: '211c4e869b858867f3d60637e570aeb01de41de7' }, index.h("ion-toolbar", { key: 'dc4b151331aecbaaaafb460802ee9b689493601d' }, this.header !== undefined && index.h("ion-title", { key: 'ba1347a59ae0a5c6770c239b5ec02a536a445bd1' }, this.header), index.h("ion-buttons", { key: '43c98fd25d7e7f54b94b24e53535c6d5ba599892', slot: "end" }, index.h("ion-button", { key: '51b2b3f3eed42637b2cfc213c95d0bcf10e4b89d', onClick: () => this.closeModal() }, "Close")))), index.h("ion-content", { key: 'fe721b09f80555856211f7e40dbfc31a533acae1' }, index.h("ion-list", { key: 'd0b932d137136958d896408fb2fa571023775b92' }, this.multiple === true ? this.renderCheckboxOptions() : this.renderRadioOptions()))));
+        return (index.h(index.Host, { key: '885198a9f21884e3bfb9bf0af53e0ee3ae37b231', class: ionicGlobal.getIonMode(this) }, index.h("ion-header", { key: 'd8b63726869747ac711e4fda78a50ce46f72970c' }, index.h("ion-toolbar", { key: '9ab2a4c1480dd74eeae38d7b580a2e87fb71270e' }, this.header !== undefined && index.h("ion-title", { key: '87a7034385ef57f55cefdd0371dbb66a64827290' }, this.header), index.h("ion-buttons", { key: '0a35424ea13ca002abc9a43b6138730254f187d0', slot: "end" }, index.h("ion-button", { key: '238bf40b47128d9aa995d14d9ff9ebcae4f79492', onClick: () => this.closeModal() }, "Close")))), index.h("ion-content", { key: '4a256f3381f8cabbc7194337b8ae4aa1c3ab1066' }, index.h("ion-list", { key: 'acd38fc52024632176467ed6a84106a454021544' }, this.multiple === true ? this.renderCheckboxOptions() : this.renderRadioOptions()))));
     }
     get el() { return index.getElement(this); }
 };

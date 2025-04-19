@@ -1,0 +1,17 @@
+<script src="{{ '/assets/js/simpleCart.js?version=2.1' | relative_url }}"></script>
+<script async src="{{ '/assets/js/main.js' | relative_url }}"></script>
+<script async src="{{ '/assets/js/style-picker.js' | relative_url }}"></script>
+<script async src="{{ '/assets/js/add-to-cart.js' | relative_url }}"></script>
+<script src="{{ '/assets/js/app.js' | relative_url }}"></script>
+<script>
+function showAlert(message, header = "Info") {
+  const alert = document.getElementById('globalAlert');
+  if (alert) {
+    alert.header = header;
+    alert.message = message;
+    alert.buttons = ['OK'];
+    alert.present();
+  }
+}
+</script>
+    

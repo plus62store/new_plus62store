@@ -1,32 +1,29 @@
----
-layout: compress
----
 <!DOCTYPE html>
-<html lang="{{ site.lang | default: 'id-ID' }}">
+<html lang="{{ site.lang | default: page.lang | default: 'id | ID' }}">
 
   {% include head.html %}
 
-<body>
-  <ion-app>
-      <ion-tabs>
-        {{ content }}
-<ion-label slot="bottom" class="text_dev"><ion-text>{{site.title}} by <span id="text_dev">{{site.text_dev}}</span> © 2025 | v.1.0.1</ion-text></ion-label>
-      </ion-tabs>
-  </ion-app>
-{% include auth.html %}
-<script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
+  <body>
+{% include firebase-sdk.html %}
+	<ion-app>
+		<ion-tabs>
+			  {{ content }}
+		</ion-tabs>
 
-<script src="{{ '/assets/js/simpleCart.js' | relative_url }}"></script>
-<script src="{{ '/assets/js/main.js' | relative_url }}"></script>
-<script src="{{ '/assets/js/formOrder.js' | relative_url }}"></script>
-<script src="https://cdn.statically.io/gh/plus62store/plus62store/main/assets/js/style-picker.js"></script>
-<script src="https://cdn.statically.io/gh/plus62store/plus62store/main/assets/js/add-to-cart.js"></script>
-<script src="https://cdn.statically.io/gh/plus62store/plus62store/main/assets/js/checkout.js"></script>
+  <ion-chip slot="fixed" [disabled]="true" style="width:fit-content;bottom:60px;left:5px;position:absolute;">
+    <ion-icon name="logo-instagram"></ion-icon>
+  <ion-label><span id="text_dev">{{ site.dev}}</span></ion-label>
+  </ion-chip>
+	</ion-app>
+	
+<ion-alert
+  id="globalAlert"
+  header="Info"
+  message=""
+  buttons="OK"
+></ion-alert>
 
-
-<script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui@4.0/dist/fancybox.umd.js"></script>
-<script src="{{ '/assets/js/lazyload.js' | relative_url }}"></script>
-<script type="module" src="{{ '/assets/frameworks/ionicons/dist/ionicons/ionicons.esm.js' | relative_url }}"></script>
-<script nomodule src="{{ '/assets/frameworks/ionicons/dist/ionicons/ionicons.js' | relative_url }}"></script>
-</body>
+{% include scriptjs.html %}
+{% include service-worker.html %}
+  </body>
 </html>

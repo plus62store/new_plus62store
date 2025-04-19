@@ -1,64 +1,71 @@
-title: "Jekyll Ionic"
-description: "Integrasi Ionic di Jekyll"
-baseurl: "" # "/nama-folder"
-url: "https://plus62store.pages.dev"
+# Welcome to Jekyll!
 
-# Konfigurasi Jekyll
-permalink: /LoggedIn/product/:title
-timezone: Asia/Jakarta # Sesuaikan dengan zona waktu
+dev: Plus62store
+
+# Site settings
+title: Plus62store
+description: Jual Masker Bordir Tasikmalaya.
+baseurl: ""
+url: "https://plus62webstore.pages.dev"
+twitter_url:
+
+# Markdown settings
 markdown: kramdown
-text_dev: nDang
 
-# Plugins
-plugins:
-  - jekyll-sitemap
-  - jekyll-seo-tag
-  - jekyll-feed
-  - jekyll-paginate
+permalink: /:title
 
-# Google Auth
-WA_KEY: 081111191209
-SITE_KEY: 6Lf8BdkpAAAAAElS8xJWvKYvFtTvIBMD3GKQn0sz
-API_KEY: AIzaSyCh346K5NgNSvVq6Mv817GH_E6cPDurR2s
-AUTH_DOMAIN: plus62bordir.firebaseapp.com
-DATABASE_URL: https://plus62bordir-default-rtdb.asia-southeast1.firebasedatabase.app
-PROJECT_ID: plus62bordir
-STORAGE_BUCKET: plus62bordir.appspot.com
-SENDER_ID: 787412546935
-APP_ID: 1:787412546935:web:919338bbff32eada8cdd72
-MEASUREMENT_ID: G-C082YPREP9
-
+# Sass settings
 sass:
-  sass_dir: _sass
-  style: compressed # Pilihan: expanded, compressed
+  sass_dir: assets/sass
+  style: :compressed
 
-# Konfigurasi untuk pagination (jika digunakan)
-paginate: 5
-paginate_path: "/page:num/"
+# Custom Collections
+collections:
+  products:
+    output: true
+    
+# Build settings
+exclude:
+  - package.json
+  - README.md
+  - CNAME
 
-defaults:
-- scope:
-    type: posts
-  values:
-    layout: product
+# Plugin settings
+plugins:
+  - jekyll-feed
+  - jekyll-sitemap
+  - jekyll-archives
+  - jekyll-paginate
 
 # Archives
 jekyll-archives:
   enabled:
     - categories
     - tags
-  layout: archive
   permalinks:
-    category: '/category/:name/'
+    categories: '/category/:name/'
     tags: '/tag/:name/'
 
-compress_html:
-  clippings: all
+# Midtrans
+WA_KEY: 6281111191209
 
-# Exclude files (agar tidak diproses oleh Jekyll)
-exclude:
-  - Gemfile.lock
-  - package-lock.json
-  - node_modules
-  - vendor
-  - README.md
+sanbox_client: SB-Mid-client-i2KW02MfN9duiyJ9
+SNAP_SANDBOX_URL: https://app.sandbox.midtrans.com/snap/snap.js
+
+client_key: Mid-client-8Ttb7R_tAhDjoj9-
+SNAP_PRODUCTION_URL: https://app.midtrans.com/snap/snap.js
+
+# Snap Defaults
+snap_options:
+  - sandbox
+  - production
+
+# firebase
+apiKey: AIzaSyDGYGM4xah-coe60HdhbglBQyD3uYDevdA
+authDomain: plus62webstore.firebaseapp.com
+databaseURL: https://plus62webstore-default-rtdb.asia-southeast1.firebasedatabase.app
+projectId: plus62webstore
+storageBucket: plus62webstore.firebasestorage.app
+senderId: 994891709388
+appId: 1:994891709388:web:8dc826a78000e9aaf73b69
+measurementId: G-1VF7TFYW3Z

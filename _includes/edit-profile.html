@@ -1,0 +1,79 @@
+<ion-modal id="editModal">
+  <ion-header>
+    <ion-toolbar>
+      <ion-title>Edit Profil</ion-title>
+      <ion-buttons slot="end">
+        <ion-button onclick="xxxModal()">
+<ion-icon slot="icon-only" name="close-circle-outline" color="danger"></ion-icon>
+        </ion-button>
+      </ion-buttons>
+    </ion-toolbar>
+  </ion-header>
+  
+  <ion-content>
+    <ion-card>
+    <ion-card-content>
+    <ion-item>
+      <ion-label position="stacked">Foto Profil (URL)</ion-label>
+      <ion-input id="edit_foto_url" placeholder="URL Foto (opsional)"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Nama Depan</ion-label>
+      <ion-input id="edit_nama_depan" placeholder="Nama Depan" required></ion-input>
+    </ion-item>
+	<ion-item>
+	  <ion-label position="stacked">Nama Belakang</ion-label>
+	  <ion-input id="edit_nama_belakang" type="text" placeholder="Nama Belakang" required></ion-input>
+	</ion-item>
+    <ion-item>
+      <ion-label position="stacked">Nomor phone</ion-label>
+      <ion-input id="edit_no_wa" type="tel" placeholder="Nomor WhatsApp (08...)"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Alamat Lengkap</ion-label>
+      <ion-textarea id="edit_alamat_lengkap" placeholder="Alamat Lengkap"></ion-textarea>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Kota</ion-label>
+      <ion-input id="edit_kota" placeholder="Kota"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Provinsi</ion-label>
+      <ion-input id="edit_state" placeholder="Provinsi"></ion-input>
+    </ion-item>
+    <ion-item>
+      <ion-label position="stacked">Kode Pos</ion-label>
+      <ion-input id="edit_postal_code" placeholder="Kode Pos"></ion-input>
+    </ion-item>
+    </ion-card-content>
+	<ion-footer>
+	<ion-toolbar>
+						<ion-buttons slot="start">
+    <ion-button color="success" onclick="updateUserProfile()">Simpan</ion-button>
+						</ion-buttons>
+						<ion-buttons slot="end">
+    <ion-button fill="clear" color="danger" onclick="xxxModal()">Batal</ion-button>
+						</ion-buttons>
+	</ion-toolbar>
+	</ion-footer>
+    </ion-card>
+  </ion-content>
+</ion-modal>
+
+<script>
+  async function openEditModal() {
+    const modal = document.querySelector('#editModal');
+    if (modal) {
+      await modal.present();
+    } else {
+      console.error("Modal tidak ditemukan!");
+    }
+  }
+
+  function xxxModal() {
+    const modal = document.querySelector('#editModal');
+    if (modal) {
+      modal.dismiss();
+    }
+  }
+</script>
