@@ -189,13 +189,15 @@ const shipping = {
     const orderId = orderRef.id;
 
     await orderRef.set({
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       orderId: orderId,
       uid: user.uid,
+      first_name: user.first_name,
+      last_name: user.last_name,
       email: user.email,
       status: "Terbayar",
       items: items,
       total: total,
-      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       reward: {
         coins: coinsEarned,
         level: newLevel
