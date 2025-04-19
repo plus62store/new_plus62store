@@ -178,10 +178,12 @@ async function saveOrder() {
 const buyer = JSON.parse(localStorage.getItem("buyer")) || {};
 
 const shipping = {
-  street: buyer.address?.street || "",
-  city: buyer.address?.city || "",
-  state: buyer.address?.state || "",
-  postal_code: buyer.address?.postal_code || ""
+      first_name: buyer.first_name,
+      last_name: buyer.last_name,
+      street: buyer.address?.street || "",
+      city: buyer.address?.city || "",
+      state: buyer.address?.state || "",
+      postal_code: buyer.address?.postal_code || ""
 };
 
     // 🔥 Simpan order ke Firestore
@@ -192,8 +194,6 @@ const shipping = {
       createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       orderId: orderId,
       uid: user.uid,
-      first_name: user.first_name,
-      last_name: user.last_name,
       email: user.email,
       status: "Terbayar",
       items: items,

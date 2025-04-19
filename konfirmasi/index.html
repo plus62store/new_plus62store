@@ -136,12 +136,12 @@ window.konfirmasiViaWA = async function () {
   }
 
   const orderData = orderSnap.data();
-  const first_name = orderData.first_name || "";
-  const last_name = orderData.last_name || "";
   const items = orderData.items || [];
   const totalAmount = orderData.total || 0;
   const email = orderData.email || "-";
   const shipping = orderData.shipping || {};
+  const first_name = shipping.first_name || "";
+  const last_name = shipping.last_name || "";
   const street = shipping.street || "-";
   const city = shipping.city || "-";
   const state = shipping.state || "-";
