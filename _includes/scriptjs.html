@@ -36,12 +36,7 @@ document.addEventListener("DOMContentLoaded", () => {
       const alert = document.createElement('ion-alert');
       alert.header = 'Konfirmasi Pesanan';
       alert.message = 'Silakan konfirmasi pembayaran melalui WhatsApp untuk mempercepat proses.';
-      alert.buttons = [{
-        text: 'OK',
-        handler: () => {
-          window.location.href = '{{ site.baseurl }}/';
-        }
-      }];
+	  alert.buttons = ['OK'];
 
       document.body.appendChild(alert);
       await alert.present();
