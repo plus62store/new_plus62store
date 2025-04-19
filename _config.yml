@@ -51,14 +51,16 @@ WA_KEY: 6281111191209
 
 sanbox_client: SB-Mid-client-i2KW02MfN9duiyJ9
 SNAP_SANDBOX_URL: https://app.sandbox.midtrans.com/snap/snap.js
+SNAP_SANDBOX_API: https://payment.sendaljepit.workers.dev/
 
 client_key: Mid-client-8Ttb7R_tAhDjoj9-
 SNAP_PRODUCTION_URL: https://app.midtrans.com/snap/snap.js
+SNAP_PRODUCTION_API: https://midtrans.sendaljepit.workers.dev/
 
 # Snap Defaults
 snap_options:
   - sandbox
-  - production
+  - live
 
 # firebase
 apiKey: AIzaSyDGYGM4xah-coe60HdhbglBQyD3uYDevdA

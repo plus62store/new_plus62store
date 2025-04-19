@@ -59,7 +59,7 @@
 
   <!-- Midtrans Snap.js -->
 <script
-  {% if page.snap_options == 'production' %}
+  {% if page.snap_options == 'live' %}
     src="{{ site.SNAP_PRODUCTION_URL }}" data-client-key="{{ site.client_key }}"
   {% elsif page.snap_options == 'sandbox' %}
     src="{{ site.SNAP_SANDBOX_URL }}" data-client-key="{{ site.sanbox_client }}"

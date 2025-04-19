@@ -1,0 +1,35 @@
+{% if page.snap_options == 'live' %}
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  const today = new Date().toISOString().split("T")[0]; // contoh: "2025-04-19"
+  const lastShown = localStorage.getItem("dailyPopupDate");
+  if (lastShown !== today) {
+    const alert = document.createElement("ion-alert");
+    alert.header = "🎁 Promo Hari Ini!";
+    alert.subHeader = "Spesial buat kamu";
+    alert.message = "Dapatkan 10% off untuk semua produk! Berlaku hari ini aja.";
+    alert.buttons = ["Oke"];
+    document.body.appendChild(alert);
+    await alert.present();
+    localStorage.setItem("dailyPopupDate", today);
+  }
+});
+</script>
+{% elsif page.snap_options == 'sandbox' %}
+<script>
+document.addEventListener("DOMContentLoaded", async () => {
+  const today = new Date().toISOString().split("T")[0]; // contoh: "2025-04-19"
+  const lastShown = localStorage.getItem("dailyPopupDate");
+  if (lastShown !== today) {
+    const alert = document.createElement("ion-alert");
+    alert.header = "📢 Perhatian!!!";
+    alert.subHeader = "WebShop Maintance";
+    alert.message = "WebShop sedang Maintance, dan untuk system pembayaran dalam keadaan mode sandbox, Hanya untuk tujuan testing. Tidak akan terjadi transaksi apapun.";
+    alert.buttons = ["Oke"];
+    document.body.appendChild(alert);
+    await alert.present();
+    localStorage.setItem("dailyPopupDate", today);
+  }
+});
+</script>
+{% endif %}
