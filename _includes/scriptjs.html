@@ -14,4 +14,38 @@ function showAlert(message, header = "Info") {
   }
 }
 </script>
-    
+<script type="module">
+document.addEventListener("DOMContentLoaded", () => {
+  firebase.auth().onAuthStateChanged(async (user) => {
+    if (!user) return;
+
+    const params = new URLSearchParams(window.location.search);
+    const orderId = params.get("orderId");
+    if (!orderId) return;
+
+    const db = firebase.firestore();
+    const orderRef = db.collection("users").doc(user.uid).collection("orders").doc(orderId);
+    const orderSnap = await orderRef.get();
+
+    if (!orderSnap.exists) return;
+
+    const data = orderSnap.data();
+    const waConfirmed = data.waConfirmed || "Belum";
+
+    if (waConfirmed === "Belum") {
+      const alert = document.createElement('ion-alert');
+      alert.header = 'Konfirmasi Pesanan';
+      alert.message = 'Silakan konfirmasi pembayaran melalui WhatsApp untuk mempercepat proses.';
+      alert.buttons = [{
+        text: 'OK',
+        handler: () => {
+          window.location.href = '{{ site.baseurl }}/';
+        }
+      }];
+
+      document.body.appendChild(alert);
+      await alert.present();
+    }
+  });
+});
+</script>

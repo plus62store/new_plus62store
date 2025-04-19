@@ -19,9 +19,8 @@ title: Account
       </ion-avatar>
       <ion-card-title ><span id="profile_first_name"></span> - <span id="profile_last_name"></span></ion-card-title>
       <ion-card-subtitle id="profile_email"> - </ion-card-subtitle>
-	  <p>
-      <sub id="profile-uid"> - </sub>
-	  </p>
+      <ion-card-subtitle id="profile-level"> 1 </ion-card-subtitle>
+	  <p><sub id="profile-uid"> - </sub></p>
     </ion-card-header>
 
     <ion-card-content>
@@ -30,9 +29,8 @@ title: Account
       <p><strong>Kota:</strong> <span id="ko_ta">...</span></p>
       <p><strong>Provinsi:</strong> <span id="prov_inc">...</span></p>
       <p><strong>Kode Pos:</strong> <span id="pos_kod">...</span></p>
-      <p><strong>Level:</strong> <span id="profile-level"> 1</span></p>
 		{% include order.html %}
-	  <ion-button id="btn-redeem" color="success" expand="block"><p>🔁 Tukarkan <span id="coinsUser"></span> Coins</p></ion-button>
+	  <ion-button id="btn-redeem" color="success" fill="outline" expand="block"><p>🔁 Tukarkan <span id="coinsUser"></span> Coins</p></ion-button>
 		  {% include dev.html %}
     </ion-card-content>
   <ion-footer>

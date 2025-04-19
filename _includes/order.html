@@ -28,8 +28,8 @@
         if (snapshot.empty) {
           container.innerHTML = `
             <ion-card>
-              <ion-card-content>
-                Belum ada pesanan yang tercatat.
+              <ion-card-content class='ion-text-center'>
+                <ion-text>Belum ada pesanan yang tercatat.<ion-text>
               </ion-card-content>
             </ion-card>`;
           return;
@@ -39,13 +39,14 @@
         snapshot.forEach(doc => {
           const data = doc.data();
           html += `
-            <ion-card button onclick="window.location.href='/konfirmasi?orderId=${doc.id}'">
+            <ion-card color='primary' button onclick="window.location.href='/konfirmasi?orderId=${doc.id}'">
               <ion-card-header>
                 <ion-card-title>Order #${doc.id}</ion-card-title>
                 <ion-card-subtitle>Status: ${data.status}</ion-card-subtitle>
+                <ion-card-subtitle>Konfirmasi: ${data.waConfirmed}</ion-card-subtitle>
               </ion-card-header>
               <ion-card-content>
-                <p>Total: Rp${data.total.toLocaleString()}</p>
+                <p>Total Belanja: Rp. ${data.total.toLocaleString()}</p>
 				<p>Reward: ${data.reward?.coins || 0} coins</p>
 				<p>Tanggal: ${data.createdAt?.toDate().toLocaleString("id-ID") || "-"}</p>
               </ion-card-content>

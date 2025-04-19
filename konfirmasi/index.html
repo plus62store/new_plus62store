@@ -6,97 +6,182 @@ permalink: /konfirmasi
     <ion-content class="ion-no-padding">
       <div class="container" id="order-container" style="margin-top:66px;"></div>
     </ion-content>
-
+<style>
+.flex-row-rev {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    flex-direction: row-reverse;
+}
+</style>
   <script>
-    document.addEventListener("DOMContentLoaded", async () => {
-      const params = new URLSearchParams(window.location.search);
-      const orderId = params.get("orderId");
+document.addEventListener("DOMContentLoaded", async () => {
+  const params = new URLSearchParams(window.location.search);
+  const orderId = params.get("orderId");
 
-      if (!orderId) {
-        document.getElementById("order-container").innerHTML = `
-          <ion-card color="danger">
-            <ion-card-header>
-              <ion-card-title>Gagal</ion-card-title>
-            </ion-card-header>
-            <ion-card-content>
-              Order ID tidak ditemukan.
-            </ion-card-content>
-          </ion-card>`;
-        return;
-      }
+  if (!orderId) {
+    document.getElementById("order-container").innerHTML = `
+      <ion-card color="danger">
+        <ion-card-header>
+          <ion-card-title>Gagal</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+          Order ID tidak ditemukan.
+        </ion-card-content>
+      </ion-card>`;
+    return;
+  }
 
-      firebase.auth().onAuthStateChanged(async (user) => {
-        if (!user) {
-          document.getElementById("order-container").innerHTML = `
-            <ion-card color="warning">
-              <ion-card-header>
-                <ion-card-title>Autentikasi</ion-card-title>
-              </ion-card-header>
-              <ion-card-content>
-                Silakan login untuk melihat konfirmasi pesanan.
-              </ion-card-content>
-            </ion-card>`;
-          return;
-        }
+  firebase.auth().onAuthStateChanged(async (user) => {
+    if (!user) {
+      document.getElementById("order-container").innerHTML = `
+        <ion-card color="warning">
+          <ion-card-header>
+            <ion-card-title>Autentikasi</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            Silakan login untuk melihat konfirmasi pesanan.
+          </ion-card-content>
+        </ion-card>`;
+      return;
+    }
 
-        const db = firebase.firestore();
-        const orderRef = db.collection("users").doc(user.uid).collection("orders").doc(orderId);
-        const orderSnap = await orderRef.get();
-		
-// 🚫 Cek status order gagal
-if (!orderSnap.exists) {
-  document.getElementById("order-container").innerHTML = `
-    <ion-card color="danger">
-      <ion-card-header>
-        <ion-card-title>Gagal</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        Order tidak ditemukan atau bukan milik Anda.
-      </ion-card-content>
-    </ion-card>`;
-  return;
-}
+    const db = firebase.firestore();
+    const orderRef = db.collection("users").doc(user.uid).collection("orders").doc(orderId);
+    const orderSnap = await orderRef.get();
 
-const data = orderSnap.data();
+    if (!orderSnap.exists) {
+      document.getElementById("order-container").innerHTML = `
+        <ion-card color="danger">
+          <ion-card-header>
+            <ion-card-title>Gagal</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            Order tidak ditemukan atau bukan milik Anda.
+          </ion-card-content>
+        </ion-card>`;
+      return;
+    }
 
-// 🚫 Cek status order belum bayar
-if (data.status !== "paid") {
-  document.getElementById("order-container").innerHTML = `
-    <ion-card color="warning">
-      <ion-card-header>
-        <ion-card-title>Menunggu Pembayaran</ion-card-title>
-      </ion-card-header>
-      <ion-card-content>
-        Pesanan ini belum dibayar. Silakan selesaikan pembayaran terlebih dahulu.
-      </ion-card-content>
-    </ion-card>`;
-  return;
-}
+    const data = orderSnap.data();
+    const waConfirmed = data.waConfirmed || "Belum";
 
-// ✅ Kalau status sudah "paid", tampilkan detail pesanan
-const itemList = data.items.map(item =>
-  `<ion-item>
-     <ion-label>
-       <h2>${item.name}</h2>
-       <p>Jumlah: ${item.quantity}</p>
-     </ion-label>
-  </ion-item>`
-).join("");
 
-// render isi pesanan ke halaman
-document.getElementById("order-container").innerHTML = `
-  <ion-card>
-    <ion-card-header>
-      <ion-card-title>Terima kasih, ${data.email}!</ion-card-title>
-      <ion-card-subtitle>Order ID: ${orderId}</ion-card-subtitle>
-    </ion-card-header>
-    <ion-card-content>
-      <p><strong>Total:</strong> Rp${data.total.toLocaleString()}</p>
-	  <p><strong>Reward:</strong> ${data.reward?.coins || 0} coins (${data.reward?.level || '-'})</p>
+    if (data.status !== "Terbayar") {
+      document.getElementById("order-container").innerHTML = `
+        <ion-card color="warning">
+          <ion-card-header>
+            <ion-card-title>Menunggu Pembayaran</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            Pesanan ini belum dibayar. Silakan selesaikan pembayaran terlebih dahulu.
+          </ion-card-content>
+        </ion-card>`;
+      return;
+    }
 
-      <ion-list>${itemList}</ion-list>
-    </ion-card-content>
-  </ion-card>`;
-      });
-    });
-  </script>
+    const itemList = data.items.map(item =>
+      `<ion-item>
+         <ion-label>
+           <h2>${item.name}</h2>
+           <p>Jumlah: ${item.quantity}</p>
+         </ion-label>
+      </ion-item>`).join("");
+
+    document.getElementById("order-container").innerHTML = `
+      <ion-card>
+        <ion-card-header>
+          <ion-card-title>Terima kasih, ${data.email}!</ion-card-title>
+          <ion-card-subtitle>Order ID: ${orderId}</ion-card-subtitle>
+        </ion-card-header>
+        <ion-card-content>
+          <p><strong>Total:</strong> Rp. ${data.total.toLocaleString()}</p>
+          <p><strong>Reward:</strong> ${data.reward?.coins || 0} coins (${data.reward?.level || '-'})</p>
+          <ion-list>${itemList}</ion-list>
+          ${data.waConfirmed !== "Sudah" ? `
+		  <ion-button id="konfirmasiWA" expand="block" color="success" onclick="konfirmasiViaWA()">
+			Konfirmasi via WhatsApp
+		  </ion-button>` : `
+		  <div class="flex-row-rev">
+			<ion-chip color="medium" style="cursor:default">
+			  <ion-icon name="checkmark-circle" color="success"></ion-icon>
+			  <ion-label>Sudah dikonfirmasi</ion-label>
+			</ion-chip>
+			<ion-buttons slot="start">
+			  <ion-button href="{{site.baseurl}}/"><ion-icon slot="icon-only" name="arrow-back-circle" color="primary"></ion-icon></ion-button>
+			</ion-buttons>
+		  </div>`}
+        </ion-card-content>
+      </ion-card>`;
+  });
+});
+
+window.konfirmasiViaWA = async function () {
+  const params = new URLSearchParams(window.location.search);
+  const orderId = params.get("orderId");
+  const user = firebase.auth().currentUser;
+
+  if (!user || !orderId) {
+    showAlert("Autentikasi gagal atau Order ID tidak ditemukan.");
+    return;
+  }
+
+  const db = firebase.firestore();
+  const orderRef = db.collection("users").doc(user.uid).collection("orders").doc(orderId);
+  const orderSnap = await orderRef.get();
+
+  if (!orderSnap.exists) {
+    showAlert("Pesanan tidak ditemukan.");
+    return;
+  }
+
+  const orderData = orderSnap.data();
+  const items = orderData.items || [];
+  const totalAmount = orderData.total || 0;
+  const email = orderData.email || "-";
+  const shipping = orderData.shipping || {};
+  const first_name = shipping.first_name || "";
+  const last_name = shipping.last_name || "";
+  const street = shipping.street || "-";
+  const city = shipping.city || "-";
+  const state = shipping.state || "-";
+  const postal_code = shipping.postal_code || "-";
+
+  if (items.length === 0) {
+    showAlert("Tidak ada item di pesanan.");
+    return;
+  }
+
+  const formatRupiah = (num) => `Rp ${num.toLocaleString("id-ID")}`;
+  let message = `Halo, saya ingin konfirmasi pembayaran:\n\n`;
+  message += `Nama: ${first_name} ${last_name}\n`;
+  message += `Email: ${email}\n\n`;
+  message += `Detail Pesanan:\n---`;
+
+  items.forEach(item => {
+    const name = item.name || "-";
+    const warna = item.color || "-";
+    const varian = item.model || "-";
+    const quantity = item.quantity || 0;
+    const price = item.price || 0;
+    const subtotal = quantity * price;
+
+    message += `\n- *Produk ${name}*,\n- *Warna ${warna}*,\n- *Model ${varian}*,\n ${quantity} pcs *x* @${formatRupiah(price)} = *Total harga ${formatRupiah(subtotal)}*\n---`;
+  });
+
+  message += `\nTotal Pembayaran: ${formatRupiah(totalAmount)}\n\n`;
+  message += `Alamat Pengiriman: ${street}, ${city}, ${state} ${postal_code}`;
+
+  const phoneNumber = "{{ site.WA_KEY }}";
+  const encodedMessage = encodeURIComponent(message);
+  const waLink = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
+
+  window.open(waLink, "_blank");
+
+  await orderRef.update({ waConfirmed: "Sudah" });
+
+  setTimeout(() => {
+    window.location.href = "/";
+  }, 2000);
+};
+</script>

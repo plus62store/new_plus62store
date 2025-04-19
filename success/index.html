@@ -3,22 +3,7 @@ layout: default
 title: Pembayaran Sukses
 permalink: /success
 ---
-<div class="center-content">
-  <ion-card class="success-card">
-    <ion-card-content>
-      <div class="box" id="wa-confirm">
-        <img id="imgID" class="gifImg" src="{{site.baseurl}}/assets/images/success.gif" />
-        <h2 id="h2">Pembayaran Berhasil!</h2>
 
-        <div class="simpleCart_items" style="display:none;"></div>
-        <p>Total Bayar: <span class="simpleCart_total"></span></p>
-<ion-button id="konfirmasiWA" expand="block" color="success" onclick="konfirmasiViaWA()">
-  Konfirmasi via WhatsApp
-</ion-button>
-      </div>
-    </ion-card-content>
-  </ion-card>
-</div>
 <style>
   .center-content {
     display: flex;
@@ -53,96 +38,43 @@ ion-button[disabled] {
   pointer-events: none;
 }
 </style>
+<div class="center-content">
+  <ion-card class="success-card">
+    <ion-card-content>
+      <div class="box" id="wa-confirm">
+        <h2 id="h2"><ion-text color="success">Pembayaran Berhasil!</ion-text></h2>
+        <img id="imgID" class="gifImg" src="{{site.baseurl}}/assets/images/success.gif" />
+		<p><ion-text color="tertiary">Konfirmasi pembayaran mu di halaman profile</ion-text></p>
+      </div>
+    </ion-card-content>
+  </ion-card>
+</div>
+
 <script type="module">
-const auth = firebase.auth();
-const db = firebase.firestore();
+  const auth = firebase.auth();
+  const db = firebase.firestore();
 
-// Menggunakan onAuthStateChanged untuk menangani state user login
-firebase.auth().onAuthStateChanged(async (user) => {
-  if (!user) {
-    alert("Silakan login untuk melihat halaman ini.");
-    window.location.href = "/";
-    return;
-  }
+  firebase.auth().onAuthStateChanged(async (user) => {
+    if (!user) {
+      window.location.href = "{{ site.baseurl }}/";
+      return;
+    }
 
-  // Setelah login, kita dapat mengakses user
-  const ordersRef = db.collection("orders")
-    .where("uid", "==", user.uid)
-    .where("status", "==", "paid")
-    .orderBy("createdAt", "desc")
-    .limit(1);
-});
-</script>
-<script>
-document.addEventListener("DOMContentLoaded", () => {
-  const waBtn = document.getElementById("wa-confirm");
-  const paid = localStorage.getItem("payment_success");
-
-  if (paid === "true") {
-    waBtn.style.display = block;
-  }
-});
-
-window.konfirmasiViaWA = function () {
-  const buyer = JSON.parse(localStorage.getItem("buyer")) || {};
-  
-		const first_name = buyer.first_name || "";
-		const last_name = buyer.last_name || "";
-		const email = buyer.email || "";
-
-		const billing = buyer.billing_address || {};
-		const street = billing.street || "";
-		const city = billing.city || "";
-		const state = billing.state || "";
-		const postal_code = billing.postal_code || "";
-
-
-  const formatRupiah = (num) => `Rp ${num.toLocaleString("id-ID")}`;
-
-  let message = `Halo, saya ingin konfirmasi pembayaran:\n\n`;
-  message += `Nama: ${first_name} ${last_name}\n`;
-  message += `Email: ${email}\n\n`;
-  message += `Detail Pesanan:\n---`;
-
-  let total = 0;
-  let itemCount = 0;
-
-  simpleCart.each(function (item) {
-    const name = item.get("name");
-    const warna = item.get("color") || "-";
-    const varian = item.get("model") || "-";
-    const quantity = item.get("quantity");
-    const price = item.get("price");
-    const subtotal = item.get("total");
-    total += subtotal;
-    itemCount++;
-
-    message += `\n- *Produk ${name}*,\n- *Warna ${warna}*,\n- *Model ${varian}*,\n ${quantity} pcs *x* @${formatRupiah(price)} = *Total harga ${formatRupiah(subtotal)}*\n---`;
+    // User terautentikasi, kosongkan keranjang
+    if (typeof simpleCart !== "undefined") {
+      simpleCart.empty();
+    }
   });
+</script>
 
-  if (itemCount === 0) {
-    showAlert("Keranjang kosong. Tidak ada data untuk dikirim.");
-    return;
+<script>
+  if (typeof simpleCart !== "undefined") {
+    simpleCart.empty();
   }
 
-  message += `\nTotal Pembayaran: ${formatRupiah(total)}\n\n`;
-  message += `Alamat Pengiriman: ${street}, ${city}, ${state} ${postal_code}`;
-
-  const phoneNumber = "{{ site.WA_KEY }}";
-  const encodedMessage = encodeURIComponent(message);
-  const waLink = `https://wa.me/${phoneNumber}?text=${encodedMessage}`;
-
-  window.open(waLink, "_blank");
-
-  // Bersihkan keranjang dan buyer
-  simpleCart.empty();
-  localStorage.removeItem("buyer");
-  localStorage.removeItem("payment_success");
-
-  setTimeout(function () {
-    window.location.href = "/";
-  }, 2000);
-}
+  setTimeout(function() {
+    window.location.href = "{{ site.baseurl }}/";
+  }, 10000);
 </script>
-</div>
-</div>
+
+
