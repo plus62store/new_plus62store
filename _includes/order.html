@@ -38,7 +38,7 @@ document.addEventListener("DOMContentLoaded", () => {
       snapshot.forEach(doc => {
         const data = doc.data();
         html += `
-          <ion-card class="order-card" data-order-id="${doc.id}">
+          <ion-card class="order-card" data-order-id="${doc.id}" style="cursor:pointer">
             <ion-card-header>
               <ion-card-title>Order #${doc.id}</ion-card-title>
               <ion-card-subtitle>Status: ${data.status}</ion-card-subtitle>

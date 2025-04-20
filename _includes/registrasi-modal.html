@@ -18,47 +18,40 @@
       </ion-card-header>
 
 				  <ion-card-content>
-					<ion-item>
-					  <ion-label position="stacked">Nama Depan</ion-label>
-					  <ion-input id="namaDepan" type="text" required></ion-input>
+					<ion-item class="items" lines="none">
+					  <ion-input id="namaDepan" type="text" label="Nama Depan" label-placement="floating" clear-input="true" fill="outline" required></ion-input>
 					</ion-item>
 					
-					<ion-item>
-					  <ion-label position="stacked">Nama Belakang</ion-label>
-					  <ion-input id="namaBelakang" type="text" required></ion-input>
+					<ion-item class="items" lines="none">
+					  <ion-input id="namaBelakang" type="text" label="Nama Belakang" label-placement="floating" clear-input="true" fill="outline" required></ion-input>
 					</ion-item>
 					
-					<ion-item>
-					  <ion-label position="stacked">Email</ion-label>
-					  <ion-input id="eMail" type="email" required></ion-input>
+					<ion-item class="items" lines="none">
+					  <ion-input id="eMail" type="email" label="E-mail" label-placement="floating" clear-input="true" fill="outline" required></ion-input>
+					</ion-item lines="none">
+
+					<ion-item class="items" lines="none">
+					  <ion-input id="kataSandi" type="password" label="Password" label-placement="floating" clear-input="true" fill="outline" required></ion-input>
 					</ion-item>
 
-					<ion-item>
-					  <ion-label position="stacked">Password</ion-label>
-					  <ion-input id="kataSandi" type="password" required></ion-input>
+					<ion-item class="items" lines="none">
+					  <ion-input id="noWa" type="tel" label="Whatsapp" label-placement="floating" clear-input="true" fill="outline" required></ion-input>
 					</ion-item>
 
-					<ion-item>
-					  <ion-label position="stacked">Whatsapp</ion-label>
-					  <ion-input id="noWa" type="tel" required></ion-input>
-					</ion-item>
-
-					<ion-item>
-					  <ion-label position="stacked">Kota</ion-label>
-					  <ion-textarea id="kota" required></ion-textarea>
+					<ion-item class="items" lines="none">
+					  <ion-input id="kota" type="text" label="Kota" label-placement="floating" clear-input="true" fill="outline" required></ion-input>
 					</ion-item>
 				  </ion-card-content>
 				<ion-footer>
 					<ion-toolbar>
 						<ion-buttons slot="end">
-								<ion-button type="button" fill="outline" color="primary" onclick="register()">Daftar</ion-button>
+								<ion-button type="button" fill="outline" shape="round" color="primary" onclick="register()">Daftar</ion-button>
 						</ion-buttons>
 					</ion-toolbar>
 				</ion-footer>
     </ion-card>
   </ion-content>
 </ion-modal>
-
 <script>
   async function openRegModal() {
     const modal = document.querySelector('#registrasiModal');

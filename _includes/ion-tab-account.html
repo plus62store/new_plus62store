@@ -9,7 +9,7 @@ title: Account
 		  {% include chips.html %}
         </ion-toolbar>
       </ion-header>
-      <ion-content class="ion-padding container">
+      <ion-content class="ion-padding container" color="light">
 		<div class="container">
 <div id="profile" style="display:none;margin-top:60px;">
 <ion-card id="profileCard">
@@ -45,7 +45,7 @@ title: Account
 </ion-footer>
 </ion-card>
 </div>
-	<ion-card id="auth-form">
+	<ion-card id="auth-form" style="display:block;background:white;box-shadow:0px 5px 10px -3px #000 !important;">
 		<img src="{{ site.baseurl }}/assets/images/login.jpg" alt="login" >
       <ion-card-header>
         <ion-card-title>Masuk</ion-card-title>
@@ -53,24 +53,22 @@ title: Account
       </ion-card-header>
 
       <ion-card-content>
-        <ion-item>
-          <ion-label position="stacked">Email</ion-label>
-          <ion-input id="email" type="email" required></ion-input>
+        <ion-item class="items" lines="none">
+          <ion-input id="email" type="email" label="E-mail" label-placement="floating" clear-input="true" fill="outline" required></ion-input>
         </ion-item>
 
-        <ion-item>
-          <ion-label position="stacked">Password</ion-label>
-          <ion-input id="password" type="password" required></ion-input>
+        <ion-item class="items" lines="none">
+          <ion-input id="password" type="password" label="Password" label-placement="floating" clear-input="true" fill="outline" required></ion-input>
         </ion-item>
         <div id="user-info" style="margin-top: 1em;"></div>
       </ion-card-content>
 		<ion-footer>
 			<ion-toolbar>
 			<ion-buttons slot="start">
-				<ion-button expand="block" fill="outline" onclick="openRegModal()">Daftar</ion-button>
+				<ion-button shape="round" fill="outline" onclick="openRegModal()">Daftar</ion-button>
 			</ion-buttons>
 			<ion-buttons slot="end">
-				<ion-button type="button" fill="solid" color="success" onclick="login()">Masuk</ion-button>
+				<ion-button shape="round" fill="solid" color="success" onclick="login()">Masuk</ion-button>
 			</ion-buttons>
 			</ion-toolbar>
 		</ion-footer>

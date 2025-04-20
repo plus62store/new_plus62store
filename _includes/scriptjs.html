@@ -13,6 +13,22 @@ function showAlert(message, header = "Info") {
     alert.present();
   }
 }
+
+window.showToast = function (message, color = "primary", duration = 2000) {
+  const toast = document.getElementById("globalToast");
+
+  if (!toast) {
+    console.warn("Toast element not found!");
+    return;
+  }
+
+  toast.message = message;
+  toast.color = color; // primary, success, warning, danger, etc.
+  toast.duration = duration;
+  toast.position = "bottom";
+  toast.buttons = []; // tanpa tombol
+  toast.present();
+};
 </script>
 <script type="module">
 document.addEventListener("DOMContentLoaded", () => {

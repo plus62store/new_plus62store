@@ -13,46 +13,38 @@
   <ion-content>
     <ion-card>
     <ion-card-content>
-    <ion-item>
-      <ion-label position="stacked">Foto Profil (URL)</ion-label>
-      <ion-input id="edit_foto_url" placeholder="URL Foto (opsional)"></ion-input>
+    <ion-item class="items" lines="none">
+      <ion-input id="edit_foto_url" label="URL Foto (opsional)" label-placement="floating" clear-input="true" fill="outline"></ion-input>
     </ion-item>
-    <ion-item>
-      <ion-label position="stacked">Nama Depan</ion-label>
-      <ion-input id="edit_nama_depan" placeholder="Nama Depan" required></ion-input>
+    <ion-item class="items" lines="none">
+      <ion-input id="edit_nama_depan" type="text" label="Nama Depan" label-placement="floating" clear-input="true" fill="outline" required></ion-input>
     </ion-item>
-	<ion-item>
-	  <ion-label position="stacked">Nama Belakang</ion-label>
-	  <ion-input id="edit_nama_belakang" type="text" placeholder="Nama Belakang" required></ion-input>
+	<ion-item class="items" lines="none">
+	  <ion-input id="edit_nama_belakang" type="text" label="Nama Belakang" label-placement="floating" clear-input="true" fill="outline" required></ion-input>
 	</ion-item>
-    <ion-item>
-      <ion-label position="stacked">Nomor phone</ion-label>
-      <ion-input id="edit_no_wa" type="tel" placeholder="Nomor WhatsApp (08...)"></ion-input>
+    <ion-item class="items" lines="none">
+      <ion-input id="edit_no_wa" type="tel" label="Nomor Whatsapp (08...)" label-placement="floating" clear-input="true" fill="outline"></ion-input>
     </ion-item>
-    <ion-item>
-      <ion-label position="stacked">Alamat Lengkap</ion-label>
-      <ion-textarea id="edit_alamat_lengkap" placeholder="Alamat Lengkap"></ion-textarea>
+    <ion-item class="items" lines="none">
+      <ion-input id="edit_alamat_lengkap" type="text" label="Alamat Lengkap" label-placement="floating" clear-input="true" fill="outline"></ion-inputt>
     </ion-item>
-    <ion-item>
-      <ion-label position="stacked">Kota</ion-label>
-      <ion-input id="edit_kota" placeholder="Kota"></ion-input>
+    <ion-item class="items" lines="none">
+      <ion-input id="edit_kota" type="text" label="Kota" label-placement="floating" clear-input="true" fill="outline"></ion-input>
     </ion-item>
-    <ion-item>
-      <ion-label position="stacked">Provinsi</ion-label>
-      <ion-input id="edit_state" placeholder="Provinsi"></ion-input>
+    <ion-item class="items" lines="none">
+      <ion-input id="edit_state" type="text" label="Provinsi" label-placement="floating" clear-input="true" fill="outline"></ion-input>
     </ion-item>
-    <ion-item>
-      <ion-label position="stacked">Kode Pos</ion-label>
-      <ion-input id="edit_postal_code" placeholder="Kode Pos"></ion-input>
+    <ion-item class="items" lines="none">
+      <ion-input id="edit_postal_code" type="text" label="Kode Pos" label-placement="floating" clear-input="true" fill="outline"></ion-input>
     </ion-item>
     </ion-card-content>
 	<ion-footer>
 	<ion-toolbar>
 						<ion-buttons slot="start">
-    <ion-button color="success" onclick="updateUserProfile()">Simpan</ion-button>
+    <ion-button fill="clear" color="danger" shape="round" onclick="xxxModal()">Batal</ion-button>
 						</ion-buttons>
 						<ion-buttons slot="end">
-    <ion-button fill="clear" color="danger" onclick="xxxModal()">Batal</ion-button>
+    <ion-button color="success" shape="round" onclick="updateUserProfile()">Simpan</ion-button>
 						</ion-buttons>
 	</ion-toolbar>
 	</ion-footer>

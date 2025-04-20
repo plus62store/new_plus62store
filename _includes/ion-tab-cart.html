@@ -8,7 +8,7 @@ title: Cart
           <ion-title id="header">{{ site.title }}</ion-title>
         </ion-toolbar>
       </ion-header>
-      <ion-content class="ion-padding" fullscreen="true">
+      <ion-content class="ion-padding" color="light" fullscreen="true">
 		<div class="container">
                {% include keranjang.html %}
 		</div>
@@ -24,7 +24,7 @@ async function openCheckoutModal() {
     const db = firebase.firestore();
 	
   if (!user || !user.emailVerified) {
-    showAlert("Harap login dan verifikasi email sebelum checkout.", "⚠");
+    showAlert("Silahkan login dan verifikasi email sebelum checkout.", "⚠");
     return;
   }
   
