@@ -20,7 +20,8 @@ title: Cart
 
 <script>
 async function openCheckoutModal() {
-  const user = firebase.auth().currentUser;
+	const user = firebase.auth().currentUser;
+    const db = firebase.firestore();
 	
   if (!user || !user.emailVerified) {
     showAlert("Harap login dan verifikasi email sebelum checkout.", "⚠");
@@ -32,6 +33,9 @@ async function openCheckoutModal() {
   const userDoc = await firebase.firestore().collection('users').doc(user.uid).get();
   const userData = userDoc.exists ? userDoc.data() : {};
 
+  const orderDoc = db.collection("users").doc(user.uid).collection("orders").get();
+  const orderData = orderDoc.exists ? orderDoc.data() : {};
+  
   const modal = document.getElementById('checkoutModal');
 
   modal.innerHTML = `
@@ -178,12 +182,12 @@ async function saveOrder() {
 const buyer = JSON.parse(localStorage.getItem("buyer")) || {};
 
 const shipping = {
-      first_name: buyer.first_name,
-      last_name: buyer.last_name,
-      street: buyer.address?.street || "",
-      city: buyer.address?.city || "",
-      state: buyer.address?.state || "",
-      postal_code: buyer.address?.postal_code || ""
+  first_name: buyer?.first_name || "",
+  last_name: buyer?.last_name || "",
+  street: buyer.address?.street || "",
+  city: buyer.address?.city || "",
+  state: buyer.address?.state || "",
+  postal_code: buyer.address?.postal_code || ""
 };
 
     // 🔥 Simpan order ke Firestore
@@ -191,13 +195,13 @@ const shipping = {
     const orderId = orderRef.id;
 
     await orderRef.set({
-      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       orderId: orderId,
       uid: user.uid,
       email: user.email,
       status: "Terbayar",
       items: items,
       total: total,
+      createdAt: firebase.firestore.FieldValue.serverTimestamp(),
       reward: {
         coins: coinsEarned,
         level: newLevel
@@ -205,6 +209,8 @@ const shipping = {
 	  shipping: shipping,
 	  waConfirmed: "Belum"
     });
+	
+	localStorage.setItem("lastOrderId", orderId);
 
     // 🔁 Update coins dan level user jika berubah
     const updateData = {};
@@ -226,6 +232,7 @@ const shipping = {
 
       // Simpan ke localStorage
       localStorage.setItem('buyer', JSON.stringify(buyer));
+	  // localStorage.setItem("lastOrderId", newOrderId);
       console.log('Buyer disimpan:', buyer);
 
       // MIDTRANS dan keranjang

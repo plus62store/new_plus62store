@@ -52,7 +52,6 @@ ion-button[disabled] {
 
 <script type="module">
   const auth = firebase.auth();
-  const db = firebase.firestore();
 
   firebase.auth().onAuthStateChanged(async (user) => {
     if (!user) {
@@ -74,7 +73,7 @@ ion-button[disabled] {
 
   setTimeout(function() {
     window.location.href = "{{ site.baseurl }}/";
-  }, 5000);
+  }, 3000);
 </script>
 
 

@@ -190,3 +190,11 @@ ion-card#auth-form {
   color: white;
   border-color: #007bff;
 }
+div#orders-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    grid-template-rows: auto;
+  @include mobile {
+    grid-template-columns: 1fr;
+	}
+}

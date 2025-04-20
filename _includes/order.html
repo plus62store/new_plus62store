@@ -1,59 +1,80 @@
+<div id="orders-container">
+  <ion-spinner name="dots"></ion-spinner>
+</div>
 
-      <div id="orders-container">
-        <ion-spinner name="dots"></ion-spinner>
-      </div>
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const container = document.getElementById("orders-container");
 
-  <script>
-    document.addEventListener("DOMContentLoaded", () => {
-      firebase.auth().onAuthStateChanged(async (user) => {
-        const container = document.getElementById("orders-container");
+  firebase.auth().onAuthStateChanged((user) => {
+    if (!user) {
+      container.innerHTML = `
+        <ion-card color="warning">
+          <ion-card-header>
+            <ion-card-title>Belum Login</ion-card-title>
+          </ion-card-header>
+          <ion-card-content>
+            Silakan login untuk melihat pesanan Anda.
+          </ion-card-content>
+        </ion-card>`;
+      return;
+    }
 
-        if (!user) {
-          container.innerHTML = `
-            <ion-card color="warning">
-              <ion-card-header>
-                <ion-card-title>Belum Login</ion-card-title>
-              </ion-card-header>
-              <ion-card-content>
-                Silakan login untuk melihat pesanan Anda.
-              </ion-card-content>
-            </ion-card>`;
-          return;
-        }
+    const db = firebase.firestore();
+    const ordersRef = db.collection("users").doc(user.uid).collection("orders").orderBy("createdAt", "desc");
 
-        const db = firebase.firestore();
-        const ordersRef = db.collection("users").doc(user.uid).collection("orders").orderBy("createdAt", "desc");
-        const snapshot = await ordersRef.get();
+    ordersRef.onSnapshot((snapshot) => {
+      if (snapshot.empty) {
+        container.innerHTML = `
+          <ion-card>
+            <ion-card-content class="ion-text-center">
+              <ion-text>Belum ada pesanan yang tercatat.</ion-text>
+            </ion-card-content>
+          </ion-card>`;
+        return;
+      }
 
-        if (snapshot.empty) {
-          container.innerHTML = `
-            <ion-card>
-              <ion-card-content class='ion-text-center'>
-                <ion-text>Belum ada pesanan yang tercatat.<ion-text>
-              </ion-card-content>
-            </ion-card>`;
-          return;
-        }
-
-        let html = "";
-        snapshot.forEach(doc => {
-          const data = doc.data();
-          html += `
-            <ion-card color='primary' button onclick="window.location.href='/konfirmasi?orderId=${doc.id}'">
-              <ion-card-header>
-                <ion-card-title>Order #${doc.id}</ion-card-title>
-                <ion-card-subtitle>Status: ${data.status}</ion-card-subtitle>
-                <ion-card-subtitle>Konfirmasi: ${data.waConfirmed}</ion-card-subtitle>
-              </ion-card-header>
-              <ion-card-content>
-                <p>Total Belanja: Rp. ${data.total.toLocaleString()}</p>
-				<p>Reward: ${data.reward?.coins || 0} coins</p>
-				<p>Tanggal: ${data.createdAt?.toDate().toLocaleString("id-ID") || "-"}</p>
-              </ion-card-content>
-            </ion-card>`;
-        });
-
-        container.innerHTML = html;
+      let html = "";
+      snapshot.forEach(doc => {
+        const data = doc.data();
+        html += `
+          <ion-card class="order-card" data-order-id="${doc.id}">
+            <ion-card-header>
+              <ion-card-title>Order #${doc.id}</ion-card-title>
+              <ion-card-subtitle>Status: ${data.status}</ion-card-subtitle>
+              <ion-card-subtitle>Konfirmasi: ${data.waConfirmed}</ion-card-subtitle>
+            </ion-card-header>
+            <ion-card-content>
+              <p>Total Belanja: Rp. ${data.total.toLocaleString()}</p>
+              <p>Reward: ${data.reward?.coins || 0} coins</p>
+              <p>Tanggal: ${data.createdAt?.toDate().toLocaleString("id-ID") || "-"}</p>
+            </ion-card-content>
+          </ion-card>`;
       });
+      container.innerHTML = html;
     });
-  </script>
+  });
+
+  // Click handler untuk buka modal
+  document.addEventListener("click", (e) => {
+    const card = e.target.closest(".order-card");
+    if (card) {
+      const orderId = card.getAttribute("data-order-id");
+      openKonfirmasiModal(orderId);
+    }
+  });
+});
+
+function openKonfirmasiModal(orderId) {
+  const modal = document.getElementById("modalKonfirmasiWA");
+  if (modal) {
+    modal.setAttribute("data-order-id", orderId);
+    modal.present();
+  }
+}
+
+function dismissModal() {
+  const modal = document.getElementById("modalKonfirmasiWA");
+  if (modal) modal.dismiss();
+}
+</script>
