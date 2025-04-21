@@ -21,6 +21,8 @@ html {
 ion-content.ion-no-padding {
     --offset-top: 0px !important;
     --offset-bottom: auto !important;
+    height: 100vh !important;
+    overflow: auto !important;
 	@include mobile {
     --offset-top: 0px !important;
 	}

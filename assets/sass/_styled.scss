@@ -2,8 +2,14 @@
 
 div.container {
     max-width: 672px;
+    min-height: 100vh;
     margin: auto;
 }
+.container div#profile {
+	display: block;
+	margin-bottom: 140px;
+	}
+	
 div.blog_grid {
  display: grid;
  grid-template-columns: repeat(2, 1fr);
