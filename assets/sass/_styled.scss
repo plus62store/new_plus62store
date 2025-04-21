@@ -8,6 +8,8 @@ div.container {
 .container div#profile {
 	display: block;
 	margin-bottom: 140px;
+@include mobile {
+	margin-bottom: 180px; }
 	}
 	
 div.blog_grid {
