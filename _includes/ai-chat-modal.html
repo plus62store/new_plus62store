@@ -1,38 +1,44 @@
-                <ion-modal id="mobile-chat-modal">
-                    <ion-header>
-                        <ion-toolbar class="text-gray-700 px-4">
-                            <ion-title>L Y Я A Assistant</ion-title>
-                            <ion-buttons slot="end">
-                                <ion-button onclick="dismissModal('mobile-chat-modal')" class="text-dark">Close</ion-button>
-                            </ion-buttons>
-                        </ion-toolbar>
-                    </ion-header>
-                    <ion-content class="flex flex-col h-full">
-                        <!-- Chat Messages -->
-                        <div id="chat-messages-mobile" class="flex-1 overflow-y-auto mb-20 py-2 px-4 space-y-4 scrollbar-hide">
-                            <!-- AI Welcome Message -->
-                            <div class="flex items-start">
-                                <img src="https://lyra-ai-nine.vercel.app/logo.png" alt="LYRA" class="h-8 w-8 rounded-full mt-1">
-                                <div class="ml-3">
-                                    <div class="bg-gray-100 p-3 rounded-lg chat-bubble-ai">
-                                        <p class="text-sm">Hai! Saya L Y Я A, asisten AI toko online ini. Tanyakan apa saja tentang produk kami! 🤗</p>
+                        <!-- Mobile Chat Modal (dalam ion-modal) -->
+                        <ion-modal id="mobile-chat-modal" class="h-full">
+                            <ion-header>
+                                <ion-toolbar class="text-gray-700">
+                                    <ion-buttons slot="start">
+                                        <ion-button onclick="dismissModal('mobile-chat-modal')">
+                                            <span class="w-2.5 h-2.5 p-2 bottom-3 flex justify-center items-center left-3 text-gray-200 text-[14px] bg-red-700 rounded-full absolute simpleCart_quantity"></span>
+                                            <ion-icon slot="icon-only" name="storefront-outline"></ion-icon>
+                                        </ion-button>
+                                    </ion-buttons>
+                                    <div class="flex items-center justify-between">
+                                        <div class="flex flex-1 flex-col text-sm text-gray-700">
+                                            <span class="font-semibold text-gray-900">L Y Я A Assistant</span>
+                                                <span id="ai-active-mobile" class="mt-1.5 text-xs">🕛️Active --:--</span>
+                                                <span id="ai-online-mobile" class="mt-1.5 text-xs hidden">🟢 Online</span>
+                                        </div>
+                                        <ion-buttons slot="end">
+                                            <ion-button id="clear-chat-mobile" fill="clear" color="danger">
+                                                <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+                                            </ion-button>
+                                        </ion-buttons>
                                     </div>
+                                </ion-toolbar>
+                            </ion-header>
+                            <ion-content class="ion-padding bg-gray-50">
+                                <!-- Chat Messages Mobile -->
+                                <div id="chat-messages-mobile" class="relative h-full flex flex-col space-y-4 py-2 px-1 scrollbar-hide overflow-y-auto">
+                                    <!-- Pesan akan dimuat secara dinamis oleh JS -->
                                 </div>
-                            </div>
-                        </div>
-                        <!-- Chat Input -->
-                        <div class="p-4 border-t w-full fixed bottom-0 left-0 border-gray-200 bg-gray-50 flex-shrink-0">
-                            <div class="relative flex items-center">
-                                <input id="chat-input-mobile" type="text" placeholder="Tanyakan apapun..." class="w-full pl-4 pr-12 py-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                            <ion-buttons>
-                                <ion-button id="chat-send-btn-mobile" fill="clear" class="absolute right-1 top-1/2 -translate-y-1/2 text-gray-400 hover:text-purple-500">
-                                    <ion-icon slot="icon-only" name="send"></ion-icon>
-                                </ion-button>
-                            </ion-buttons>
-                            </div>
-                        </div>
-                    </ion-content>
-                </ion-modal>
+                            </ion-content>
+                            <ion-footer class="ion-no-border bg-white p-4">
+                                <div class="relative flex items-center">
+                                    <input id="chat-input-mobile" type="text" placeholder="Tanyakan apapun..." class="w-full pl-4 pr-12 py-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
+                                    <ion-buttons>
+                                        <ion-button id="chat-send-btn-mobile" fill="clear" class="absolute right-1 top-1/2 -translate-y-1/2 text-gray-400 hover:text-purple-500">
+                                            <ion-icon slot="icon-only" name="send"></ion-icon>
+                                        </ion-button>
+                                    </ion-buttons>
+                                </div>
+                            </ion-footer>
+                        </ion-modal>
 <script type="module">
 window.dismissModal = (modalId) => {
     const modalToDismiss = document.getElementById(modalId);
