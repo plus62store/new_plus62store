@@ -1,0 +1,957 @@
+<script type="module">
+// --- DOM Elements ---
+const chatMessagesDesktop = document.getElementById('chat-messages-desktop');
+const chatInputDesktop = document.getElementById('chat-input-desktop');
+const chatSendBtnDesktop = document.getElementById('chat-send-btn-desktop');
+const clearChatDesktopBtn = document.getElementById('clear-chat-desktop');
+
+const mobileChatModal = document.getElementById('mobile-chat-modal');
+const openMobileChatBtn = document.getElementById('open-mobile-chat');
+const chatMessagesMobile = document.getElementById('chat-messages-mobile');
+const chatInputMobile = document.getElementById('chat-input-mobile');
+const chatSendBtnMobile = document.getElementById('chat-send-btn-mobile');
+const clearChatMobileBtn = document.getElementById('clear-chat-mobile');
+
+const aiActiveTimeElement = document.getElementById('ai-active-time');
+const aiOnlineIndicatorElement = document.getElementById('ai-online-indicator');
+const aiActiveMobileElement = document.getElementById('ai-active-mobile');
+const aiOnlineMobileElement = document.getElementById('ai-online-mobile');
+
+const PRODUCT_LISTING_URL = "https://plus62store.github.io/products.json";
+const currentApiUrl = "https://gemini.sendaljepit.workers.dev"; // Updated to use the new API URL https://gemini.sendaljepit.workers.dev
+
+let currentUserId = null;
+
+// --- Utils ---
+/**
+ * Mencari dan mem-parsing array JSON atau objek JSON dari dalam sebuah string teks.
+ * Ini mencari blok JSON paling awal yang valid.
+ * @param {string} text - Teks respons dari AI.
+ * @returns {{parsed: Array|Object|null, remaining: string}} Objek berisi data JSON yang sudah diparsing dan sisa teks.
+ */
+function findJsonInText(text) {
+  if (typeof text !== 'string' || text.length === 0) {
+      return { parsed: null, remaining: String(text || '') };
+  }
+
+  // Cari posisi kurung kurawal atau kurung siku pertama
+  const firstBrace = text.indexOf('{');
+  const firstBracket = text.indexOf('[');
+
+  let startIndex = -1;
+  let endIndex = -1;
+
+  // Tentukan apakah kita mencari objek atau array, dimulai dari yang pertama ditemukan
+  if (firstBrace !== -1 && (firstBrace < firstBracket || firstBracket === -1)) {
+    startIndex = firstBrace;
+    // Cari kurung kurawal penutup terakhir yang cocok
+    let openBraceCount = 0;
+    for (let i = startIndex; i < text.length; i++) {
+        if (text[i] === '{') openBraceCount++;
+        else if (text[i] === '}') openBraceCount--;
+        if (openBraceCount === 0 && text[i] === '}') {
+            endIndex = i;
+            break;
+        }
+    }
+  } else if (firstBracket !== -1) {
+    startIndex = firstBracket;
+    // Cari kurung siku penutup terakhir yang cocok
+    let openBracketCount = 0;
+    for (let i = startIndex; i < text.length; i++) {
+        if (text[i] === '[') openBracketCount++;
+        else if (text[i] === ']') openBracketCount--;
+        if (openBracketCount === 0 && text[i] === ']') {
+            endIndex = i;
+            break;
+        }
+    }
+  }
+
+  // Jika JSON ditemukan dan kurung penutup cocok
+  if (startIndex !== -1 && endIndex !== -1 && endIndex > startIndex) {
+    const jsonPart = text.substring(startIndex, endIndex + 1);
+    try {
+      const parsed = JSON.parse(jsonPart);
+      // Buat 'remaining' dengan menggabungkan bagian sebelum dan setelah JSON
+      const remaining = (text.substring(0, startIndex).trim() + ' ' + text.substring(endIndex + 1).trim()).trim();
+      return { parsed, remaining };
+    } catch (e) {
+      console.warn("Gagal parsing JSON dari respons AI:", e);
+      // Jika parsing gagal, perlakukan sebagai teks biasa
+      return { parsed: null, remaining: text };
+    }
+  }
+  // Jika tidak ada JSON yang ditemukan atau formatnya tidak valid
+  return { parsed: null, remaining: text };
+}
+
+/**
+ * [NEW] Fungsi pembantu untuk memformat objek produk menjadi teks yang rapi.
+ * Tidak menampilkan gambar atau tombol, hanya teks.
+ * @param {object} product - Objek produk.
+ * @returns {string} Teks terformat dari detail produk.
+ */
+function formatProductAsText(product) {
+    let details = `*${product.title || 'Produk Tidak Diketahui'}*\n`; // Fallback untuk judul
+    // Menambahkan pemeriksaan untuk 'discount' dan 'price'
+    const displayDiscount = product.discount ? `Rp ${product.discount}` : 'Harga tidak tersedia';
+    const displayPrice = product.price && product.price !== product.discount ? `(_Harga Normal: Rp ${product.price}_)` : '';
+    details += `Harga: ${displayDiscount} ${displayPrice}\n`;
+    details += `Stok: ${product.stok || 'Informasi stok tidak tersedia'}\n`; // Fallback untuk stok
+    if (product.description) {
+        details += `Deskripsi: ${product.description}\n`;
+    }
+    if (product.styles && product.styles.length > 0) {
+        const colors = product.styles.map(s => s.name).join(', ');
+        details += `Varian Warna: ${colors}\n`;
+    }
+    // Tidak menyertakan URL gambar di sini, sesuai permintaan
+    return details;
+}
+
+/**
+ * Menampilkan pesan di jendela chat.
+ * [MODIFIED] Menganalisis teks untuk JSON sebelum memparsing Markdown
+ * @param {string} text - Isi pesan.
+ * @param {'user' | 'ai'} sender - Pengirim pesan.
+ * @param {HTMLElement} targetChatMessages - Elemen kontainer chat.
+ * @param {boolean} isHistorical - Menandakan apakah pesan ini dari riwayat (tidak perlu scroll ke bawah otomatis)
+ */
+function appendMessage(text, sender, targetChatMessages, isHistorical = false) {
+  if (text === null || text === undefined || String(text).trim() === '') {
+      console.warn(`appendMessage received invalid text input for sender ${sender}:`, text);
+      return;
+  }
+
+  const wrapper = document.createElement('div');
+  wrapper.className = `flex items-start mb-4 ${sender === 'user' ? 'justify-end' : ''}`;
+
+  let contentHtml = '';
+  let finalMessageText = String(text); // Default: gunakan teks asli
+
+  // Jika pengirim adalah AI, kita coba ekstrak JSON dan proses aksinya
+  if (sender === 'ai') {
+      const { parsed, remaining } = findJsonInText(finalMessageText); // Gunakan finalMessageText untuk mencari JSON
+
+      if (parsed) { // Jika ada JSON yang berhasil diparse
+          let actionHandled = false;
+
+          // Cek jika ini adalah aksi yang harus ditampilkan sebagai teks produk
+          if (typeof parsed === 'object' && parsed.action === 'viewProductDetails' && parsed.product) {
+              // [MODIFIED] Validasi produk sebelum menampilkannya
+              if (parsed.product.title) {
+                  finalMessageText = remaining + '\n\n' + formatProductAsText(parsed.product); // Tambahkan detail produk sebagai teks
+              } else {
+                  // Jika produk tidak valid (misal, tidak ada judul), tampilkan hanya narasi
+                  finalMessageText = remaining;
+              }
+              actionHandled = true;
+          } else if (Array.isArray(parsed)) { // Jika ini adalah array produk (misal dari hasil search)
+              const productsAsText = parsed.map(p => formatProductAsText(p)).join('\n\n---\n\n');
+              finalMessageText = remaining + '\n\nBerikut produk yang saya temukan:\n\n' + productsAsText;
+              actionHandled = true;
+          } else if (typeof parsed === 'object' && parsed.action) {
+              // Untuk aksi lain (addToCart, emptyCart, checkout), proses saja
+              let redirected = processAiCartAction(parsed, targetChatMessages); // Process action (may redirect)
+              if (redirected) return; // Jika ada redirect, berhenti di sini
+              finalMessageText = remaining; // Teks yang tersisa setelah JSON diproses
+              actionHandled = true; // Aksi diproses, jadi jangan tampilkan JSON mentah
+          } else {
+              finalMessageText = String(text); // Jika tidak ada JSON yang dikenali, gunakan teks asli
+          }
+
+          // Jika aksi sudah ditangani (baik sebagai kartu atau teks), dan teks narasi kosong,
+          // maka ini mencegah penambahan div pesan teks kosong.
+          if (actionHandled && finalMessageText.trim() === '') {
+              return; // Jika JSON ditangani dan tidak ada teks narasi, jangan tampilkan apa-apa
+          }
+      }
+  }
+
+  // Jika masih ada teks yang perlu ditampilkan (setelah potensi ekstraksi JSON)
+  if (finalMessageText.trim().length > 0) {
+      if (sender === 'ai') {
+          contentHtml = DOMPurify.sanitize(marked.parse(finalMessageText));
+      } else {
+          contentHtml = `<p class="text-sm">${DOMPurify.sanitize(finalMessageText)}</p>`;
+      }
+  } else {
+      // Jika finalMessageText kosong setelah semua proses, jangan tampilkan elemen chat
+      return;
+  }
+
+  if (sender === 'ai') {
+    wrapper.innerHTML = `
+      <img src="https://lyra-ai-nine.vercel.app/logo.png" alt="LYRA" class="h-8 w-8 rounded-full mt-1 flex-shrink-0">
+      <div class="ml-3 max-w-sm">
+        <div class="p-3 rounded-lg chat-bubble-ai text-sm bg-white shadow">${contentHtml}</div>
+      </div>
+    `;
+  } else {
+    wrapper.innerHTML = `
+      <div class="mr-3 max-w-sm">
+        <div class="p-3 rounded-lg chat-bubble-user text-sm bg-purple-100">${contentHtml}</div>
+      </div>
+    `;
+  }
+
+  targetChatMessages.appendChild(wrapper);
+
+  if (!isHistorical) {
+    if (targetChatMessages === chatMessagesMobile) {
+        const ionContentEl = mobileChatModal.querySelector('#chat-messages-mobile');
+        if (ionContentEl && typeof ionContentEl.getScrollElement === 'function') {
+            ionContentEl.getScrollElement().then(scrollEl => {
+                scrollEl.scrollTop = scrollEl.scrollHeight;
+            }).catch(e => console.error("Error getting scroll element for mobile chat:", e));
+        } else {
+            targetChatMessages.scrollTop = targetChatMessages.scrollHeight;
+        }
+    } else {
+        targetChatMessages.scrollTop = targetChatMessages.scrollHeight;
+    }
+  }
+}
+
+/**
+ * Menampilkan kartu produk di jendela chat.
+ * [NOTE: Fungsi ini sekarang hanya akan dipanggil untuk menampilkan modal detail produk,
+ * bukan lagi untuk menampilkan kartu produk di aliran chat utama.]
+ * @param {object} product - Objek produk.
+ * @param {HTMLElement} targetChatMessages - Elemen kontainer chat.
+ */
+function appendProductCard(product, targetChatMessages) {
+  // Fungsi ini sekarang hanya untuk memicu modal detail atau tampilan grid, BUKAN untuk chat bubble.
+  // Jika kamu ingin kartu produk di chat, kamu perlu mengembalikan logika di appendMessage.
+  // Untuk saat ini, fungsi ini hanya dipanggil oleh handleProductClickFromChat (dari tombol "Lihat Detail & Warna" di kartu grid)
+  // dan diubah namanya menjadi openProductDetailModal untuk lebih jelas.
+  console.warn("appendProductCard (now openProductDetailModal) was called. It should only open a modal, not append to chat.");
+
+  const newProductDetailModal = document.createElement('ion-modal');
+  newProductDetailModal.id = `product-detail-modal-${product.id || Date.now()}`;
+  newProductDetailModal.innerHTML = `
+      <ion-header>
+          <ion-toolbar class="text-gray-700 px-4">
+              <ion-title>${product.title}</ion-title>
+              <ion-buttons slot="end">
+                  <ion-button onclick="document.getElementById('${newProductDetailModal.id}').dismiss()">Tutup</ion-button>
+              </ion-buttons>
+          </ion-toolbar>
+      </ion-header>
+      <ion-content class="ion-padding">
+          <img src="${product.image}" alt="${product.title}" class="w-full h-64 object-cover rounded-md mb-4" onerror="this.onerror=null;this.src='https://placehold.co/400x300/E0E0E0/333333?text=Gambar+Tidak+Tersedia';">
+          <h2 class="text-xl font-bold mb-2">${product.title}</h2>
+          ${product.price ? `<p class="text-gray-500 line-through">Harga Awal: Rp ${product.price}</p>` : ''}
+          <p class="text-purple-600 text-2xl font-bold mb-4">Rp ${product.discount}</p>
+          <p class="text-sm mb-4">${product.description || 'Tidak ada deskripsi rinci untuk produk ini.'}</p>
+
+          ${product.stok ? `<ion-chip class="px-4" color="${product.stok === 'Tersedia' ? 'success' : 'danger'}"><ion-label>${product.stok}</ion-label></ion-chip>` : ''}
+
+          ${(product.styles && product.styles.length > 0) ? `
+              <div class="mt-4">
+                  <h3 class="font-semibold text-md mb-2">Pilihan Warna:</h3>
+                  <div class="flex gap-2">
+                      ${product.styles.map(style => `
+                          <span class="w-8 h-8 rounded-full border border-gray-300" title="${style.name}" style="background-color: ${style.color}"></span>
+                      `).join('')}
+                  </div>
+              </div>
+          ` : ''}
+      </ion-content>
+  `;
+
+  document.body.appendChild(newProductDetailModal);
+  newProductDetailModal.present(); // await removed for non-blocking UI
+
+  newProductDetailModal.addEventListener('ionModalDidDismiss', () => {
+      newProductDetailModal.remove();
+  });
+}
+
+// Mengganti nama fungsi ini agar lebih jelas tujuannya: membuka modal.
+window.openProductDetailModal = window.handleProductClickFromChat;
+
+// Perbarui event listener untuk tombol "Lihat Detail & Warna" di product grid
+document.addEventListener('DOMContentLoaded', () => {
+    // ... other initializations ...
+    document.querySelectorAll('.ask-ai-btn').forEach(button => {
+        const productData = JSON.parse(decodeURIComponent(button.dataset.product)); // Assume product data is stored in dataset for grid buttons
+        button.addEventListener('click', () => {
+            const targetChatMessages = window.innerWidth < 768 ? chatMessagesMobile : chatMessagesDesktop;
+            if (window.innerWidth < 768) {
+                mobileChatModal.present();
+            }
+            requestProductDetail(productData, targetChatMessages);
+        });
+    });
+});
+
+
+function showTypingIndicator(targetChatMessages) {
+  const typing = document.createElement('div');
+  typing.id = 'typing-indicator';
+  typing.className = 'flex items-start mb-4';
+  typing.innerHTML = `
+    <img src="https://lyra-ai-nine.vercel.app/logo.png" alt="LYRA" class="h-8 w-8 rounded-full mt-1 flex-shrink-0">
+    <div class="ml-3">
+      <div class="">
+        <div class="typing-indicator"><span></span><span></span><span></span></div>
+      </div>
+    </div>
+  `;
+  targetChatMessages.appendChild(typing);
+  if (targetChatMessages === chatMessagesMobile) {
+      const ionContentEl = mobileChatModal.querySelector('ion-content');
+      if (ionContentEl && typeof ionContentEl.getScrollElement === 'function') {
+          ionContentEl.getScrollElement().then(scrollEl => {
+              scrollEl.scrollTop = scrollEl.scrollHeight;
+          }).catch(e => console.error("Error getting scroll element for mobile typing indicator:", e));
+      } else {
+          targetChatMessages.scrollTop = targetChatMessages.scrollHeight;
+      }
+  } else {
+      targetChatMessages.scrollTop = targetChatMessages.scrollHeight;
+  }
+}
+
+function hideTypingIndicator(targetChatMessages) {
+  const indicator = targetChatMessages.querySelector('#typing-indicator');
+  if (indicator) indicator.remove();
+}
+
+/**
+ * Fungsi utama untuk memanggil API AI.
+ * @param {string} message - Pesan dari user (bisa string biasa atau JSON yang di-string-kan).
+ * @param {Array<Object>} cartItems - Item-item yang saat ini ada di simpleCart.
+ * @param {string} userId - ID unik pengguna.
+ * @returns {Promise<string>} Respons teks dari AI.
+ */
+async function callGemini(message, cartItems, userId) {
+  try {
+    const response = await fetch(`${currentApiUrl}/ai-assistant`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ message: message, cartItems: cartItems, userId: userId })
+    });
+
+    const data = await response.json();
+
+    if (!response.ok) {
+        if (response.status === 429) {
+            throw new Error(data.error || 'Anda telah mencapai batas chat harian.');
+        }
+        throw new Error(data.error || 'Terjadi kesalahan pada server.');
+    }
+
+    if (aiOnlineIndicatorElement) {
+        aiOnlineIndicatorElement.classList.remove('hidden');
+        aiActiveTimeElement.classList.add('hidden');
+    }
+
+    if (aiOnlineMobileElement) {
+        aiOnlineMobileElement.classList.remove('hidden');
+        aiActiveMobileElement.classList.add('hidden');
+    }
+
+    return data.reply;
+  } catch (error) {
+    console.error("AI error:", error);
+    if (aiOnlineIndicatorElement) {
+        aiOnlineIndicatorElement.classList.add('hidden');
+        aiActiveTimeElement.classList.remove('hidden');
+    }
+    if (aiOnlineMobileElement) {
+        aiOnlineMobileElement.classList.add('hidden');
+        aiActiveMobileElement.classList.remove('hidden');
+    }
+    return error.message || "Waduh, koneksiku lagi bermasalah nih. Coba lagi nanti ya! 😔";
+  }
+}
+
+/**
+ * Memproses aksi keranjang yang dikirim oleh AI.
+ * [MODIFIED] Tidak lagi menampilkan appendProductCard untuk viewProductDetails
+ * @param {object} actionData - Objek JSON yang berisi detail aksi keranjang.
+ * @param {HTMLElement} targetChatMessages - Elemen kontainer chat untuk menampilkan kartu produk.
+ * @returns {boolean} True jika ada redirect, false jika tidak.
+ */
+function processAiCartAction(actionData, targetChatMessages) {
+    if (typeof simpleCart === 'undefined') {
+        console.error("simpleCart is not defined. Make sure simpleCart.js is loaded.");
+        return false;
+    }
+
+    let redirected = false;
+
+    switch (actionData.action) {
+        case 'addToCart': {
+            const { title, price, quantity, image, warna, ukuran, berat } = actionData;
+            if (title && price && quantity) {
+                simpleCart.add({
+                    name: title,
+                    price,
+                    quantity,
+                    thumb: image || 'https://placehold.co/50x50/E0E0E0/333333?text=NoImg',
+                    warna: warna || '-',
+                    ukuran: ukuran || '-',
+                    berat: berat || 0
+                });
+                setTimeout(() => {   
+                    appendMessage(`Berhasil menambahkan *${quantity}x ${title}* ke keranjang!`, 'ai', targetChatMessages); 
+                }, 2000); // Delay 2 detik untuk efek loading
+            } else {
+                appendMessage("Maaf, saya butuh detail produk lengkap untuk menambahkannya ke keranjang.", 'ai', targetChatMessages);
+            }
+            break;
+        }
+
+        case 'removeFromCart': {
+            const { title } = actionData;
+            const item = simpleCart.find({ name: title })[0];
+            if (item) {
+                item.remove();
+                appendMessage(`*${title}* berhasil dihapus dari keranjang.`, 'ai', targetChatMessages);
+            } else {
+                appendMessage(`Maaf, *${title}* tidak ditemukan di keranjang kamu.`, 'ai', targetChatMessages);
+            }
+            break;
+        }
+
+        case 'updateCartQuantity': {
+            const { title, quantity } = actionData;
+            const item = simpleCart.find({ name: title })[0];
+            if (item) {
+                item.quantity(quantity);
+                appendMessage(`Jumlah *${title}* di keranjang diubah menjadi ${quantity}.`, 'ai', targetChatMessages);
+            } else {
+                appendMessage(`Maaf, *${title}* tidak ditemukan di keranjang kamu.`, 'ai', targetChatMessages);
+            }
+            break;
+        }
+
+        case 'decrementQuantity': {
+            const { title } = actionData;
+            const item = simpleCart.find({ name: title })[0];
+            if (item) {
+                item.decrement();
+                const qty = item.quantity();
+                if (qty > 0) {
+                    appendMessage(`Jumlah *${title}* dikurangi jadi ${qty}.`, 'ai', targetChatMessages);
+                } else {
+                    appendMessage(`*${title}* berhasil dihapus dari keranjang.`, 'ai', targetChatMessages);
+                }
+            } else {
+                appendMessage(`Maaf, *${title}* tidak ditemukan di keranjang kamu.`, 'ai', targetChatMessages);
+            }
+            break;
+        }
+
+        case 'incrementQuantity': {
+            const { title } = actionData;
+            const item = simpleCart.find({ name: title })[0];
+            if (item) {
+                item.increment();
+                appendMessage(`Jumlah *${title}* ditambah jadi ${item.quantity()}.`, 'ai', targetChatMessages);
+            } else {
+                appendMessage(`Maaf, *${title}* tidak ditemukan di keranjang kamu.`, 'ai', targetChatMessages);
+            }
+            break;
+        }
+
+        case 'changeItemColor': {
+            const { title, newColor } = actionData;
+            const item = simpleCart.find({ name: title })[0];
+            if (item) {
+                item.set('warna', newColor);
+                appendMessage(`Warna *${title}* diubah menjadi ${newColor}.`, 'ai', targetChatMessages);
+            } else {
+                appendMessage(`Maaf, *${title}* tidak ditemukan di keranjang kamu.`, 'ai', targetChatMessages);
+            }
+            break;
+        }
+
+        case 'emptyCart': {
+            simpleCart.empty();
+            break;
+        }
+
+        case 'viewCart': {
+            if (cartContent.length > 0) {
+                appendMessage(`Ini isi keranjang kamu:
+${cartContent.join('\n')}`, 'ai', targetChatMessages);
+            } else {
+                appendMessage("Keranjang belanja kamu masih kosong. Yuk cari produk dulu!", 'ai', targetChatMessages);
+            }
+            const cartContent = [];
+            simpleCart.each(item => {
+                const name = item.get('name');
+                const qty = item.get('quantity');
+                const price = item.get('price');
+                const warna = item.get('warna');
+                cartContent.push(`${qty}x ${name} (Rp ${price})${warna !== '-' ? ` (Warna: ${warna})` : ''}`);
+            });
+            break;
+        }
+
+        case 'checkout': {
+            const { redirectUrl } = actionData;
+            if (redirectUrl) {
+                appendMessage(`Oke! Saya arahkan kamu ke ${redirectUrl} untuk pembayaran.`, 'ai', targetChatMessages);
+                setTimeout(() => window.location.href = redirectUrl, 4000);
+                redirected = true;
+            } else {
+                appendMessage("Maaf, saya tidak tahu ke mana harus mengarahkan kamu.", 'ai', targetChatMessages);
+            }
+            break;
+        }
+
+        case 'viewProductDetails':
+            // Handled in main response flow, tidak disini.
+            break;
+
+        default:
+            appendMessage("Maaf, saya tidak mengerti perintah keranjang tersebut.", 'ai', targetChatMessages);
+            break;
+    }
+
+    simpleCart.update();
+    return redirected;
+}
+
+/**
+ * Meng-handle pengiriman pesan dari user.
+ */
+async function handleChatSubmit(chatInput, chatSendBtn, targetChatMessages) {
+  const userMessage = chatInput.value.trim();
+  if (!userMessage) return;
+
+  chatInput.disabled = true;
+  chatSendBtn.disabled = true;
+
+  appendMessage(userMessage, 'user', targetChatMessages);
+  chatInput.value = '';
+  showTypingIndicator(targetChatMessages);
+
+  const currentCartItems = simpleCart.items().map(item => ({
+      id: item.id(),
+      name: item.get('name'),
+      quantity: item.quantity(),
+      price: item.price(),
+      image: item.get('thumb'),
+      warna: item.get('warna'),
+     // ukuran: item.get('ukuran'),
+     // berat: item.get('berat')
+  }));
+
+  const aiResponse = await callGemini(userMessage, currentCartItems, currentUserId);
+
+  hideTypingIndicator(targetChatMessages);
+
+  // Periksa apakah ada JSON dalam respons AI
+  const { parsed, remaining: cleanResponse } = findJsonInText(aiResponse);
+
+  // Jika ada JSON yang berhasil diparse, proses aksinya terlebih dahulu
+  let actionHandled = false;
+  if (parsed) {
+      actionHandled = processAiCartAction(parsed, targetChatMessages);
+  }
+
+  // Tampilkan teks narasi yang sudah bersih
+  if (cleanResponse.trim().length > 0) {
+      appendMessage(cleanResponse, 'ai', targetChatMessages);
+  } else if (!actionHandled) {
+      // Jika tidak ada teks narasi dan tidak ada aksi yang ditangani, berikan pesan fallback
+      appendMessage("Maaf, ada masalah dalam merespons. Bisa ulangi?", 'ai', targetChatMessages);
+  }
+
+  chatInput.disabled = false;
+  chatSendBtn.disabled = false;
+  chatInput.focus();
+}
+
+/**
+ * Fungsi untuk meminta detail produk.
+ */
+async function requestProductDetail(product, targetChatMessages) {
+    appendMessage(`Boleh lihat detail untuk ${product.title}?`, 'user', targetChatMessages);
+    showTypingIndicator(targetChatMessages);
+
+    // [MODIFIED] Kirim objek produk lengkap ke AI
+    const payloadString = JSON.stringify({
+        type: "product_detail",
+        data: product
+    });
+
+    const currentCartItems = simpleCart.items().map(item => ({
+        id: item.id(),
+        name: item.get('name'),
+        quantity: item.quantity(), 
+        price: item.price(),
+        image: item.get('thumb'),
+        warna: item.get('warna'),
+       // ukuran: item.get('ukuran'),
+       // berat: item.get('berat')
+    }));
+
+    const aiResponse = await callGemini(payloadString, currentCartItems, currentUserId);
+
+    hideTypingIndicator(targetChatMessages);
+
+    // Periksa apakah ada JSON dalam respons AI sebelum memanggil appendMessage
+    const { parsed, remaining } = findJsonInText(aiResponse);
+
+    if (parsed) {
+        appendMessage(aiResponse, 'ai', targetChatMessages); // Kirim respons utuh ke appendMessage
+    } else if (remaining) {
+        appendMessage(remaining, 'ai', targetChatMessages);
+    } else {
+         appendMessage("Maaf, ada masalah dalam merespons detail produk. Bisa ulangi?", 'ai', targetChatMessages);
+    }
+}
+
+/**
+ * Fungsi untuk menghasilkan atau mengambil User ID dari localStorage.
+ * @returns {string} User ID.
+ */
+function getOrCreateUserId() {
+    let userId = localStorage.getItem('lyra_user_id');
+    if (!userId) {
+        userId = 'user_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+        localStorage.setItem('lyra_user_id', userId);
+    }
+    return userId;
+}
+
+/**
+ * Fungsi untuk memuat riwayat chat dari backend (KV).
+ * [MODIFIED] Lebih pintar dalam menampilkan riwayat JSON sebagai kartu produk
+ * @param {string} userId - ID pengguna.
+ * @param {HTMLElement} desktopChatMessages - Elemen chat desktop.
+ * @param {HTMLElement} mobileChatMessages - Elemen chat mobile.
+ */
+async function loadChatHistory(userId, desktopChatMessages, mobileChatMessages) {
+    desktopChatMessages.innerHTML = '';
+    mobileChatMessages.innerHTML = '';
+
+    const defaultWelcomeMessage = "Hai! Saya L Y Я A, asisten AI toko online ini. Tanyakan apa saja tentang produk kami! 🤗";
+    let historyLoaded = false;
+
+    try {
+        const response = await fetch(`${currentApiUrl}/chat-history?userId=${userId}`);
+        const data = await response.json();
+
+        if (!response.ok) {
+            console.error("Failed to load chat history:", data.error);
+        } else if (data.history && data.history.length > 0) {
+            data.history.forEach(entry => {
+                // Untuk riwayat, kita panggil appendMessage dengan teks asli
+                // Biarkan appendMessage menangani pemisahan JSON dan teks, serta tampilan
+                appendMessage(entry.text, entry.role, desktopChatMessages, true);
+                appendMessage(entry.text, entry.role, mobileChatMessages, true);
+            });
+            if (desktopChatMessages.scrollHeight > desktopChatMessages.clientHeight) {
+                desktopChatMessages.scrollTop = desktopChatMessages.scrollHeight;
+            }
+            const ionContentMobile = mobileChatModal.querySelector('ion-content');
+            if (ionContentMobile && typeof ionContentMobile.getScrollElement === 'function') {
+                ionContentMobile.getScrollElement().then(scrollEl => {
+                    if (scrollEl.scrollHeight > scrollEl.clientHeight) {
+                        scrollEl.scrollTop = scrollEl.scrollHeight;
+                    }
+                }).catch(e => console.error("Error scrolling mobile chat history:", e));
+            }
+            historyLoaded = true;
+        }
+    } catch (error) {
+        console.error("Error fetching chat history:", error);
+    }
+
+    if (!historyLoaded) {
+        appendMessage(defaultWelcomeMessage, 'ai', desktopChatMessages, true);
+        appendMessage(defaultWelcomeMessage, 'ai', mobileChatMessages, true);
+    }
+}
+
+/**
+ * Membersihkan riwayat chat dari UI dan KV.
+ * @param {HTMLElement} desktopChatMessages - Elemen chat desktop.
+ * @param {HTMLElement} mobileChatMessages - Elemen chat mobile.
+ */
+async function clearChatHistory(desktopChatMessages, mobileChatMessages) {
+    if (!currentUserId) {
+        console.warn("No user ID found, cannot clear chat history.");
+        return;
+    }
+
+    const alert = document.createElement('ion-alert');
+    alert.header = 'Konfirmasi Hapus Riwayat';
+    alert.message = 'Apakah kamu yakin ingin menghapus seluruh riwayat chat kamu? Tindakan ini tidak dapat mengembalikan data.';
+    alert.buttons = [
+        {
+            text: 'Batal',
+            role: 'cancel',
+            handler: () => { /* No action needed */ },
+        },
+        {
+            text: 'Hapus',
+            role: 'confirm',
+            handler: async () => {
+                try {
+                    const response = await fetch(`${currentApiUrl}/chat-history?userId=${currentUserId}`, {
+                        method: 'DELETE',
+                    });
+                    const data = await response.json();
+
+                    const toast = document.createElement('ion-toast');
+                    toast.duration = 3000;
+                    toast.position = 'bottom';
+
+                    if (response.ok) {
+                        desktopChatMessages.innerHTML = '';
+                        mobileChatMessages.innerHTML = '';
+                        desktopChatMessages.innerHTML = `
+                            <div class="flex items-start">
+                                <img src="https://lyra-ai-nine.vercel.app/logo.png" alt="LYRA" class="h-8 w-8 rounded-full mt-1">
+                                <div class="ml-3">
+                                    <div class="bg-gray-100 p-3 rounded-lg chat-bubble-ai">
+                                        <p class="text-sm">Riwayat chat kamu sudah dihapus, Kak! 👋</p>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        mobileChatMessages.innerHTML = `
+                            <div class="flex items-start">
+                                <img src="https://lyra-ai-nine.vercel.app/logo.png" alt="LYRA" class="h-8 w-8 rounded-full mt-1">
+                                <div class="ml-3">
+                                    <div class="bg-gray-100 p-3 rounded-lg chat-bubble-ai">
+                                        <p class="text-sm">Riwayat chat kamu sudah dihapus, Kak! 👋</p>
+                                    </div>
+                                </div>
+                            </div>
+                        `;
+                        toast.message = 'Riwayat chat berhasil dihapus!';
+                        toast.color = 'success';
+                    } else {
+                        console.error("Failed to delete chat history:", data.error);
+                        toast.message = `Gagal menghapus riwayat: ${data.error || 'Terjadi kesalahan.'}`;
+                        toast.color = 'danger';
+                    }
+                    document.body.appendChild(toast);
+                    await toast.present();
+                    toast.onDidDismiss(() => toast.remove());
+                } catch (error) {
+                    console.error("Error deleting chat history:", error);
+                    const toast = document.createElement('ion-toast');
+                    toast.message = `Terjadi kesalahan: ${error.message}`;
+                    toast.color = 'danger';
+                    toast.duration = 3000;
+                    toast.position = 'bottom';
+                    document.body.appendChild(toast);
+                    await toast.present();
+                    toast.onDidDismiss(() => toast.remove());
+                }
+            },
+        },
+    ];
+    document.body.appendChild(alert);
+    await alert.present();
+
+    // Paksa remove ion-alert sepenuhnya setelah dismiss (fix bug header tertinggal di mobile)
+    alert.addEventListener('ionAlertDidDismiss', () => {
+        if (alert.parentNode) alert.parentNode.removeChild(alert);
+    });
+    alert.onDidDismiss(() => {
+        if (alert.parentNode) alert.parentNode.removeChild(alert);
+    });
+}
+
+// --- Real-time Clock Function ---
+function updateAiActiveTime() {
+    const now = new Date();
+    const hours = String(now.getHours()).padStart(2, '0');
+    const minutes = String(now.getMinutes()).padStart(2, '0');
+    aiActiveTimeElement.textContent = `🕛️Active ${hours}:${minutes}`;
+    aiActiveMobileElement.textContent = `🕛️Active ${hours}:${minutes}`;
+}
+
+
+// --- Product Listing & Events ---
+let allProducts = [];
+let showOnlyAvailable = false;
+
+async function renderProducts(keyword = "") {
+  const productGrid = document.getElementById('product-grid');
+  productGrid.innerHTML = `<div class="w-full flex justify-center py-8"><ion-spinner name="dots"></ion-spinner></div>`;
+
+  try {
+    if (!allProducts.length) {
+      const res = await fetch(PRODUCT_LISTING_URL);
+      const data = await res.json();
+      allProducts = data.product;
+    }
+
+    const keywordLower = keyword.toLowerCase();
+    const filtered = allProducts.filter(p => {
+      const matchKeyword = p.title.toLowerCase().includes(keywordLower) || (p.description && p.description.toLowerCase().includes(keywordLower));
+      const matchStok = showOnlyAvailable ? p.stok?.toLowerCase() === "tersedia" : true;
+      return matchKeyword && matchStok;
+    });
+
+    productGrid.innerHTML = '';
+
+    if (filtered.length === 0) {
+      productGrid.innerHTML = `<div class="text-center w-full text-gray-500 col-span-full py-8">Produk tidak ditemukan.</div>`;
+      return;
+    }
+
+    filtered.forEach(product => {
+      const card = document.createElement('ion-card');
+      card.className = 'card-product transition duration-300 ease-in-out transform shadow-md';
+
+      card.innerHTML = `
+        <div class="relative h-68 overflow-hidden">
+          <img src="${product.image}" alt="${product.title}" class="w-full h-full object-cover" onerror="this.onerror=null;this.src='https://placehold.co/400x300/E0E0E0/333333?text=Gambar+Tidak+Tersedia';">
+        </div>
+        <ion-card-header class="p-4">
+          <ion-card-title class="text-lg">${product.title}</ion-card-title>
+          <ion-card-subtitle class="text-purple-600 font-bold mt-1">Rp ${product.discount}</ion-card-subtitle>
+        </ion-card-header>
+        <ion-card-content>
+          <div class="flex justify-end-safe gap-1 items-center">
+            <ion-button fill="outline" size="small" color="primary" class="ask-ai-btn">
+              <ion-icon name="sparkles-outline" slot="end"></ion-icon>
+              <ion-label class="ml-2">Tanya AI</ion-label>
+            </ion-button>
+          </div>
+        </ion-card-content>
+      `;
+
+      card.querySelector('.ask-ai-btn').addEventListener('click', () => {
+        const targetChatMessages = window.innerWidth < 768 ? chatMessagesMobile : chatMessagesDesktop;
+
+        if (window.innerWidth < 768) {
+            mobileChatModal.present();
+        }
+
+        requestProductDetail(product, targetChatMessages);
+      });
+
+      productGrid.appendChild(card);
+    });
+
+  } catch (err) {
+    console.error("Gagal fetch produk:", err);
+    productGrid.innerHTML = `<div class="w-full text-center text-red-600 py-4 col-span-full">❌ Gagal memuat produk.</div>`;
+  }
+}
+
+// --- SimpleCart.js Global Access ---
+// Memastikan simpleCart tersedia secara global atau diimpor jika menggunakan modul.
+if (typeof simpleCart === 'undefined') {
+    console.warn("simpleCart.js is not loaded. Cart functionalities will not work.");
+    // Dummy simpleCart object for development if simpleCart.js isn't loaded
+    window.simpleCart = {
+        items: [],
+        add: function(item) { console.log('Dummy simpleCart.add', item); this.items.push(item); },
+        empty: function() { console.log('Dummy simpleCart.empty'); this.items = []; },
+        total: function() { return this.items.reduce((sum, item) => sum + (item.price * item.quantity), 0); },
+        quantity: function() { return this.items.reduce((sum, item) => sum + item.quantity, 0); },
+        has: function(criteria) {
+            return this.items.some(item => {
+                for (const key in criteria) {
+                    if (item[key] !== criteria[key]) return false;
+                }
+                return true;
+            });
+        },
+        find: function(criteria) {
+            return this.items.filter(item => {
+                for (const key in criteria) {
+                    if (item[key] !== criteria[key]) return false;
+                }
+                return true;
+            });
+        },
+        each: function(callback) { this.items.forEach(callback); },
+        update: function() { console.log('Dummy simpleCart.update'); },
+        // [NEW] Tambahkan atau sesuaikan fungsi remove jika belum ada di simpleCart kamu
+        // Ini adalah asumsi. Jika simpleCart kamu memiliki method 'remove' yang berbeda, sesuaikan.
+        remove: function(productName) {
+            const initialLength = this.items.length;
+            this.items = this.items.filter(item => item.name !== productName);
+            console.log(`Dummy simpleCart.remove: Removed ${initialLength - this.items.length} items with name ${productName}`);
+            this.update(); // Panggil update untuk merefresh tampilan
+        },
+        get: function(index) { return this.items[index]; },
+        // Dummy setters/getters for price, quantity etc. for items
+        Item: function(options) {
+            this.name = options.name;
+            this.price = options.price;
+            this.quantity = options.quantity;
+            this.image = options.image;
+            this.warna = options.warna;
+           // this.ukuran = options.ukuran;
+           // this.berat = options.berat;
+            this.set = function(key, value) { this[key] = value; };
+            this.get = function(key) { return this[key]; };
+        }
+    };
+}
+
+// --- Initial Setup & Event Listeners ---
+document.addEventListener('DOMContentLoaded', () => {
+  currentUserId = getOrCreateUserId();
+  console.log("User ID:", currentUserId);
+
+  loadChatHistory(currentUserId, chatMessagesDesktop, chatMessagesMobile);
+
+  updateAiActiveTime(); // Initial call
+  setInterval(updateAiActiveTime, 1000); // Update every second
+
+  if (window.innerWidth < 768) {
+      mobileChatModal.present();
+  }
+
+  renderProducts();
+});
+
+// Dismiss modal function
+window.dismissModal = (modalId) => {
+    const modalToDismiss = document.getElementById(modalId);
+        if (modalToDismiss) {
+        modalToDismiss.dismiss();
+    }
+}
+
+// Search
+document.getElementById('product-searchbar').addEventListener('ionInput', (e) => renderProducts(e.detail.value));
+
+// Toggle Stok
+document.getElementById('toggle-stok').addEventListener('click', (e) => {
+  showOnlyAvailable = !showOnlyAvailable;
+  e.target.textContent = showOnlyAvailable ? 'Tampilkan Semua Produk' : 'Hanya yang Tersedia';
+  renderProducts(document.getElementById('product-searchbar').value);
+});
+
+// Events Desktop
+chatSendBtnDesktop.addEventListener('click', () => handleChatSubmit(chatInputDesktop, chatSendBtnDesktop, chatMessagesDesktop));
+chatInputDesktop.addEventListener('keypress', e => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    handleChatSubmit(chatInputDesktop, chatSendBtnDesktop, chatMessagesDesktop);
+  }
+});
+clearChatDesktopBtn.addEventListener('click', () => clearChatHistory(chatMessagesDesktop, chatMessagesMobile));
+
+// Events Mobile
+openMobileChatBtn.addEventListener('click', () => mobileChatModal.present());
+chatSendBtnMobile.addEventListener('click', () => handleChatSubmit(chatInputMobile, chatSendBtnMobile, chatMessagesMobile));
+chatInputMobile.addEventListener('keypress', e => {
+  if (e.key === 'Enter' && !e.shiftKey) {
+    e.preventDefault();
+    handleChatSubmit(chatInputMobile, chatSendBtnMobile, chatMessagesMobile);
+  }
+});
+clearChatMobileBtn.addEventListener('click', () => clearChatHistory(chatMessagesDesktop, chatMessagesMobile));
+</script>
