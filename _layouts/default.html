@@ -8,6 +8,7 @@
 	<ion-app>
 		<ion-tabs>
 			  {{ content }}
+  {% include chat-fab.html %}
 		</ion-tabs>
 <ion-toast id="globalToast"></ion-toast>
 
@@ -15,7 +16,6 @@
     <ion-icon name="logo-instagram"></ion-icon>
   <ion-label><span id="text_dev">{{ site.dev}}</span></ion-label>
   </ion-chip>
-  {% include chat-fab.html %}
 	</ion-app>
 	
 <ion-alert
