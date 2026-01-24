@@ -3,7 +3,7 @@
     <ion-toolbar color="success">
       <ion-title>Konfirmasi Pesanan</ion-title>
       <ion-buttons slot="end">
-        <ion-button onclick="dismissModal()">
+        <ion-button onclick="dismisszzModal()">
           <ion-icon slot="icon-only" name="close"></ion-icon>
         </ion-button>
       </ion-buttons>
@@ -209,7 +209,7 @@ window.konfirmasiViaWA = async function (selectedOrderId) {
 };
 
 // Fungsi untuk menutup modal
-function dismissModal() {
+function dismisszzModal() {
   const modal = document.getElementById("modalKonfirmasiWA");
   if (modal) modal.dismiss();
       localStorage.removeItem("lastOrderId");
