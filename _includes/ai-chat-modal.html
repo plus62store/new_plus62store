@@ -39,3 +39,135 @@
                                 </div>
                             </ion-footer>
                         </ion-modal>
+<script>
+// Fungsi untuk membuka modal
+async function openMobileChat() {
+    const modal = document.getElementById('mobileChatModal');
+    if (modal) {
+        await modal.present();
+    }
+}
+
+// Fungsi untuk menutup modal
+async function dismissChatModal(modalId) {
+    const modal = document.getElementById(modalId);
+    if (modal) {
+        await modal.dismiss();
+    }
+}
+
+// Inisialisasi event listeners saat halaman dimuat
+document.addEventListener('DOMContentLoaded', function() {
+    // Event listener untuk FAB button (alternatif dari onclick)
+    const fabButton = document.getElementById('openChatFab');
+    if (fabButton) {
+        fabButton.addEventListener('click', openMobileChat);
+    }
+    
+    // Event listener untuk tombol send di modal mobile
+    const sendBtnMobile = document.getElementById('chat-send-btn-mobile');
+    const inputMobile = document.getElementById('chat-input-mobile');
+    
+    if (sendBtnMobile && inputMobile) {
+        sendBtnMobile.addEventListener('click', function() {
+            sendMessage('mobile');
+        });
+        
+        // Enter key untuk mengirim pesan
+        inputMobile.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                sendMessage('mobile');
+            }
+        });
+    }
+    
+    // Event listener untuk clear chat mobile
+    const clearBtnMobile = document.getElementById('clear-chat-mobile');
+    if (clearBtnMobile) {
+        clearBtnMobile.addEventListener('click', function() {
+            clearChat('mobile');
+        });
+    }
+});
+
+// Fungsi untuk mengirim pesan
+function sendMessage(platform) {
+    const inputId = platform === 'mobile' ? 'chat-input-mobile' : 'chat-input-desktop';
+    const messagesId = platform === 'mobile' ? 'chat-messages-mobile' : 'chat-messages-desktop';
+    
+    const input = document.getElementById(inputId);
+    const messagesContainer = document.getElementById(messagesId);
+    
+    if (input.value.trim() !== '') {
+        // Tambahkan pesan user
+        const userMessage = document.createElement('div');
+        userMessage.className = 'flex justify-end mb-4';
+        userMessage.innerHTML = `
+            <div class="bg-purple-500 text-white rounded-lg py-2 px-4 max-w-[80%]">
+                ${input.value}
+            </div>
+        `;
+        messagesContainer.appendChild(userMessage);
+        
+        // Simpan input untuk sementara
+        const userInput = input.value;
+        input.value = '';
+        
+        // Scroll ke bawah
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        
+        // Tampilkan indikator typing (opsional)
+        const typingIndicator = document.createElement('div');
+        typingIndicator.className = 'flex justify-start mb-4';
+        typingIndicator.innerHTML = `
+            <div class="bg-gray-200 text-gray-700 rounded-lg py-2 px-4 max-w-[80%]">
+                <div class="flex space-x-1">
+                    <div class="w-2 h-2 bg-gray-400 rounded-full animate-pulse"></div>
+                    <div class="w-2 h-2 bg-gray-400 rounded-full animate-pulse delay-150"></div>
+                    <div class="w-2 h-2 bg-gray-400 rounded-full animate-pulse delay-300"></div>
+                </div>
+            </div>
+        `;
+        messagesContainer.appendChild(typingIndicator);
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        
+        // Simulasi response AI (ganti dengan API call sesungguhnya)
+        setTimeout(() => {
+            typingIndicator.remove();
+            
+            const aiMessage = document.createElement('div');
+            aiMessage.className = 'flex justify-start mb-4';
+            aiMessage.innerHTML = `
+                <div class="bg-white border border-gray-300 rounded-lg py-2 px-4 max-w-[80%]">
+                    <p>Ini adalah balasan AI untuk: "${userInput}"</p>
+                    <p class="text-xs text-gray-500 mt-1">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
+                </div>
+            `;
+            messagesContainer.appendChild(aiMessage);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        }, 1500);
+    }
+}
+
+// Fungsi untuk menghapus chat
+function clearChat(platform) {
+    const messagesId = platform === 'mobile' ? 'chat-messages-mobile' : 'chat-messages-desktop';
+    const messagesContainer = document.getElementById(messagesId);
+    
+    if (messagesContainer) {
+        messagesContainer.innerHTML = '';
+        
+        // Tambahkan pesan default
+        const defaultMessage = document.createElement('div');
+        defaultMessage.className = 'text-center text-gray-500 py-8';
+        defaultMessage.innerHTML = `
+            <div class="flex flex-col items-center">
+                <ion-icon name="chatbubble-ellipses-outline" class="text-4xl text-gray-300 mb-2"></ion-icon>
+                <p>Mulai percakapan dengan AI Assistant</p>
+                <p class="text-sm mt-1">Tanyakan apa saja tentang produk kami</p>
+            </div>
+        `;
+        messagesContainer.appendChild(defaultMessage);
+    }
+}
+</script>
