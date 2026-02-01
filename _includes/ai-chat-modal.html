@@ -49,8 +49,8 @@ async function openMobileChat() {
 }
 
 // Fungsi untuk menutup modal
-async function dismissChatModal(modalId) {
-    const modal = document.getElementById(modalId);
+async function dismissChatModal(mobileChatModal) {
+    const modal = document.getElementById(mobileChatModal);
     if (modal) {
         await modal.dismiss();
     }
