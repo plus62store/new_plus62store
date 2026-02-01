@@ -206,3 +206,38 @@ div#orders-container {
     grid-template-columns: 1fr;
 	}
 }
+
+ion-modal#mobileChatModal {
+    --height: 85vh;
+    --border-radius: 20px 20px 0 0;
+}
+
+/* Animation untuk modal */
+ion-modal#mobileChatModal::part(content) {
+    animation: slideUp 0.3s ease-out;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(100%);
+    }
+    to {
+        transform: translateY(0);
+    }
+}
+
+/* Styling untuk chat messages */
+#chat-messages-mobile {
+    min-height: 300px;
+    max-height: calc(85vh - 180px);
+}
+
+/* Scrollbar styling */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
