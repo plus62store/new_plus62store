@@ -207,11 +207,6 @@ div#orders-container {
 	}
 }
 
-ion-modal#mobileChatModal {
-    --height: 85vh;
-    --border-radius: 20px 20px 0 0;
-}
-
 /* Animation untuk modal */
 ion-modal#mobileChatModal::part(content) {
     animation: slideUp 0.3s ease-out;
