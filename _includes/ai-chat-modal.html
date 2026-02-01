@@ -1,173 +1,564 @@
-                        <!-- Mobile Chat Modal (dalam ion-modal) -->
-                        <ion-modal id="mobileChatModal" class="h-full">
-                            <ion-header>
-                                <ion-toolbar class="text-gray-700">
-                                    <ion-buttons slot="start">
-                                        <ion-button onclick="dismissChatModal('mobileChatModal')">
-                                            <span class="w-2.5 h-2.5 p-2 bottom-3 flex justify-center items-center left-3 text-gray-200 text-[14px] bg-red-700 rounded-full absolute simpleCart_quantity"></span>
-                                            <ion-icon slot="icon-only" name="storefront-outline"></ion-icon>
-                                        </ion-button>
-                                    </ion-buttons>
-                                    <div class="flex items-center justify-between">
-                                        <div class="flex flex-1 flex-col text-sm text-gray-700">
-                                            <span class="font-semibold text-gray-900">AI Assistant</span>
-                                                <span id="ai-active-mobile" class="mt-1.5 text-xs">🕛️Active --:--</span>
-                                                <span id="ai-online-mobile" class="mt-1.5 text-xs hidden">🟢 Online</span>
-                                        </div>
-                                        <ion-buttons slot="end">
-                                            <ion-button id="clear-chat-mobile" fill="clear" color="danger">
-                                                <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
-                                            </ion-button>
-                                        </ion-buttons>
-                                    </div>
-                                </ion-toolbar>
-                            </ion-header>
-                            <ion-content class="ion-padding bg-gray-50">
-                                <!-- Chat Messages Mobile -->
-                                <div id="chat-messages-mobile" class="relative h-full flex flex-col space-y-4 py-2 px-1 scrollbar-hide overflow-y-auto">
-                                    <!-- Pesan akan dimuat secara dinamis oleh JS -->
-                                </div>
-                            </ion-content>
-                            <ion-footer class="ion-no-border bg-white p-4">
-                                <div class="relative flex items-center">
-                                    <input id="chat-input-mobile" type="text" placeholder="Tanyakan apapun..." class="w-full pl-4 pr-12 py-3 rounded-full border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 focus:border-transparent">
-                                    <ion-buttons>
-                                        <ion-button id="chat-send-btn-mobile" fill="clear" class="absolute right-1 top-1/2 -translate-y-1/2 text-gray-400 hover:text-purple-500">
-                                            <ion-icon slot="icon-only" name="send"></ion-icon>
-                                        </ion-button>
-                                    </ion-buttons>
-                                </div>
-                            </ion-footer>
-                        </ion-modal>
+<!-- Mobile Chat Modal (dalam ion-modal) -->
+<ion-modal id="mobileChatModal" class="h-full" style="--height: 85vh; --border-radius: 20px 20px 0 0;">
+    <ion-header>
+        <ion-toolbar class="text-gray-700">
+            <ion-buttons slot="start">
+                <ion-button onclick="dismissChatModal('mobileChatModal')">
+                    <ion-icon slot="icon-only" name="close-outline"></ion-icon>
+                </ion-button>
+            </ion-buttons>
+            
+            <div class="flex items-center justify-between w-full">
+                <div class="flex items-center space-x-3">
+                    <div class="relative">
+                        <div class="w-10 h-10 bg-gradient-to-r from-purple-500 to-pink-500 rounded-full flex items-center justify-center">
+                            <ion-icon name="sparkles-outline" class="text-white text-lg"></ion-icon>
+                        </div>
+                        <span id="ai-status-indicator" class="absolute -bottom-1 -right-1 w-3 h-3 bg-gray-400 rounded-full border-2 border-white"></span>
+                    </div>
+                    
+                    <div class="flex flex-col">
+                        <span class="font-semibold text-gray-900 text-sm">AI Assistant</span>
+                        <div class="flex items-center space-x-2">
+                            <span id="ai-active-mobile" class="text-xs text-gray-500">🕐 Active --:--</span>
+                            <span id="ai-online-mobile" class="text-xs text-green-600 hidden">🟢 Online</span>
+                        </div>
+                    </div>
+                </div>
+                
+                <ion-buttons slot="end">
+                    <ion-button id="clear-chat-mobile" fill="clear" color="medium">
+                        <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+                    </ion-button>
+                </ion-buttons>
+            </div>
+        </ion-toolbar>
+    </ion-header>
+    
+    <ion-content class="ion-padding bg-gradient-to-b from-gray-50 to-white">
+        <!-- Chat Messages Mobile -->
+        <div id="chat-messages-mobile" class="relative h-full flex flex-col space-y-3 py-2 px-1 scrollbar-hide overflow-y-auto">
+            <!-- Default welcome message -->
+            <div class="text-center text-gray-500 py-10">
+                <div class="flex flex-col items-center">
+                    <div class="w-16 h-16 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full flex items-center justify-center mb-4">
+                        <ion-icon name="chatbubble-ellipses-outline" class="text-3xl text-purple-500"></ion-icon>
+                    </div>
+                    <p class="font-medium text-gray-700 mb-1">AI Assistant Plus62Store</p>
+                    <p class="text-sm">Tanyakan tentang produk masker bordir kami</p>
+                    <div class="mt-4 flex flex-wrap justify-center gap-2">
+                        <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs">"Masker apa yang tersedia?"</span>
+                        <span class="px-3 py-1 bg-pink-100 text-pink-700 rounded-full text-xs">"Ada warna hitam?"</span>
+                        <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs">"Rekomendasi masker"</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </ion-content>
+    
+    <ion-footer class="ion-no-border bg-white p-3 border-t border-gray-100">
+        <div class="flex items-center space-x-2">
+            <div class="flex-1">
+                <ion-input 
+                    id="chat-input-mobile"
+                    type="text" 
+                    placeholder="Ketik pesan..." 
+                    class="ion-input-custom rounded-full border border-gray-200"
+                    clear-input>
+                </ion-input>
+            </div>
+            
+            <ion-button 
+                id="chat-send-btn-mobile"
+                shape="round" 
+                class="send-btn"
+                disabled>
+                <ion-icon slot="icon-only" name="send"></ion-icon>
+            </ion-button>
+        </div>
+        
+        <div class="mt-2 text-center">
+            <p class="text-xs text-gray-400">AI Assistant • Plus62Store • Menjawab berdasarkan katalog produk</p>
+        </div>
+    </ion-footer>
+</ion-modal>
+
+
+<style>
+.ion-input-custom {
+    --padding-start: 16px;
+    --padding-end: 16px;
+    --padding-top: 12px;
+    --padding-bottom: 12px;
+    --background: #f9fafb;
+    --placeholder-color: #9ca3af;
+    --color: #374151;
+}
+
+.ion-input-custom:focus {
+    --background: #ffffff;
+    --border-color: #8b5cf6;
+}
+
+.send-btn {
+    --background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+    --background-activated: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
+    --background-hover: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+    width: 48px;
+    height: 48px;
+}
+
+.send-btn[disabled] {
+    --background: #d1d5db;
+    opacity: 0.6;
+}
+
+/* Scrollbar styling */
+.scrollbar-hide::-webkit-scrollbar {
+    display: none;
+}
+
+.scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+/* Message styling */
+.message-user {
+    background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+    color: white;
+    border-radius: 18px 18px 4px 18px;
+    max-width: 85%;
+}
+
+.message-ai {
+    background: white;
+    border: 1px solid #e5e7eb;
+    border-radius: 18px 18px 18px 4px;
+    max-width: 85%;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+/* Typing indicator animation */
+.typing-dot {
+    animation: typing 1.4s infinite;
+}
+
+.typing-dot:nth-child(2) {
+    animation-delay: 0.2s;
+}
+
+.typing-dot:nth-child(3) {
+    animation-delay: 0.4s;
+}
+
+@keyframes typing {
+    0%, 60%, 100% {
+        transform: translateY(0);
+    }
+    30% {
+        transform: translateY(-6px);
+    }
+}
+</style>
+
 <script>
+// Konfigurasi
+const AI_API_URL = 'https://ai-store-assist.sendaljepit.workers.dev/api/chat';
+let conversationHistory = [];
+let lastAIActivity = null;
+let onlineTimeout = null;
+let statusUpdateInterval = null;
+
+// ==================== FUNGSI UTAMA ====================
+
+// Fungsi: Kirim pesan ke AI
+async function sendChatMessage(userMessage) {
+    if (!userMessage.trim()) return;
+    
+    // Update status: User mengirim pesan
+    updateAIActiveTime();
+    setAIStatus('typing');
+    
+    // Tampilkan pesan pengguna
+    appendMessageToUI(userMessage, true);
+    
+    // Tampilkan indikator typing
+    showTypingIndicator();
+    
+    // Disable input dan tombol sementara
+    const input = document.getElementById('chat-input-mobile');
+    const sendBtn = document.getElementById('chat-send-btn-mobile');
+    input.disabled = true;
+    sendBtn.disabled = true;
+    
+    try {
+        const response = await fetch(AI_API_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                message: userMessage,
+                conversation: conversationHistory.slice(-8) // Ambil 4 pesan terakhir (2 pasang)
+            })
+        });
+        
+        if (!response.ok) throw new Error(`HTTP ${response.status}`);
+        const data = await response.json();
+        
+        // Sembunyikan indikator typing
+        removeTypingIndicator();
+        
+        // Tampilkan balasan AI
+        appendMessageToUI(data.response, false);
+        
+        // Update status: AI merespons
+        updateAIActiveTime();
+        setAIStatus('online');
+        
+        // Simpan ke riwayat percakapan
+        conversationHistory.push(
+            { role: 'user', content: userMessage },
+            { role: 'assistant', content: data.response }
+        );
+        
+        // Simpan ke localStorage (opsional)
+        saveConversation();
+        
+    } catch (error) {
+        console.error('Chat error:', error);
+        removeTypingIndicator();
+        appendMessageToUI('⚠️ Maaf, sedang ada gangguan pada AI Assistant. Silakan coba lagi beberapa saat.', false);
+        setAIStatus('offline');
+    } finally {
+        // Enable input dan tombol
+        input.disabled = false;
+        sendBtn.disabled = false;
+        input.value = '';
+        updateSendButtonState();
+        input.focus();
+    }
+}
+
+// ==================== FUNGSI STATUS AI ====================
+
+// Update waktu aktif AI
+function updateAIActiveTime() {
+    lastAIActivity = new Date();
+    
+    // Update tampilan waktu
+    updateActiveTimeDisplay();
+    
+    // Mulai interval pembaruan waktu jika belum ada
+    if (!statusUpdateInterval) {
+        statusUpdateInterval = setInterval(updateActiveTimeDisplay, 60000); // Update setiap menit
+    }
+}
+
+// Update tampilan waktu aktif
+function updateActiveTimeDisplay() {
+    if (!lastAIActivity) return;
+    
+    const now = new Date();
+    const diffMinutes = Math.floor((now - lastAIActivity) / 60000);
+    const diffHours = Math.floor(diffMinutes / 60);
+    const diffDays = Math.floor(diffHours / 24);
+    
+    let timeText = '🕐 Active ';
+    
+    if (diffMinutes < 1) {
+        timeText += 'just now';
+    } else if (diffMinutes < 60) {
+        timeText += `${diffMinutes}m ago`;
+    } else if (diffHours < 24) {
+        timeText += `${diffHours}h ago`;
+    } else {
+        timeText += `${diffDays}d ago`;
+    }
+    
+    const activeElement = document.getElementById('ai-active-mobile');
+    if (activeElement) {
+        activeElement.textContent = timeText;
+    }
+}
+
+// Set status AI (online/typing/offline)
+function setAIStatus(status) {
+    const onlineElement = document.getElementById('ai-online-mobile');
+    const indicator = document.getElementById('ai-status-indicator');
+    
+    if (!onlineElement || !indicator) return;
+    
+    // Hapus timeout sebelumnya
+    if (onlineTimeout) {
+        clearTimeout(onlineTimeout);
+        onlineTimeout = null;
+    }
+    
+    switch(status) {
+        case 'online':
+            onlineElement.classList.remove('hidden');
+            indicator.className = 'absolute -bottom-1 -right-1 w-3 h-3 bg-green-500 rounded-full border-2 border-white animate-pulse';
+            
+            // Sembunyikan status online setelah 10 detik
+            onlineTimeout = setTimeout(() => {
+                onlineElement.classList.add('hidden');
+                indicator.className = 'absolute -bottom-1 -right-1 w-3 h-3 bg-gray-400 rounded-full border-2 border-white';
+            }, 10000);
+            break;
+            
+        case 'typing':
+            onlineElement.classList.remove('hidden');
+            onlineElement.textContent = '🟡 Typing...';
+            indicator.className = 'absolute -bottom-1 -right-1 w-3 h-3 bg-yellow-500 rounded-full border-2 border-white animate-pulse';
+            break;
+            
+        case 'offline':
+            onlineElement.classList.add('hidden');
+            indicator.className = 'absolute -bottom-1 -right-1 w-3 h-3 bg-gray-400 rounded-full border-2 border-white';
+            break;
+    }
+}
+
+// ==================== FUNGSI UI ====================
+
+// Tambah pesan ke UI
+function appendMessageToUI(text, isUser) {
+    const container = document.getElementById('chat-messages-mobile');
+    if (!container) return;
+    
+    // Hapus pesan default jika ada
+    if (container.children.length === 1 && container.children[0].classList.contains('text-center')) {
+        container.innerHTML = '';
+    }
+    
+    const messageDiv = document.createElement('div');
+    messageDiv.className = isUser ? 'flex justify-end mb-3' : 'flex justify-start mb-3';
+    
+    const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    
+    messageDiv.innerHTML = `
+        <div class="${isUser ? 'message-user' : 'message-ai'} py-3 px-4">
+            <p class="${isUser ? 'text-white' : 'text-gray-800'}">${escapeHtml(text)}</p>
+            <p class="text-xs ${isUser ? 'text-purple-200' : 'text-gray-500'} mt-2">${time}</p>
+        </div>
+    `;
+    
+    container.appendChild(messageDiv);
+    container.scrollTop = container.scrollHeight;
+}
+
+// Escape HTML untuk keamanan
+function escapeHtml(text) {
+    const div = document.createElement('div');
+    div.textContent = text;
+    return div.innerHTML;
+}
+
+// Tampilkan indikator typing
+function showTypingIndicator() {
+    const container = document.getElementById('chat-messages-mobile');
+    if (!container) return;
+    
+    const typingDiv = document.createElement('div');
+    typingDiv.id = 'ai-typing-indicator';
+    typingDiv.className = 'flex justify-start mb-3';
+    
+    typingDiv.innerHTML = `
+        <div class="message-ai py-3 px-4">
+            <div class="flex items-center space-x-1">
+                <div class="typing-dot w-2 h-2 bg-gray-400 rounded-full"></div>
+                <div class="typing-dot w-2 h-2 bg-gray-400 rounded-full"></div>
+                <div class="typing-dot w-2 h-2 bg-gray-400 rounded-full"></div>
+            </div>
+        </div>
+    `;
+    
+    container.appendChild(typingDiv);
+    container.scrollTop = container.scrollHeight;
+}
+
+// Hapus indikator typing
+function removeTypingIndicator() {
+    const indicator = document.getElementById('ai-typing-indicator');
+    if (indicator) indicator.remove();
+}
+
+// Reset chat
+function clearChatHistory() {
+    const container = document.getElementById('chat-messages-mobile');
+    if (container) {
+        container.innerHTML = `
+            <div class="text-center text-gray-500 py-10">
+                <div class="flex flex-col items-center">
+                    <div class="w-16 h-16 bg-gradient-to-r from-purple-100 to-pink-100 rounded-full flex items-center justify-center mb-4">
+                        <ion-icon name="chatbubble-ellipses-outline" class="text-3xl text-purple-500"></ion-icon>
+                    </div>
+                    <p class="font-medium text-gray-700 mb-1">AI Assistant Plus62Store</p>
+                    <p class="text-sm">Tanyakan tentang produk masker bordir kami</p>
+                    <div class="mt-4 flex flex-wrap justify-center gap-2">
+                        <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-xs">"Masker apa yang tersedia?"</span>
+                        <span class="px-3 py-1 bg-pink-100 text-pink-700 rounded-full text-xs">"Ada warna hitam?"</span>
+                        <span class="px-3 py-1 bg-blue-100 text-blue-700 rounded-full text-xs">"Rekomendasi masker"</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    }
+    
+    conversationHistory = [];
+    lastAIActivity = null;
+    setAIStatus('offline');
+    
+    // Hapus dari localStorage
+    localStorage.removeItem('plus62store_chat_history');
+    localStorage.removeItem('plus62store_last_activity');
+    
+    // Reset display
+    const activeElement = document.getElementById('ai-active-mobile');
+    if (activeElement) {
+        activeElement.textContent = '🕐 Active --:--';
+    }
+}
+
+// ==================== FUNGSI UTILITAS ====================
+
+// Update state tombol kirim
+function updateSendButtonState() {
+    const input = document.getElementById('chat-input-mobile');
+    const sendBtn = document.getElementById('chat-send-btn-mobile');
+    
+    if (input && sendBtn) {
+        sendBtn.disabled = !input.value.trim();
+    }
+}
+
+// Simpan percakapan ke localStorage
+function saveConversation() {
+    if (conversationHistory.length > 0) {
+        localStorage.setItem('plus62store_chat_history', JSON.stringify(conversationHistory));
+    }
+    if (lastAIActivity) {
+        localStorage.setItem('plus62store_last_activity', lastAIActivity.toISOString());
+    }
+}
+
+// Load percakapan dari localStorage
+function loadConversation() {
+    try {
+        const savedHistory = localStorage.getItem('plus62store_chat_history');
+        const savedActivity = localStorage.getItem('plus62store_last_activity');
+        
+        if (savedHistory) {
+            conversationHistory = JSON.parse(savedHistory);
+            
+            // Tampilkan riwayat percakapan
+            const container = document.getElementById('chat-messages-mobile');
+            if (container && conversationHistory.length > 0) {
+                container.innerHTML = '';
+                
+                conversationHistory.forEach(msg => {
+                    appendMessageToUI(msg.content, msg.role === 'user');
+                });
+            }
+        }
+        
+        if (savedActivity) {
+            lastAIActivity = new Date(savedActivity);
+            updateActiveTimeDisplay();
+            setAIStatus('offline');
+        }
+    } catch (e) {
+        console.error('Error loading conversation:', e);
+    }
+}
+
+// ==================== EVENT LISTENERS ====================
+
+// Inisialisasi saat DOM siap
+document.addEventListener('DOMContentLoaded', function() {
+    // Event Listeners untuk chat mobile
+    const sendBtn = document.getElementById('chat-send-btn-mobile');
+    const chatInput = document.getElementById('chat-input-mobile');
+    const clearBtn = document.getElementById('clear-chat-mobile');
+    const fabButton = document.getElementById('openChatFab');
+    
+    // Load percakapan yang tersimpan
+    loadConversation();
+    
+    // Kirim dengan klik tombol
+    if (sendBtn) {
+        sendBtn.addEventListener('click', () => {
+            const message = chatInput.value.trim();
+            if (message) {
+                sendChatMessage(message);
+            }
+        });
+    }
+    
+    // Kirim dengan Enter
+    if (chatInput) {
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                const message = chatInput.value.trim();
+                if (message) {
+                    sendChatMessage(message);
+                }
+            }
+        });
+        
+        // Update tombol kirim saat input berubah
+        chatInput.addEventListener('input', updateSendButtonState);
+    }
+    
+    // Tombol hapus chat
+    if (clearBtn) {
+        clearBtn.addEventListener('click', () => {
+            // Konfirmasi sebelum menghapus
+            if (confirm('Hapus semua percakapan?')) {
+                clearChatHistory();
+            }
+        });
+    }
+    
+    // FAB button untuk buka modal
+    if (fabButton) {
+        fabButton.addEventListener('click', openMobileChat);
+    }
+    
+    // Update tombol kirim state awal
+    updateSendButtonState();
+});
+
 // Fungsi untuk membuka modal
 async function openMobileChat() {
     const modal = document.getElementById('mobileChatModal');
     if (modal) {
         await modal.present();
+        
+        // Fokus ke input setelah modal terbuka
+        setTimeout(() => {
+            const input = document.getElementById('chat-input-mobile');
+            if (input) input.focus();
+        }, 300);
     }
 }
 
 // Fungsi untuk menutup modal
-async function dismissChatModal(mobileChatModal) {
-    const modal = document.getElementById(mobileChatModal);
+async function dismissChatModal(modalId) {
+    const modal = document.getElementById(modalId);
     if (modal) {
         await modal.dismiss();
     }
 }
 
-// Inisialisasi event listeners saat halaman dimuat
-document.addEventListener('DOMContentLoaded', function() {
-    // Event listener untuk FAB button (alternatif dari onclick)
-    const fabButton = document.getElementById('openChatFab');
-    if (fabButton) {
-        fabButton.addEventListener('click', openMobileChat);
+// Cleanup interval saat halaman ditutup
+window.addEventListener('beforeunload', () => {
+    if (statusUpdateInterval) {
+        clearInterval(statusUpdateInterval);
     }
-    
-    // Event listener untuk tombol send di modal mobile
-    const sendBtnMobile = document.getElementById('chat-send-btn-mobile');
-    const inputMobile = document.getElementById('chat-input-mobile');
-    
-    if (sendBtnMobile && inputMobile) {
-        sendBtnMobile.addEventListener('click', function() {
-            sendMessage('mobile');
-        });
-        
-        // Enter key untuk mengirim pesan
-        inputMobile.addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') {
-                sendMessage('mobile');
-            }
-        });
-    }
-    
-    // Event listener untuk clear chat mobile
-    const clearBtnMobile = document.getElementById('clear-chat-mobile');
-    if (clearBtnMobile) {
-        clearBtnMobile.addEventListener('click', function() {
-            clearChat('mobile');
-        });
+    if (onlineTimeout) {
+        clearTimeout(onlineTimeout);
     }
 });
-
-// Fungsi untuk mengirim pesan
-function sendMessage(platform) {
-    const inputId = platform === 'mobile' ? 'chat-input-mobile' : 'chat-input-desktop';
-    const messagesId = platform === 'mobile' ? 'chat-messages-mobile' : 'chat-messages-desktop';
-    
-    const input = document.getElementById(inputId);
-    const messagesContainer = document.getElementById(messagesId);
-    
-    if (input.value.trim() !== '') {
-        // Tambahkan pesan user
-        const userMessage = document.createElement('div');
-        userMessage.className = 'flex justify-end mb-4';
-        userMessage.innerHTML = `
-            <div class="bg-purple-500 text-white rounded-lg py-2 px-4 max-w-[80%]">
-                ${input.value}
-            </div>
-        `;
-        messagesContainer.appendChild(userMessage);
-        
-        // Simpan input untuk sementara
-        const userInput = input.value;
-        input.value = '';
-        
-        // Scroll ke bawah
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        
-        // Tampilkan indikator typing (opsional)
-        const typingIndicator = document.createElement('div');
-        typingIndicator.className = 'flex justify-start mb-4';
-        typingIndicator.innerHTML = `
-            <div class="bg-gray-200 text-gray-700 rounded-lg py-2 px-4 max-w-[80%]">
-                <div class="flex space-x-1">
-                    <div class="w-2 h-2 bg-gray-400 rounded-full animate-pulse"></div>
-                    <div class="w-2 h-2 bg-gray-400 rounded-full animate-pulse delay-150"></div>
-                    <div class="w-2 h-2 bg-gray-400 rounded-full animate-pulse delay-300"></div>
-                </div>
-            </div>
-        `;
-        messagesContainer.appendChild(typingIndicator);
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        
-        // Simulasi response AI (ganti dengan API call sesungguhnya)
-        setTimeout(() => {
-            typingIndicator.remove();
-            
-            const aiMessage = document.createElement('div');
-            aiMessage.className = 'flex justify-start mb-4';
-            aiMessage.innerHTML = `
-                <div class="bg-white border border-gray-300 rounded-lg py-2 px-4 max-w-[80%]">
-                    <p>Ini adalah balasan AI untuk: "${userInput}"</p>
-                    <p class="text-xs text-gray-500 mt-1">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</p>
-                </div>
-            `;
-            messagesContainer.appendChild(aiMessage);
-            messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        }, 1500);
-    }
-}
-
-// Fungsi untuk menghapus chat
-function clearChat(platform) {
-    const messagesId = platform === 'mobile' ? 'chat-messages-mobile' : 'chat-messages-desktop';
-    const messagesContainer = document.getElementById(messagesId);
-    
-    if (messagesContainer) {
-        messagesContainer.innerHTML = '';
-        
-        // Tambahkan pesan default
-        const defaultMessage = document.createElement('div');
-        defaultMessage.className = 'text-center text-gray-500 py-8';
-        defaultMessage.innerHTML = `
-            <div class="flex flex-col items-center">
-                <ion-icon name="chatbubble-ellipses-outline" class="text-4xl text-gray-300 mb-2"></ion-icon>
-                <p>Mulai percakapan dengan AI Assistant</p>
-                <p class="text-sm mt-1">Tanyakan apa saja tentang produk kami</p>
-            </div>
-        `;
-        messagesContainer.appendChild(defaultMessage);
-    }
-}
 </script>
