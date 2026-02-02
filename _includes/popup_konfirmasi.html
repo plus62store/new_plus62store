@@ -189,7 +189,7 @@ window.konfirmasiViaWA = async function (selectedOrderId) {
     const { name = "-", color = "-", model = "-", quantity = 0, price = 0 } = item;
     const subtotal = quantity * price;
 
-    message += `\n- *Produk ${name}*,\n- *Warna ${color}*,\n- *Model ${model}*,\n- *Qty ${quantity} pcs* *x* @${formatRupiah(price)} \nn *Total harga ${formatRupiah(subtotal)}*\n---`;
+    message += `\n- *Produk ${name}*,\n- *Warna ${color}*,\n- *Model ${model}*,\n- *Qty ${quantity} pcs* *x* _@${formatRupiah(price)}_ \n\n *Total harga ${formatRupiah(subtotal)}*\n---`;
   });
 
   message += `\n*Total Pembayaran: ${formatRupiah(totalAmount)}*\n\n`;
