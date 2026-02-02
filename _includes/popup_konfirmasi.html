@@ -189,10 +189,10 @@ window.konfirmasiViaWA = async function (selectedOrderId) {
     const { name = "-", color = "-", model = "-", quantity = 0, price = 0 } = item;
     const subtotal = quantity * price;
 
-    message += `\n- *Produk ${name}*,\n- *Warna ${color}*,\n- *Model ${model}*,\n ${quantity} pcs *x* @${formatRupiah(price)} = *Total harga ${formatRupiah(subtotal)}*\n---`;
+    message += `\n- *Produk ${name}*,\n- *Warna ${color}*,\n- *Model ${model}*,\n- *Qty ${quantity} pcs* *x* @${formatRupiah(price)} \nn *Total harga ${formatRupiah(subtotal)}*\n---`;
   });
 
-  message += `\nTotal Pembayaran: ${formatRupiah(totalAmount)}\n\n`;
+  message += `\n*Total Pembayaran: ${formatRupiah(totalAmount)}*\n\n`;
   message += `Alamat Pengiriman: ${street}, ${city}, ${state} ${postal_code}`;
 
   const phoneNumber = "{{ site.WA_KEY }}"; // Ganti dengan nomor WhatsApp
