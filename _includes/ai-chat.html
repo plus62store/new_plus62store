@@ -1,0 +1,836 @@
+<!-- Mobile Chat Modal -->
+<ion-modal 
+  id="mobileChatModal" 
+  trigger="openChatFab"
+  handle-behavior="cycle"
+  swipe-to-close="true"
+  can-dismiss="true"
+  presenting-element="body"
+  class="mobile-chat-modal"
+>
+  <div class="chat-wrapper">
+    <!-- Header dengan fixed position -->
+    <ion-header class="ion-no-border chat-header" collapse="fade">
+      <ion-toolbar class="chat-toolbar" color="light">
+        <ion-buttons slot="start">
+          <ion-button 
+            class="close-btn"
+            fill="clear"
+            size="small"
+            onclick="dismissChatModal('mobileChatModal')"
+            aria-label="Close chat"
+          >
+            <ion-icon slot="icon-only" name="chevron-down" size="small"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+
+        <div class="chat-title-wrapper">
+          <div class="flex items-center gap-2">
+            <div class="relative">
+              <div class="ai-avatar">
+                <ion-icon name="sparkles" class="text-white"></ion-icon>
+              </div>
+              <span id="ai-status-indicator" class="status-indicator"></span>
+            </div>
+            
+            <div class="flex flex-col">
+              <span class="font-semibold text-gray-900 text-sm leading-tight">
+                AI Assistant
+                <span class="inline-block w-2 h-2 bg-green-500 rounded-full ml-1 animate-pulse"></span>
+              </span>
+              <span id="ai-active-mobile" class="text-xs text-gray-500 font-normal">
+                Online • Siap membantu
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <ion-buttons slot="end">
+          <ion-button 
+            id="clear-chat-mobile"
+            fill="clear"
+            size="small"
+            class="action-btn"
+            aria-label="Clear chat"
+          >
+            <ion-icon slot="icon-only" name="trash-outline" size="small"></ion-icon>
+          </ion-button>
+        </ion-buttons>
+      </ion-toolbar>
+    </ion-header>
+
+    <!-- Chat Content dengan safe area untuk mobile -->
+    <ion-content 
+      class="chat-content"
+      scroll-y="true"
+      force-overscroll="true"
+    >
+      <!-- Welcome Message -->
+      <div class="welcome-section ion-padding">
+        <div class="flex flex-col items-center text-center">
+          <div class="welcome-avatar">
+            <ion-icon name="chatbubble-ellipses" class="text-purple-600"></ion-icon>
+          </div>
+          
+          <h3 class="welcome-title">
+            AI Assistant Plus62Store
+          </h3>
+          <p class="welcome-subtitle">
+            Tanyakan tentang produk masker bordir kami
+          </p>
+          
+          <!-- Quick Suggestions -->
+          <div class="quick-suggestions">
+            <ion-chip 
+              class="suggestion-chip"
+              onclick="sendQuickMessage('Masker apa yang tersedia?')"
+            >
+              <ion-label>"Masker apa yang tersedia?"</ion-label>
+            </ion-chip>
+            
+            <ion-chip 
+              class="suggestion-chip"
+              onclick="sendQuickMessage('Ada masker warna hitam?')"
+            >
+              <ion-label>"Ada warna hitam?"</ion-label>
+            </ion-chip>
+            
+            <ion-chip 
+              class="suggestion-chip"
+              onclick="sendQuickMessage('Rekomendasi masker terbaik')"
+            >
+              <ion-label>"Rekomendasi masker"</ion-label>
+            </ion-chip>
+          </div>
+        </div>
+      </div>
+
+      <!-- Chat Messages Container -->
+      <div 
+        id="chat-messages-mobile" 
+        class="messages-container ion-padding"
+      >
+        <!-- Messages will be appended here -->
+      </div>
+
+      <!-- Typing Indicator (hidden by default) -->
+      <div id="typing-indicator" class="typing-indicator hidden">
+        <div class="typing-bubble">
+          <div class="typing-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+        </div>
+      </div>
+    </ion-content>
+
+    <!-- Footer dengan input area -->
+    <ion-footer class="ion-no-border chat-footer">
+      <ion-toolbar class="input-toolbar">
+        <div class="input-wrapper">
+          <ion-input
+            id="chat-input-mobile"
+            type="text"
+            placeholder="Ketik pesan..."
+            class="chat-input"
+            clear-input="true"
+            enterkeyhint="send"
+            autocapitalize="sentences"
+            autocorrect="on"
+            spellcheck="true"
+          >
+            <ion-button 
+              slot="end" 
+              fill="clear" 
+              size="small"
+              onclick="toggleVoiceInput()"
+              aria-label="Voice input"
+            >
+              <ion-icon name="mic-outline" slot="icon-only"></ion-icon>
+            </ion-button>
+          </ion-input>
+          
+          <ion-button 
+            id="chat-send-btn-mobile"
+            class="send-button"
+            shape="round"
+            fill="solid"
+            aria-label="Send message"
+          >
+            <ion-icon slot="icon-only" name="send"></ion-icon>
+          </ion-button>
+        </div>
+        
+        <div class="footer-note">
+          <p class="text-xs text-gray-400 text-center">
+            <ion-icon name="information-circle-outline" class="align-middle"></ion-icon>
+            AI dapat membuat kesalahan, periksa kembali informasinya
+          </p>
+        </div>
+      </ion-toolbar>
+    </ion-footer>
+  </div>
+</ion-modal>
+
+<style>
+/* Mobile-First Styles */
+.mobile-chat-modal {
+  --height: 100%;
+  --width: 100%;
+  --max-width: 500px;
+  --max-height: 100vh;
+  --border-radius: 0;
+  --box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.1);
+}
+
+.mobile-chat-modal::part(content) {
+  border-top-left-radius: 20px;
+  border-top-right-radius: 20px;
+  overflow: hidden;
+}
+
+.chat-wrapper {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+  max-height: -webkit-fill-available;
+  background: linear-gradient(180deg, #f8fafc 0%, #ffffff 100%);
+}
+
+/* Header Styles */
+.chat-header {
+  padding-top: env(safe-area-inset-top, 0);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.chat-toolbar {
+  --background: rgba(255, 255, 255, 0.95);
+  --border-color: transparent;
+  --padding-top: 8px;
+  --padding-bottom: 8px;
+  --padding-start: 12px;
+  --padding-end: 12px;
+}
+
+.close-btn {
+  --border-radius: 50%;
+  --padding-start: 8px;
+  --padding-end: 8px;
+  width: 36px;
+  height: 36px;
+}
+
+.ai-avatar {
+  width: 40px;
+  height: 40px;
+  background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-shadow: 0 4px 12px rgba(139, 92, 246, 0.3);
+}
+
+.ai-avatar ion-icon {
+  font-size: 20px;
+}
+
+.status-indicator {
+  position: absolute;
+  bottom: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  border: 2px solid white;
+  background: #22c55e;
+}
+
+.status-indicator.typing {
+  background: #f59e0b;
+  animation: pulse 1.5s infinite;
+}
+
+.status-indicator.offline {
+  background: #9ca3af;
+}
+
+/* Content Area */
+.chat-content {
+  --padding-top: 0;
+  --padding-bottom: 0;
+  flex: 1;
+  overflow-y: auto;
+  -webkit-overflow-scrolling: touch;
+}
+
+.welcome-section {
+  padding-top: 2rem;
+  padding-bottom: 1.5rem;
+}
+
+.welcome-avatar {
+  width: 72px;
+  height: 72px;
+  background: linear-gradient(135deg, #f3e8ff 0%, #fce7f3 100%);
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin-bottom: 1rem;
+}
+
+.welcome-avatar ion-icon {
+  font-size: 32px;
+}
+
+.welcome-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+  margin-bottom: 0.5rem;
+}
+
+.welcome-subtitle {
+  font-size: 0.875rem;
+  color: #6b7280;
+  margin-bottom: 1.5rem;
+}
+
+.quick-suggestions {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+  max-width: 300px;
+}
+
+.suggestion-chip {
+  --background: rgba(255, 255, 255, 0.9);
+  --border-color: #e5e7eb;
+  --border-width: 1px;
+  --border-radius: 20px;
+  --padding-start: 16px;
+  --padding-end: 16px;
+  height: 36px;
+  font-size: 0.8125rem;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.suggestion-chip ion-label {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Messages Container */
+.messages-container {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding-bottom: 100px;
+  min-height: 100%;
+}
+
+.message-bubble {
+  max-width: 85%;
+  padding: 12px 16px;
+  border-radius: 18px;
+  position: relative;
+  animation: fadeIn 0.3s ease-out;
+}
+
+.message-user {
+  align-self: flex-end;
+  background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%);
+  color: white;
+  border-bottom-right-radius: 4px;
+}
+
+.message-ai {
+  align-self: flex-start;
+  background: white;
+  border: 1px solid #e5e7eb;
+  color: #1f2937;
+  border-bottom-left-radius: 4px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.message-content {
+  font-size: 0.9375rem;
+  line-height: 1.4;
+  word-wrap: break-word;
+}
+
+.message-time {
+  font-size: 0.75rem;
+  opacity: 0.7;
+  margin-top: 4px;
+  text-align: right;
+}
+
+/* Typing Indicator */
+.typing-indicator {
+  padding: 12px 16px;
+}
+
+.typing-bubble {
+  background: white;
+  border: 1px solid #e5e7eb;
+  border-radius: 18px;
+  padding: 16px;
+  max-width: 85%;
+}
+
+.typing-dots {
+  display: flex;
+  gap: 4px;
+}
+
+.typing-dots span {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #9ca3af;
+  animation: typingBounce 1.4s infinite ease-in-out;
+}
+
+.typing-dots span:nth-child(2) {
+  animation-delay: 0.2s;
+}
+
+.typing-dots span:nth-child(3) {
+  animation-delay: 0.4s;
+}
+
+/* Footer & Input */
+.chat-footer {
+  padding-bottom: env(safe-area-inset-bottom, 0);
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.input-toolbar {
+  --padding-top: 12px;
+  --padding-bottom: 12px;
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --border-color: #f3f4f6;
+}
+
+.input-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.chat-input {
+  flex: 1;
+  --background: #f9fafb;
+  --border-radius: 24px;
+  --padding-start: 16px;
+  --padding-end: 16px;
+  --placeholder-color: #9ca3af;
+  --placeholder-font-style: normal;
+  font-size: 0.9375rem;
+  min-height: 48px;
+}
+
+.send-button {
+  --background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+  --background-activated: linear-gradient(135deg, #7c3aed 0%, #db2777 100%);
+  --background-hover: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+  --border-radius: 50%;
+  width: 48px;
+  height: 48px;
+  margin: 0;
+}
+
+.send-button[disabled] {
+  --background: #d1d5db;
+  opacity: 0.6;
+}
+
+.footer-note {
+  padding-top: 8px;
+  padding-bottom: 4px;
+}
+
+/* Animations */
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+    transform: translateY(10px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@keyframes typingBounce {
+  0%, 60%, 100% {
+    transform: translateY(0);
+  }
+  30% {
+    transform: translateY(-6px);
+  }
+}
+
+@keyframes pulse {
+  0%, 100% {
+    opacity: 1;
+  }
+  50% {
+    opacity: 0.5;
+  }
+}
+
+/* Responsive Adjustments */
+@media (min-width: 768px) {
+  .mobile-chat-modal {
+    --border-radius: 16px;
+    --height: 90%;
+    --width: 400px;
+  }
+  
+  .mobile-chat-modal::part(content) {
+    border-radius: 16px;
+  }
+}
+
+/* Safe Area Insets for Notch Devices */
+@supports (padding: max(0px)) {
+  .chat-header,
+  .chat-footer {
+    padding-left: max(16px, env(safe-area-inset-left));
+    padding-right: max(16px, env(safe-area-inset-right));
+  }
+}
+</style>
+
+<script type="module">
+// Enhanced Mobile-First JavaScript
+import { modalController } from 'https://cdn.jsdelivr.net/npm/@ionic/core@8/dist/ionic/index.esm.js';
+
+// Configuration
+const AI_API_URL = 'https://ai-store-assist.sendaljepit.workers.dev/api/chat';
+let conversationHistory = [];
+let isTyping = false;
+let modalInstance = null;
+
+// Initialize when DOM is ready
+document.addEventListener('DOMContentLoaded', () => {
+  initChat();
+  setupEventListeners();
+  loadConversation();
+});
+
+// Initialize chat
+function initChat() {
+  updateSendButtonState();
+  setAIStatus('online');
+}
+
+// Setup event listeners
+function setupEventListeners() {
+  const sendBtn = document.getElementById('chat-send-btn-mobile');
+  const chatInput = document.getElementById('chat-input-mobile');
+  const clearBtn = document.getElementById('clear-chat-mobile');
+
+  // Send button
+  sendBtn.addEventListener('click', sendMessage);
+
+  // Enter key
+  chatInput.addEventListener('keypress', (e) => {
+    if (e.key === 'Enter' && !e.shiftKey) {
+      e.preventDefault();
+      sendMessage();
+    }
+  });
+
+  // Input change
+  chatInput.addEventListener('input', updateSendButtonState);
+
+  // Clear chat
+  clearBtn.addEventListener('click', () => {
+    showConfirmationDialog();
+  });
+
+  // Voice input button
+  document.querySelector('[onclick="toggleVoiceInput()"]').addEventListener('click', toggleVoiceInput);
+
+  // Modal events
+  setupModalEvents();
+}
+
+// Setup modal events
+function setupModalEvents() {
+  const modal = document.getElementById('mobileChatModal');
+  
+  modal.addEventListener('ionModalDidPresent', () => {
+    setTimeout(() => {
+      const input = document.getElementById('chat-input-mobile');
+      input.focus();
+      scrollToBottom();
+    }, 300);
+  });
+
+  modal.addEventListener('ionModalWillDismiss', () => {
+    saveConversation();
+  });
+}
+
+// Send message
+async function sendMessage() {
+  const input = document.getElementById('chat-input-mobile');
+  const message = input.value.trim();
+  
+  if (!message || isTyping) return;
+
+  // Add user message
+  addMessage(message, 'user');
+  input.value = '';
+  updateSendButtonState();
+
+  // Show typing indicator
+  showTyping(true);
+  setAIStatus('typing');
+
+  try {
+    const response = await fetch(AI_API_URL, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        message: message,
+        conversation: conversationHistory.slice(-6)
+      })
+    });
+
+    if (!response.ok) throw new Error('Network response was not ok');
+    
+    const data = await response.json();
+    
+    // Add AI response
+    addMessage(data.response, 'ai');
+    
+    // Update conversation history
+    conversationHistory.push(
+      { role: 'user', content: message },
+      { role: 'assistant', content: data.response }
+    );
+    
+    setAIStatus('online');
+    
+  } catch (error) {
+    console.error('Error:', error);
+    addMessage('Maaf, terjadi kesalahan. Silakan coba lagi.', 'ai');
+    setAIStatus('offline');
+  } finally {
+    showTyping(false);
+    scrollToBottom();
+  }
+}
+
+// Add message to UI
+function addMessage(text, sender) {
+  const container = document.getElementById('chat-messages-mobile');
+  
+  // Remove welcome message if it's the first user message
+  if (sender === 'user' && document.querySelector('.welcome-section')) {
+    container.innerHTML = '';
+  }
+
+  const messageDiv = document.createElement('div');
+  messageDiv.className = `message-bubble message-${sender}`;
+  
+  const time = new Date().toLocaleTimeString([], { 
+    hour: '2-digit', 
+    minute: '2-digit' 
+  });
+
+  messageDiv.innerHTML = `
+    <div class="message-content">${escapeHtml(text)}</div>
+    <div class="message-time">${time}</div>
+  `;
+
+  container.appendChild(messageDiv);
+  scrollToBottom();
+}
+
+// Quick message from suggestion chips
+window.sendQuickMessage = function(question) {
+  const input = document.getElementById('chat-input-mobile');
+  input.value = question;
+  sendMessage();
+};
+
+// Toggle voice input
+window.toggleVoiceInput = async function() {
+  if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+    const recognition = new SpeechRecognition();
+    
+    recognition.lang = 'id-ID';
+    recognition.interimResults = false;
+    recognition.maxAlternatives = 1;
+
+    recognition.start();
+
+    recognition.onresult = (event) => {
+      const transcript = event.results[0][0].transcript;
+      const input = document.getElementById('chat-input-mobile');
+      input.value = transcript;
+      updateSendButtonState();
+      sendMessage();
+    };
+
+    recognition.onerror = (event) => {
+      console.error('Speech recognition error:', event.error);
+    };
+  } else {
+    console.log('Speech recognition not supported');
+  }
+};
+
+// Show/hide typing indicator
+function showTyping(show) {
+  isTyping = show;
+  const indicator = document.getElementById('typing-indicator');
+  const sendBtn = document.getElementById('chat-send-btn-mobile');
+  
+  if (show) {
+    indicator.classList.remove('hidden');
+    sendBtn.disabled = true;
+  } else {
+    indicator.classList.add('hidden');
+    updateSendButtonState();
+  }
+}
+
+// Set AI status
+function setAIStatus(status) {
+  const indicator = document.getElementById('ai-status-indicator');
+  const activeElement = document.getElementById('ai-active-mobile');
+  
+  indicator.className = 'status-indicator';
+  
+  switch(status) {
+    case 'online':
+      indicator.classList.add('online');
+      activeElement.textContent = 'Online • Siap membantu';
+      break;
+    case 'typing':
+      indicator.classList.add('typing');
+      activeElement.textContent = 'Mengetik...';
+      break;
+    case 'offline':
+      indicator.classList.add('offline');
+      activeElement.textContent = 'Offline • Coba lagi nanti';
+      break;
+  }
+}
+
+// Update send button state
+function updateSendButtonState() {
+  const input = document.getElementById('chat-input-mobile');
+  const sendBtn = document.getElementById('chat-send-btn-mobile');
+  sendBtn.disabled = !input.value.trim() || isTyping;
+}
+
+// Clear chat with confirmation
+function showConfirmationDialog() {
+  const alert = document.createElement('ion-alert');
+  alert.header = 'Hapus Percakapan';
+  alert.message = 'Apakah Anda yakin ingin menghapus semua percakapan?';
+  alert.buttons = [
+    {
+      text: 'Batal',
+      role: 'cancel'
+    },
+    {
+      text: 'Hapus',
+      role: 'destructive',
+      handler: clearChat
+    }
+  ];
+
+  document.body.appendChild(alert);
+  return alert.present();
+}
+
+// Clear chat
+function clearChat() {
+  const container = document.getElementById('chat-messages-mobile');
+  container.innerHTML = '';
+  
+  // Re-add welcome section
+  const welcomeSection = document.querySelector('.welcome-section').cloneNode(true);
+  container.appendChild(welcomeSection);
+  
+  conversationHistory = [];
+  localStorage.removeItem('plus62store_chat_history');
+  scrollToBottom();
+}
+
+// Load conversation from localStorage
+function loadConversation() {
+  try {
+    const saved = localStorage.getItem('plus62store_chat_history');
+    if (saved) {
+      conversationHistory = JSON.parse(saved);
+      
+      // Display saved messages
+      conversationHistory.forEach(msg => {
+        addMessage(msg.content, msg.role === 'user' ? 'user' : 'ai');
+      });
+      
+      scrollToBottom();
+    }
+  } catch (e) {
+    console.error('Error loading conversation:', e);
+  }
+}
+
+// Save conversation to localStorage
+function saveConversation() {
+  if (conversationHistory.length > 0) {
+    localStorage.setItem('plus62store_chat_history', JSON.stringify(conversationHistory));
+  }
+}
+
+// Scroll to bottom
+function scrollToBottom() {
+  setTimeout(() => {
+    const container = document.getElementById('chat-messages-mobile');
+    if (container) {
+      container.scrollTop = container.scrollHeight;
+    }
+  }, 100);
+}
+
+// Escape HTML
+function escapeHtml(text) {
+  const div = document.createElement('div');
+  div.textContent = text;
+  return div.innerHTML;
+}
+
+// Open mobile chat
+window.openMobileChat = async function() {
+  const modal = document.getElementById('mobileChatModal');
+  modal.present();
+};
+
+// Dismiss modal
+window.dismissChatModal = async function(modalId) {
+  const modal = document.getElementById(modalId);
+  if (modal) {
+    await modal.dismiss();
+  }
+};
+</script>
