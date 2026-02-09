@@ -16,6 +16,7 @@ div.blog_grid {
  display: grid;
  grid-template-columns: repeat(2, 1fr);
  grid-template-rows: auto;
+ gap: 20px;
 @include mobile {
    grid-template-columns: repeat(1, 1fr);
  }
@@ -96,6 +97,7 @@ ion-card-subtitle.rotated-box {
 div.product-grid {
  margin-top: 60px;
  display: grid;
+ gap: 20px;
  grid-template-columns: repeat(3, 1fr);
  grid-template-rows: auto;
  text-align: center;
