@@ -1,14 +1,14 @@
 <div class="container">
 	<div class="blog_grid">
 	{% for post in site.posts %}
-		<ion-card class="flex_post p-2" onclick="openPostModal({{ post | jsonify | escape }})" style="cursor:pointer;" color="warning">
+		<ion-card class="flex_post" onclick="openPostModal({{ post | jsonify | escape }})" style="cursor:pointer;" color="warning">
 			<img class="blog_img" src="{{ site.baseurl }}{{ post.img }}">
 				<ion-card-subtitle class="rotated-box">
 				Author: {{ post.author }}
 				</ion-card-subtitle>
 				<div class="post_box">
 				<ion-card-header class="ion-card-header">
-					<ion-card-title color="light">
+					<ion-card-title class="text-white p-2">
 						{{ post.title }}
 					</ion-card-title>
 				</ion-card-header>
