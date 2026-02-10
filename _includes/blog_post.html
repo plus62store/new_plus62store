@@ -1,7 +1,7 @@
 <div class="container">
 	<div class="blog_grid">
 	{% for post in site.posts %}
-		<ion-card class="flex_post" onclick="openPostModal({{ post | jsonify | escape }})" style="cursor:pointer;" color="warning">
+		<ion-card class="flex_post p-2" onclick="openPostModal({{ post | jsonify | escape }})" style="cursor:pointer;" color="warning">
 			<img class="blog_img" src="{{ site.baseurl }}{{ post.img }}">
 				<ion-card-subtitle class="rotated-box">
 				Author: {{ post.author }}
