@@ -475,27 +475,35 @@ function setAIStatus(status) {
 function appendMessageToUI(text, isUser) {
     const container = document.getElementById('chat-messages-mobile');
     if (!container) return;
-    
+
     // Hapus pesan default jika ada
-    if (container.children.length === 1 && container.children[0].classList.contains('text-center')) {
+    if (container.children.length === 1 && container.querySelector('.welcome-container')) {
         container.innerHTML = '';
     }
-    
-    const messageDiv = document.createElement('div');
-// Sekarang kita pakai style align-self dari CSS untuk merapikan posisi
-messageDiv.style.display = 'flex';
-messageDiv.style.justifyContent = isUser ? 'flex-end' : 'flex-start';
-messageDiv.style.marginBottom = '12px';
 
-messageDiv.innerHTML = `
-    <div class="${isUser ? 'message-user' : 'message-ai'}">
-        <p style="margin: 0; color: ${isUser ? 'white' : '#1f2937'}">${escapeHtml(text)}</p>
-        <p style="margin: 4px 0 0 0; font-size: 0.7rem; opacity: 0.8; color: ${isUser ? '#e9d5ff' : '#6b7280'}">${time}</p>
-    </div>
-`;
-    
+    const messageDiv = document.createElement('div');
+    // Styling layout via JS agar presisi
+    messageDiv.style.display = 'flex';
+    messageDiv.style.flexDirection = 'column';
+    messageDiv.style.alignItems = isUser ? 'flex-end' : 'flex-start';
+    messageDiv.style.marginBottom = '12px';
+    messageDiv.style.width = '100%';
+
+    const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+
+    messageDiv.innerHTML = `
+        <div class="${isUser ? 'message-user' : 'message-ai'}">
+            <p style="margin: 0;">${escapeHtml(text)}</p>
+            <p style="margin: 4px 0 0 0; font-size: 0.65rem; opacity: 0.8; text-align: ${isUser ? 'right' : 'left'}">${time}</p>
+        </div>
+    `;
+
     container.appendChild(messageDiv);
-    container.scrollTop = container.scrollHeight;
+    
+    // Auto scroll ke bawah
+    setTimeout(() => {
+        container.scrollTo({ top: container.scrollHeight, behavior: 'smooth' });
+    }, 100);
 }
 
 // Escape HTML untuk keamanan
