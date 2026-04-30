@@ -482,16 +482,17 @@ function appendMessageToUI(text, isUser) {
     }
     
     const messageDiv = document.createElement('div');
-    messageDiv.className = isUser ? 'flex justify-end mb-3' : 'flex justify-start mb-3';
-    
-    const time = new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-    
-    messageDiv.innerHTML = `
-        <div class="${isUser ? 'message-user' : 'message-ai'} py-3 px-4">
-            <p class="${isUser ? 'text-white' : 'text-gray-800'}">${escapeHtml(text)}</p>
-            <p class="text-xs ${isUser ? 'text-purple-200' : 'text-gray-500'} mt-2">${time}</p>
-        </div>
-    `;
+// Sekarang kita pakai style align-self dari CSS untuk merapikan posisi
+messageDiv.style.display = 'flex';
+messageDiv.style.justifyContent = isUser ? 'flex-end' : 'flex-start';
+messageDiv.style.marginBottom = '12px';
+
+messageDiv.innerHTML = `
+    <div class="${isUser ? 'message-user' : 'message-ai'}">
+        <p style="margin: 0; color: ${isUser ? 'white' : '#1f2937'}">${escapeHtml(text)}</p>
+        <p style="margin: 4px 0 0 0; font-size: 0.7rem; opacity: 0.8; color: ${isUser ? '#e9d5ff' : '#6b7280'}">${time}</p>
+    </div>
+`;
     
     container.appendChild(messageDiv);
     container.scrollTop = container.scrollHeight;
